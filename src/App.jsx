@@ -8,6 +8,7 @@ import "./styles/cards.css";
 import "./styles/filters.css";
 import "./styles/home.css";
 import "./styles/trips.css";
+import "./styles/trip-detail.css";
 
 function App() {
   return <AppRouter />;
