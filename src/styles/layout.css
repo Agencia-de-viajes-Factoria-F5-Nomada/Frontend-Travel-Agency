@@ -1,0 +1,41 @@
+/* Layout Base */
+.trips-page__container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.trips-page__content {
+  background: white;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .trips-page__container {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 0 1rem;
+  }
+
+  .trips-page__content {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .trips-page__container {
+    padding: 0;
+  }
+
+  .trips-page__content {
+    border-radius: 0;
+    padding: 1rem;
+  }
+}

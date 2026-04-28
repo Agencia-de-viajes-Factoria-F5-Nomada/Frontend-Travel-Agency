@@ -1,56 +1,89 @@
-/* ============================================================================
-   HOME PAGE STYLES
-   ============================================================================ */
-
-.home-page {
-  width: 100%;
-}
-
-.home-page__container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 2rem;
-}
-
-.home-page__section {
-  padding: 3rem 0;
+/* Featured Section */
+.featured-section {
   background-color: white;
+  padding: 3rem 2rem;
   margin-bottom: 2rem;
 }
 
-.home-page__section:nth-child(odd) {
-  background-color: #f9f9f9;
+.featured-section__container {
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-/* GRIDS */
-.destinations-grid,
-.offers-grid {
+.featured-section__title {
+  color: #333;
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.featured-section__subtitle {
+  color: #999;
+  font-size: 1.1rem;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.featured-section__grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 2rem;
-  margin-top: 2rem;
 }
 
-/* RESPONSIVE */
+/* Offers Section */
+.offers-section {
+  background-color: #f9f9f9;
+  padding: 3rem 2rem;
+  margin-bottom: 2rem;
+}
+
+.offers-section__container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.offers-section__title {
+  color: #333;
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.offers-section__subtitle {
+  color: #999;
+  font-size: 1.1rem;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.offers-section__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+/* Responsive */
 @media (max-width: 768px) {
-  .home-page__container {
-    padding: 0 1rem;
+  .featured-section,
+  .offers-section {
+    padding: 2rem 1rem;
   }
 
-  .home-page__section {
-    padding: 2rem 0;
-  }
-
-  .destinations-grid,
-  .offers-grid {
+  .featured-section__grid,
+  .offers-section__grid {
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1.5rem;
   }
 }
 
 @media (max-width: 480px) {
-  .destinations-grid,
-  .offers-grid {
+  .featured-section,
+  .offers-section {
+    padding: 1.5rem 1rem;
+  }
+
+  .featured-section__grid,
+  .offers-section__grid {
     grid-template-columns: 1fr;
     gap: 1rem;
   }

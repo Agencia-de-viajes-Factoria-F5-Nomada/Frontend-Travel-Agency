@@ -1,7 +1,11 @@
 import React from "react";
 import AppRouter from "./app/router/AppRouter";
 import "./styles/global.css";
-import "./styles/components.css";
+import "./styles/layout.css";
+import "./styles/hero.css";
+import "./styles/searchbar.css";
+import "./styles/cards.css";
+import "./styles/filters.css";
 import "./styles/home.css";
 import "./styles/trips.css";
 
