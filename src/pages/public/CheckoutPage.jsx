@@ -1,29 +1,52 @@
-import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useBooking } from "../../context/useBooking";
+import { useCheckoutForm } from "../../hooks/useCheckoutForm";
+import PassengerForm from "../../components/forms/PassengerForm";
+import CheckoutSummary from "../../components/common/CheckoutSummary";
+
+const EMPTY_COUNTS = { adults: 0, children: 0, seniors: 0 };
 
 function CheckoutPage() {
+  const navigate = useNavigate();
   const { booking } = useBooking();
+  const { passengers, updatePassenger, validate, errors } = useCheckoutForm(
+    booking?.passengers ?? EMPTY_COUNTS
+  );
 
-  if (!booking) {
-    return (
-      <div style={{ padding: "2rem", textAlign: "center" }}>
-        <h1>No hay reserva en curso</h1>
-        <p>Selecciona un viaje para empezar.</p>
-        <Link to="/trips">Ver viajes</Link>
-      </div>
-    );
-  }
+  useEffect(() => {
+    if (!booking) navigate("/trips");
+  }, [booking, navigate]);
 
-  const { trip, passengers, total } = booking;
-  const totalPassengers = passengers.adults + passengers.children + passengers.seniors;
+  if (!booking) return null;
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (validate()) alert("Reserva preparada");
+  };
 
   return (
-    <div style={{ padding: "2rem", maxWidth: "800px", margin: "0 auto" }}>
-      <h1>Checkout</h1>
-      <p><strong>Destino:</strong> {trip.destination}</p>
-      <p><strong>Fechas:</strong> {trip.dates}</p>
-      <p><strong>Viajeros:</strong> {totalPassengers} ({passengers.adults} adultos, {passengers.children} niños, {passengers.seniors} jubilados)</p>
-      <p><strong>Total:</strong> ${total}</p>
+    <div className="checkout">
+      <div className="checkout__container">
+        <form className="checkout__form" onSubmit={handleSubmit} noValidate>
+          <PassengerForm
+            passengers={passengers}
+            errors={errors}
+            onUpdate={updatePassenger}
+          />
+          {errors.global && (
+            <p className="checkout__error">{errors.global}</p>
+          )}
+          <button type="submit" className="checkout__button">
+            Continuar pago
+          </button>
+        </form>
+        <CheckoutSummary
+          trip={booking.trip}
+          passengers={booking.passengers}
+          total={booking.total}
+        />
+      </div>
     </div>
   );
 }
