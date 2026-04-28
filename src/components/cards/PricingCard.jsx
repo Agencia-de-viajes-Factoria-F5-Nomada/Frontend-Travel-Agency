@@ -1,16 +1,19 @@
 import { useNavigate } from "react-router-dom";
 import Counter from "../ui/Counter";
 import { useBookingCalculator } from "../../hooks/useBookingCalculator";
+import { useBooking } from "../../context/useBooking";
 
 function PricingCard({ trip }) {
   const navigate = useNavigate();
+  const { setBooking } = useBooking();
   const { passengers, setPassenger, total, totalPassengers } = useBookingCalculator(
     trip.price,
     trip.maxPeople
   );
 
   const handleBook = () => {
-    navigate("/checkout", { state: { trip, passengers, total } });
+    setBooking({ trip, passengers, total });
+    navigate("/checkout");
   };
 
   return (
