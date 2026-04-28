@@ -4,6 +4,7 @@ import HomePage from "../../pages/public/HomePage";
 import TripsPage from "../../pages/public/TripsPage";
 import TripDetailPage from "../../pages/public/TripDetailPage";
 import CheckoutPage from "../../pages/public/CheckoutPage";
+import ConfirmationPage from "../../pages/public/ConfirmationPage";
 import LoginPage from "../../pages/public/LoginPage";
 import RegisterPage from "../../pages/public/RegisterPage";
 import ContactPage from "../../pages/public/ContactPage";
@@ -24,6 +25,7 @@ function AppRouter() {
           <Route path="/trips" element={<TripsPage />} />
           <Route path="/trips/:id" element={<TripDetailPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path="/confirmation" element={<ConfirmationPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/contact" element={<ContactPage />} />

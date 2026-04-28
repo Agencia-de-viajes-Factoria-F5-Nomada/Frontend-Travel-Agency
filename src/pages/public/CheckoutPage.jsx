@@ -22,7 +22,7 @@ function CheckoutPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (validate()) alert("Reserva preparada");
+    if (validate()) navigate("/confirmation");
   };
 
   return (
