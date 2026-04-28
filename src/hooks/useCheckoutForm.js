@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const buildPassengers = ({ adults = 0, children = 0, seniors = 0 }) => {
+const buildTravelers = ({ adults = 0, children = 0, seniors = 0 }) => {
   const make = (type, n) =>
     Array.from({ length: n }, () => ({ type, name: "", lastname: "" }));
   return [
@@ -10,39 +10,49 @@ const buildPassengers = ({ adults = 0, children = 0, seniors = 0 }) => {
   ];
 };
 
-export const useCheckoutForm = (counts) => {
-  const [passengers, setPassengers] = useState(() => buildPassengers(counts));
+export const useCheckoutForm = (passengerCounts) => {
+  const [travelers, setTravelers] = useState(() =>
+    buildTravelers(passengerCounts)
+  );
   const [errors, setErrors] = useState({});
 
-  const updatePassenger = (index, field, value) => {
-    setPassengers((prev) =>
-      prev.map((p, i) => (i === index ? { ...p, [field]: value } : p))
+  const updateTraveler = (index, field, value) => {
+    setTravelers((prev) =>
+      prev.map((t, i) => (i === index ? { ...t, [field]: value } : t))
     );
+    setErrors((prev) => {
+      const key = `${index}-${field}`;
+      if (!(key in prev) && !("global" in prev)) return prev;
+      const next = { ...prev };
+      delete next[key];
+      delete next.global;
+      return next;
+    });
   };
 
   const validate = () => {
-    const trimmed = passengers.map((p) => ({
-      ...p,
-      name: p.name.trim(),
-      lastname: p.lastname.trim(),
+    const trimmed = travelers.map((t) => ({
+      ...t,
+      name: t.name.trim(),
+      lastname: t.lastname.trim(),
     }));
 
     const next = {};
-    trimmed.forEach((p, i) => {
-      if (!p.name) next[`${i}-name`] = "Nombre obligatorio";
-      if (!p.lastname) next[`${i}-lastname`] = "Apellido obligatorio";
+    trimmed.forEach((t, i) => {
+      if (!t.name) next[`${i}-name`] = "Nombre obligatorio";
+      if (!t.lastname) next[`${i}-lastname`] = "Apellido obligatorio";
     });
 
-    const hasAdult = trimmed.some((p) => p.type === "adult");
-    const hasChild = trimmed.some((p) => p.type === "child");
+    const hasAdult = trimmed.some((t) => t.type === "adult");
+    const hasChild = trimmed.some((t) => t.type === "child");
     if (hasChild && !hasAdult) {
       next.global = "Un menor debe viajar acompañado de un adulto";
     }
 
-    setPassengers(trimmed);
+    setTravelers(trimmed);
     setErrors(next);
     return Object.keys(next).length === 0;
   };
 
-  return { passengers, updatePassenger, validate, errors };
+  return { travelers, updateTraveler, validate, errors };
 };

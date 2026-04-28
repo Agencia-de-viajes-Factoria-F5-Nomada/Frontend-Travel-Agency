@@ -3,17 +3,18 @@ import { useState } from "react";
 const INITIAL = { adults: 1, children: 0, seniors: 0 };
 
 export const useBookingCalculator = (pricePerPerson, maxPeople) => {
-  const [passengers, setPassengers] = useState(INITIAL);
+  const [passengerCounts, setPassengerCounts] = useState(INITIAL);
 
-  const totalPassengers = passengers.adults + passengers.children + passengers.seniors;
+  const totalPassengers =
+    passengerCounts.adults + passengerCounts.children + passengerCounts.seniors;
   const total = pricePerPerson * totalPassengers;
 
   const setPassenger = (type, value) => {
-    const otherPassengers = totalPassengers - passengers[type];
+    const otherPassengers = totalPassengers - passengerCounts[type];
     const cap = Math.max(0, maxPeople - otherPassengers);
     const next = Math.min(Math.max(0, value), cap);
-    setPassengers((prev) => ({ ...prev, [type]: next }));
+    setPassengerCounts((prev) => ({ ...prev, [type]: next }));
   };
 
-  return { passengers, setPassenger, total, totalPassengers };
+  return { passengerCounts, setPassenger, total, totalPassengers };
 };

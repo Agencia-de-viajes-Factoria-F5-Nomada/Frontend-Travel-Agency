@@ -1,6 +1,20 @@
-function ReservationCard({ code, trip, passengers, total, email }) {
+const TYPE_LABELS = {
+  adult: "Adulto",
+  child: "Niño",
+  senior: "Jubilado",
+};
+
+function ReservationCard({
+  code,
+  trip,
+  passengerCounts,
+  travelers,
+  total,
+  email,
+}) {
   const totalPassengers =
-    passengers.adults + passengers.children + passengers.seniors;
+    passengerCounts.adults + passengerCounts.children + passengerCounts.seniors;
+  const hasTravelers = Array.isArray(travelers) && travelers.length > 0;
 
   return (
     <article className="reservation-card">
@@ -35,6 +49,21 @@ function ReservationCard({ code, trip, passengers, total, email }) {
           <dd>${total}</dd>
         </div>
       </dl>
+
+      {hasTravelers && (
+        <ul className="reservation-card__travelers">
+          {travelers.map((t, i) => (
+            <li key={i} className="reservation-card__traveler">
+              <span className="reservation-card__traveler-name">
+                {t.name} {t.lastname}
+              </span>
+              <span className="reservation-card__traveler-type">
+                {TYPE_LABELS[t.type]}
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
     </article>
   );
 }

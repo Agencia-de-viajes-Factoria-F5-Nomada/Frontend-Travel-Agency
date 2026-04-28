@@ -6,13 +6,11 @@ import { useBooking } from "../../context/useBooking";
 function PricingCard({ trip }) {
   const navigate = useNavigate();
   const { setBooking } = useBooking();
-  const { passengers, setPassenger, total, totalPassengers } = useBookingCalculator(
-    trip.price,
-    trip.maxPeople
-  );
+  const { passengerCounts, setPassenger, total, totalPassengers } =
+    useBookingCalculator(trip.price, trip.maxPeople);
 
   const handleBook = () => {
-    setBooking({ trip, passengers, total });
+    setBooking({ trip, passengerCounts, total });
     navigate("/checkout");
   };
 
@@ -25,17 +23,17 @@ function PricingCard({ trip }) {
       <div className="pricing-card__counters">
         <Counter
           label="Adultos"
-          value={passengers.adults}
+          value={passengerCounts.adults}
           onChange={(val) => setPassenger("adults", val)}
         />
         <Counter
           label="Niños"
-          value={passengers.children}
+          value={passengerCounts.children}
           onChange={(val) => setPassenger("children", val)}
         />
         <Counter
           label="Jubilados"
-          value={passengers.seniors}
+          value={passengerCounts.seniors}
           onChange={(val) => setPassenger("seniors", val)}
         />
       </div>

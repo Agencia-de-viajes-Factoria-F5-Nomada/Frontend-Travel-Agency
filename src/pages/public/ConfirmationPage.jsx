@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useBooking } from "../../context/useBooking";
-import { generateReservationCode } from "../../utils/generateReservationCode";
 import ReservationCard from "../../components/common/ReservationCard";
 
 const SIMULATED_EMAIL = "cliente@ejemplo.com";
@@ -9,13 +8,12 @@ const SIMULATED_EMAIL = "cliente@ejemplo.com";
 function ConfirmationPage() {
   const navigate = useNavigate();
   const { booking, clearBooking } = useBooking();
-  const [code] = useState(generateReservationCode);
 
   useEffect(() => {
-    if (!booking) navigate("/trips");
+    if (!booking || !booking.code) navigate("/trips");
   }, [booking, navigate]);
 
-  if (!booking) return null;
+  if (!booking || !booking.code) return null;
 
   const handleHome = () => {
     clearBooking();
@@ -26,9 +24,10 @@ function ConfirmationPage() {
     <div className="confirmation">
       <div className="confirmation__container">
         <ReservationCard
-          code={code}
+          code={booking.code}
           trip={booking.trip}
-          passengers={booking.passengers}
+          passengerCounts={booking.passengerCounts}
+          travelers={booking.travelers}
           total={booking.total}
           email={SIMULATED_EMAIL}
         />

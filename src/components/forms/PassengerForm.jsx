@@ -20,20 +20,20 @@ function PassengerField({ index, field, label, value, error, onUpdate }) {
   );
 }
 
-function PassengerForm({ passengers, errors, onUpdate }) {
+function PassengerForm({ travelers, errors, onUpdate }) {
   return (
     <section className="passenger-form">
       <h2 className="passenger-form__title">Datos de los viajeros</h2>
-      {passengers.map((p, i) => (
+      {travelers.map((t, i) => (
         <fieldset key={i} className="passenger-form__group">
           <legend className="passenger-form__legend">
-            Viajero {i + 1} · {TYPE_LABELS[p.type]}
+            Viajero {i + 1} · {TYPE_LABELS[t.type]}
           </legend>
           <PassengerField
             index={i}
             field="name"
             label="Nombre"
-            value={p.name}
+            value={t.name}
             error={errors[`${i}-name`]}
             onUpdate={onUpdate}
           />
@@ -41,7 +41,7 @@ function PassengerForm({ passengers, errors, onUpdate }) {
             index={i}
             field="lastname"
             label="Apellido"
-            value={p.lastname}
+            value={t.lastname}
             error={errors[`${i}-lastname`]}
             onUpdate={onUpdate}
           />

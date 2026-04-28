@@ -1,6 +1,6 @@
-function CheckoutSummary({ trip, passengers, total }) {
+function CheckoutSummary({ trip, passengerCounts, total }) {
   const totalPassengers =
-    passengers.adults + passengers.children + passengers.seniors;
+    passengerCounts.adults + passengerCounts.children + passengerCounts.seniors;
 
   return (
     <aside className="checkout-summary">
@@ -17,8 +17,8 @@ function CheckoutSummary({ trip, passengers, total }) {
         <div className="checkout-summary__row">
           <dt>Viajeros</dt>
           <dd>
-            {totalPassengers} ({passengers.adults}A · {passengers.children}N ·{" "}
-            {passengers.seniors}J)
+            {totalPassengers} ({passengerCounts.adults}A ·{" "}
+            {passengerCounts.children}N · {passengerCounts.seniors}J)
           </dd>
         </div>
       </dl>
