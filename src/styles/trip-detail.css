@@ -37,6 +37,17 @@
   padding: 3rem 2rem 2rem;
 }
 
+.trip-hero__badge {
+  display: inline-block;
+  background: #667eea;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
 .trip-hero__title {
   color: white;
   font-size: 2.5rem;
@@ -66,7 +77,27 @@
 .trip-description__text {
   color: #666;
   line-height: 1.8;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.trip-description__subheading {
+  color: #333;
+  font-size: 1.15rem;
+  margin-bottom: 0.75rem;
+}
+
+.trip-description__list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem 1rem;
+}
+
+.trip-description__list-item {
+  color: #555;
+  font-size: 0.95rem;
 }
 
 .trip-description__info {
@@ -318,6 +349,10 @@
   .trip-description,
   .pricing-card {
     padding: 1.5rem;
+  }
+
+  .trip-description__list {
+    grid-template-columns: 1fr;
   }
 
   .pricing-card__button {

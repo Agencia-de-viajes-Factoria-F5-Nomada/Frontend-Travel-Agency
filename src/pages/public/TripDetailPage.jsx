@@ -4,6 +4,10 @@ import TripHero from "../../components/common/TripHero";
 import TripDescription from "../../components/common/TripDescription";
 import PricingCard from "../../components/cards/PricingCard";
 
+const PENSION_LABELS = { media: "Media pensión", completa: "Pensión completa" };
+const INCLUDED = ["Vuelos", "Hotel", "Traslados", "Seguro de viaje"];
+const DATES = "15 Jun - 22 Jun 2026";
+
 function TripDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -25,12 +29,14 @@ function TripDetailPage() {
         destination={trip.destination}
         image={trip.image}
         rating={trip.rating}
+        badge={PENSION_LABELS[trip.pensionType]}
       />
       <div className="trip-detail__container">
         <TripDescription
           description={trip.description}
-          pensionType={trip.pensionType}
+          included={INCLUDED}
           maxPeople={8}
+          dates={DATES}
         />
         <PricingCard trip={trip} />
       </div>
