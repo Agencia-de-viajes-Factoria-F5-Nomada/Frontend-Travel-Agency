@@ -10,6 +10,7 @@ import "./styles/trips.css";
 import "./styles/trip-detail.css";
 import "./styles/checkout.css";
 import "./styles/confirmation.css";
+import "./styles/auth.css";
 
 function App() {
   return <AppRouter />;

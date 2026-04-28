@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import MainLayout from "../../components/layout/MainLayout";
+import ProtectedRoute from "../../components/common/ProtectedRoute";
 import HomePage from "../../pages/public/HomePage";
 import TripsPage from "../../pages/public/TripsPage";
 import TripDetailPage from "../../pages/public/TripDetailPage";
@@ -14,6 +15,8 @@ import DashboardPage from "../../pages/admin/DashboardPage";
 import ReservationsPage from "../../pages/admin/ReservationsPage";
 import DestinationsPage from "../../pages/admin/DestinationsPage";
 import UsersPage from "../../pages/admin/UsersPage";
+
+const protect = (element) => <ProtectedRoute>{element}</ProtectedRoute>;
 
 function AppRouter() {
   return (
@@ -31,14 +34,14 @@ function AppRouter() {
           <Route path="/contact" element={<ContactPage />} />
 
           {/* Private Routes */}
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/favorites" element={<FavoritesPage />} />
+          <Route path="/profile" element={protect(<ProfilePage />)} />
+          <Route path="/favorites" element={protect(<FavoritesPage />)} />
 
           {/* Admin Routes */}
-          <Route path="/admin/dashboard" element={<DashboardPage />} />
-          <Route path="/admin/reservations" element={<ReservationsPage />} />
-          <Route path="/admin/destinations" element={<DestinationsPage />} />
-          <Route path="/admin/users" element={<UsersPage />} />
+          <Route path="/admin/dashboard" element={protect(<DashboardPage />)} />
+          <Route path="/admin/reservations" element={protect(<ReservationsPage />)} />
+          <Route path="/admin/destinations" element={protect(<DestinationsPage />)} />
+          <Route path="/admin/users" element={protect(<UsersPage />)} />
         </Route>
       </Routes>
     </BrowserRouter>
