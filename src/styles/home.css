@@ -1,0 +1,57 @@
+/* ============================================================================
+   HOME PAGE STYLES
+   ============================================================================ */
+
+.home-page {
+  width: 100%;
+}
+
+.home-page__container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.home-page__section {
+  padding: 3rem 0;
+  background-color: white;
+  margin-bottom: 2rem;
+}
+
+.home-page__section:nth-child(odd) {
+  background-color: #f9f9f9;
+}
+
+/* GRIDS */
+.destinations-grid,
+.offers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .home-page__container {
+    padding: 0 1rem;
+  }
+
+  .home-page__section {
+    padding: 2rem 0;
+  }
+
+  .destinations-grid,
+  .offers-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .destinations-grid,
+  .offers-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
