@@ -3,6 +3,7 @@ import AppRouter from "./app/router/AppRouter";
 import "./styles/global.css";
 import "./styles/components.css";
 import "./styles/home.css";
+import "./styles/trips.css";
 
 function App() {
   return <AppRouter />;
