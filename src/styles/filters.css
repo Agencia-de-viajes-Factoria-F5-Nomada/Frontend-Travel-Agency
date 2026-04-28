@@ -107,8 +107,7 @@
 }
 
 /* Sort Select */
-.sort-select,
-.filters-panel__select {
+.sort-select {
   width: 100%;
   padding: 0.75rem;
   border: 1px solid #ddd;
@@ -120,13 +119,11 @@
   transition: border-color 0.3s ease;
 }
 
-.sort-select:hover,
-.filters-panel__select:hover {
+.sort-select:hover {
   border-color: #667eea;
 }
 
-.sort-select:focus,
-.filters-panel__select:focus {
+.sort-select:focus {
   outline: none;
   border-color: #667eea;
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-function OfferCard({ id, title, description, discount, image }) {
+function OfferCard({ title, description, discount, image }) {
   return (
     <article className="offer-card">
       <div className="offer-card__image">

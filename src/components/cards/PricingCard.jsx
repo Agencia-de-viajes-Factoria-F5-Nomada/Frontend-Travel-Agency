@@ -1,30 +1,16 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Counter from "../ui/Counter";
+import { useBookingCalculator } from "../../hooks/useBookingCalculator";
 
 function PricingCard({ trip }) {
   const navigate = useNavigate();
-  const [passengers, setPassengers] = useState({
-    adults: 1,
-    children: 0,
-    seniors: 0,
-  });
-
-  const handlePassengerChange = (type, value) => {
-    setPassengers((prev) => ({ ...prev, [type]: value }));
-  };
-
-  const totalPassengers = passengers.adults + passengers.children + passengers.seniors;
-  const totalPrice = trip.price * totalPassengers;
+  const { passengers, setPassenger, total, totalPassengers } = useBookingCalculator(
+    trip.price,
+    trip.maxPeople
+  );
 
   const handleBook = () => {
-    navigate("/checkout", {
-      state: {
-        trip,
-        passengers,
-        total: totalPrice,
-      },
-    });
+    navigate("/checkout", { state: { trip, passengers, total } });
   };
 
   return (
@@ -37,27 +23,27 @@ function PricingCard({ trip }) {
         <Counter
           label="Adultos"
           value={passengers.adults}
-          onChange={(val) => handlePassengerChange("adults", val)}
+          onChange={(val) => setPassenger("adults", val)}
         />
         <Counter
           label="Niños"
           value={passengers.children}
-          onChange={(val) => handlePassengerChange("children", val)}
+          onChange={(val) => setPassenger("children", val)}
         />
         <Counter
           label="Jubilados"
           value={passengers.seniors}
-          onChange={(val) => handlePassengerChange("seniors", val)}
+          onChange={(val) => setPassenger("seniors", val)}
         />
       </div>
 
       <div className="pricing-card__summary">
         <p className="pricing-card__passengers">
-          Total viajeros: <strong>{totalPassengers}</strong>
+          Total viajeros: <strong>{totalPassengers}</strong> / {trip.maxPeople}
         </p>
         <div className="pricing-card__total">
           <span>Precio total:</span>
-          <span className="pricing-card__amount">${totalPrice}</span>
+          <span className="pricing-card__amount">${total}</span>
         </div>
       </div>
 

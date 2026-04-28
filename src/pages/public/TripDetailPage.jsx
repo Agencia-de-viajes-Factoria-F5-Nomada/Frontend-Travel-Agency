@@ -1,17 +1,14 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { MOCK_TRIPS } from "../../constants/mockTrips";
+import { getPensionLabel } from "../../constants/pension";
 import TripHero from "../../components/common/TripHero";
 import TripDescription from "../../components/common/TripDescription";
 import PricingCard from "../../components/cards/PricingCard";
 
-const PENSION_LABELS = { media: "Media pensión", completa: "Pensión completa" };
-const INCLUDED = ["Vuelos", "Hotel", "Traslados", "Seguro de viaje"];
-const DATES = "15 Jun - 22 Jun 2026";
-
 function TripDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const trip = MOCK_TRIPS.find((t) => t.id === parseInt(id));
+  const trip = MOCK_TRIPS.find((t) => t.id === parseInt(id, 10));
 
   if (!trip) {
     return (
@@ -29,14 +26,14 @@ function TripDetailPage() {
         destination={trip.destination}
         image={trip.image}
         rating={trip.rating}
-        badge={PENSION_LABELS[trip.pensionType]}
+        badge={getPensionLabel(trip.pensionType)}
       />
       <div className="trip-detail__container">
         <TripDescription
           description={trip.description}
-          included={INCLUDED}
-          maxPeople={8}
-          dates={DATES}
+          included={trip.included}
+          maxPeople={trip.maxPeople}
+          dates={trip.dates}
         />
         <PricingCard trip={trip} />
       </div>

@@ -1,33 +1,38 @@
-import { useMemo } from "react";
+import SortSelect from "./SortSelect";
+
+const PENSION_OPTIONS = [
+  { value: "all", label: "Todos" },
+  { value: "media", label: "Media pensión" },
+  { value: "completa", label: "Pensión completa" },
+];
+
+const RATING_OPTIONS = [
+  { value: 0, label: "Cualquiera" },
+  { value: 3, label: "⭐⭐⭐+" },
+  { value: 4, label: "⭐⭐⭐⭐+" },
+  { value: 4.5, label: "⭐⭐⭐⭐⭐" },
+];
+
+function RadioGroup({ name, value, options, onChange }) {
+  return (
+    <div className="filters-panel__options">
+      {options.map((opt) => (
+        <label key={opt.value} className="filters-panel__checkbox">
+          <input
+            type="radio"
+            name={name}
+            checked={value === opt.value}
+            onChange={() => onChange(opt.value)}
+          />
+          {opt.label}
+        </label>
+      ))}
+    </div>
+  );
+}
 
 function FiltersPanel({ filters, onFilterChange }) {
-  const handlePriceChange = (e) => {
-    onFilterChange({
-      ...filters,
-      maxPrice: parseFloat(e.target.value),
-    });
-  };
-
-  const handlePensionChange = (e) => {
-    onFilterChange({
-      ...filters,
-      pensionType: e.target.value,
-    });
-  };
-
-  const handleRatingChange = (e) => {
-    onFilterChange({
-      ...filters,
-      minRating: parseFloat(e.target.value),
-    });
-  };
-
-  const handleSortChange = (e) => {
-    onFilterChange({
-      ...filters,
-      sortBy: e.target.value,
-    });
-  };
+  const update = (key, value) => onFilterChange({ ...filters, [key]: value });
 
   return (
     <aside className="filters-panel">
@@ -44,7 +49,7 @@ function FiltersPanel({ filters, onFilterChange }) {
             max="5000"
             step="100"
             value={filters.maxPrice}
-            onChange={handlePriceChange}
+            onChange={(e) => update("maxPrice", parseFloat(e.target.value))}
             className="filters-panel__range"
           />
           <span className="filters-panel__value">${filters.maxPrice}</span>
@@ -53,97 +58,30 @@ function FiltersPanel({ filters, onFilterChange }) {
 
       <div className="filters-panel__section">
         <label className="filters-panel__label">Tipo de pensión</label>
-        <div className="filters-panel__options">
-          <label className="filters-panel__checkbox">
-            <input
-              type="radio"
-              name="pension"
-              value="all"
-              checked={filters.pensionType === "all"}
-              onChange={handlePensionChange}
-            />
-            Todos
-          </label>
-          <label className="filters-panel__checkbox">
-            <input
-              type="radio"
-              name="pension"
-              value="media"
-              checked={filters.pensionType === "media"}
-              onChange={handlePensionChange}
-            />
-            Media pensión
-          </label>
-          <label className="filters-panel__checkbox">
-            <input
-              type="radio"
-              name="pension"
-              value="completa"
-              checked={filters.pensionType === "completa"}
-              onChange={handlePensionChange}
-            />
-            Pensión completa
-          </label>
-        </div>
+        <RadioGroup
+          name="pension"
+          value={filters.pensionType}
+          options={PENSION_OPTIONS}
+          onChange={(v) => update("pensionType", v)}
+        />
       </div>
 
       <div className="filters-panel__section">
         <label className="filters-panel__label">Valoración mínima</label>
-        <div className="filters-panel__rating-options">
-          <label className="filters-panel__checkbox">
-            <input
-              type="radio"
-              name="rating"
-              value="0"
-              checked={filters.minRating === 0}
-              onChange={handleRatingChange}
-            />
-            Cualquiera
-          </label>
-          <label className="filters-panel__checkbox">
-            <input
-              type="radio"
-              name="rating"
-              value="3"
-              checked={filters.minRating === 3}
-              onChange={handleRatingChange}
-            />
-            ⭐⭐⭐+
-          </label>
-          <label className="filters-panel__checkbox">
-            <input
-              type="radio"
-              name="rating"
-              value="4"
-              checked={filters.minRating === 4}
-              onChange={handleRatingChange}
-            />
-            ⭐⭐⭐⭐+
-          </label>
-          <label className="filters-panel__checkbox">
-            <input
-              type="radio"
-              name="rating"
-              value="4.5"
-              checked={filters.minRating === 4.5}
-              onChange={handleRatingChange}
-            />
-            ⭐⭐⭐⭐⭐
-          </label>
-        </div>
+        <RadioGroup
+          name="rating"
+          value={filters.minRating}
+          options={RATING_OPTIONS}
+          onChange={(v) => update("minRating", v)}
+        />
       </div>
 
       <div className="filters-panel__section">
         <label className="filters-panel__label">Ordenar por</label>
-        <select
+        <SortSelect
           value={filters.sortBy}
-          onChange={handleSortChange}
-          className="filters-panel__select"
-        >
-          <option value="rating">Mejor valoración</option>
-          <option value="price-asc">Precio menor a mayor</option>
-          <option value="price-desc">Precio mayor a menor</option>
-        </select>
+          onChange={(e) => update("sortBy", e.target.value)}
+        />
       </div>
     </aside>
   );

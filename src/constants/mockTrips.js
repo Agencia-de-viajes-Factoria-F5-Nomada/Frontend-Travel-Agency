@@ -1,3 +1,5 @@
+const COMMON_INCLUDED = ["Vuelos", "Hotel", "Traslados", "Seguro de viaje"];
+
 export const MOCK_TRIPS = [
   {
     id: 1,
@@ -7,6 +9,9 @@ export const MOCK_TRIPS = [
     price: 1200,
     rating: 4.8,
     pensionType: "media",
+    maxPeople: 8,
+    dates: "15 Jun - 22 Jun 2026",
+    included: COMMON_INCLUDED,
   },
   {
     id: 2,
@@ -16,6 +21,9 @@ export const MOCK_TRIPS = [
     price: 1500,
     rating: 4.9,
     pensionType: "completa",
+    maxPeople: 6,
+    dates: "10 Sep - 22 Sep 2026",
+    included: COMMON_INCLUDED,
   },
   {
     id: 3,
@@ -25,6 +33,9 @@ export const MOCK_TRIPS = [
     price: 850,
     rating: 4.6,
     pensionType: "media",
+    maxPeople: 10,
+    dates: "5 Jul - 12 Jul 2026",
+    included: COMMON_INCLUDED,
   },
   {
     id: 4,
@@ -34,6 +45,9 @@ export const MOCK_TRIPS = [
     price: 950,
     rating: 4.7,
     pensionType: "completa",
+    maxPeople: 8,
+    dates: "20 Ago - 28 Ago 2026",
+    included: COMMON_INCLUDED,
   },
   {
     id: 5,
@@ -43,6 +57,9 @@ export const MOCK_TRIPS = [
     price: 1100,
     rating: 4.8,
     pensionType: "media",
+    maxPeople: 8,
+    dates: "12 May - 19 May 2026",
+    included: COMMON_INCLUDED,
   },
   {
     id: 6,
@@ -52,6 +69,9 @@ export const MOCK_TRIPS = [
     price: 900,
     rating: 4.5,
     pensionType: "completa",
+    maxPeople: 10,
+    dates: "3 Oct - 10 Oct 2026",
+    included: COMMON_INCLUDED,
   },
   {
     id: 7,
@@ -61,6 +81,9 @@ export const MOCK_TRIPS = [
     price: 750,
     rating: 4.7,
     pensionType: "media",
+    maxPeople: 12,
+    dates: "1 Nov - 14 Nov 2026",
+    included: COMMON_INCLUDED,
   },
   {
     id: 8,
@@ -70,5 +93,8 @@ export const MOCK_TRIPS = [
     price: 1400,
     rating: 4.6,
     pensionType: "completa",
+    maxPeople: 6,
+    dates: "18 Dic - 27 Dic 2026",
+    included: COMMON_INCLUDED,
   },
 ];

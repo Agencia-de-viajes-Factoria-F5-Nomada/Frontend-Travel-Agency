@@ -7,7 +7,7 @@ function TripDescription({ description, included, maxPeople, dates }) {
 
         <h3 className="trip-description__subheading">Incluye</h3>
         <ul className="trip-description__list">
-          {included.map((item) => (
+          {(included ?? []).map((item) => (
             <li key={item} className="trip-description__list-item">
               ✓ {item}
             </li>
