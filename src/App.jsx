@@ -14,6 +14,7 @@ import "./styles/auth.css";
 import "./styles/dashboard.css";
 import "./styles/crud.css";
 import "./styles/admin-users.css";
+import "./styles/admin-hotels.css";
 
 function App() {
   return <AppRouter />;

@@ -15,6 +15,7 @@ import DashboardPage from "../../pages/admin/DashboardPage";
 import ReservationsPage from "../../pages/admin/ReservationsPage";
 import DestinationsPage from "../../pages/admin/DestinationsPage";
 import UsersPage from "../../pages/admin/UsersPage";
+import HotelsPage from "../../pages/admin/HotelsPage";
 
 const protect = (element, role) => (
   <ProtectedRoute role={role}>{element}</ProtectedRoute>
@@ -44,6 +45,7 @@ function AppRouter() {
           <Route path="/admin/reservations" element={protect(<ReservationsPage />, "admin")} />
           <Route path="/admin/destinations" element={protect(<DestinationsPage />, "admin")} />
           <Route path="/admin/users" element={protect(<UsersPage />, "admin")} />
+          <Route path="/admin/hotels" element={protect(<HotelsPage />, "admin")} />
         </Route>
       </Routes>
     </BrowserRouter>

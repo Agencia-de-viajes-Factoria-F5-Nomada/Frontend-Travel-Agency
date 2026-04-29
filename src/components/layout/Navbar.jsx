@@ -15,6 +15,7 @@ const PRIVATE_LINKS = [
 const ADMIN_LINKS = [
   { to: "/admin/dashboard", label: "Dashboard" },
   { to: "/admin/users", label: "Usuarios" },
+  { to: "/admin/hotels", label: "Hoteles" },
   { to: "/admin/reservations", label: "Reservas" },
   { to: "/admin/destinations", label: "Destinos" },
 ];
