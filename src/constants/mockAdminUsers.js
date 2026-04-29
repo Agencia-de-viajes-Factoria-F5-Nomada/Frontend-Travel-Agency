@@ -1,0 +1,42 @@
+export const MOCK_ADMIN_USERS = [
+  {
+    id: 1,
+    name: "Ana",
+    lastname: "García",
+    email: "ana@example.com",
+    role: "user",
+    active: true,
+  },
+  {
+    id: 2,
+    name: "Admin",
+    lastname: "Demo",
+    email: "admin@example.com",
+    role: "admin",
+    active: true,
+  },
+  {
+    id: 3,
+    name: "Carlos",
+    lastname: "López",
+    email: "carlos@example.com",
+    role: "user",
+    active: true,
+  },
+  {
+    id: 4,
+    name: "María",
+    lastname: "Ruiz",
+    email: "maria@example.com",
+    role: "user",
+    active: false,
+  },
+  {
+    id: 5,
+    name: "Pedro",
+    lastname: "Sánchez",
+    email: "pedro@example.com",
+    role: "user",
+    active: true,
+  },
+];
