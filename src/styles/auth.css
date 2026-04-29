@@ -30,23 +30,6 @@
   gap: 1rem;
 }
 
-.auth__field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-
-.auth__field label {
-  color: #555;
-  font-weight: 600;
-  font-size: 0.9rem;
-}
-
-.auth__field-error {
-  color: #b91c1c;
-  font-size: 0.85rem;
-}
-
 .auth__error {
   background: #fee2e2;
   color: #991b1b;

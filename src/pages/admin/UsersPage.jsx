@@ -13,12 +13,17 @@ function UsersPage() {
     cancelEdit,
   } = useUsersCrud();
 
+  const handleDelete = (user) => {
+    const ok = window.confirm(`¿Eliminar a ${user.name} ${user.lastname}?`);
+    if (ok) deleteUser(user.id);
+  };
+
   return (
-    <div className="admin-users">
-      <div className="admin-users__container">
-        <header className="admin-users__header">
-          <h1 className="admin-users__title">Gestión de usuarios</h1>
-          <p className="admin-users__subtitle">
+    <div className="crud-page">
+      <div className="crud-page__container">
+        <header className="crud-page__header">
+          <h1 className="crud-page__title">Gestión de usuarios</h1>
+          <p className="crud-page__subtitle">
             Crear, editar y eliminar usuarios del sistema
           </p>
         </header>
@@ -34,7 +39,7 @@ function UsersPage() {
         <UsersTable
           users={users}
           onEdit={startEdit}
-          onDelete={deleteUser}
+          onDelete={handleDelete}
         />
       </div>
     </div>

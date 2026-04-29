@@ -12,6 +12,7 @@ import "./styles/checkout.css";
 import "./styles/confirmation.css";
 import "./styles/auth.css";
 import "./styles/dashboard.css";
+import "./styles/crud.css";
 import "./styles/admin-users.css";
 
 function App() {

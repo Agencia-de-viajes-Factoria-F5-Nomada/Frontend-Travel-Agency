@@ -1,0 +1,256 @@
+/* ============================================================================
+   REUSABLE CRUD STYLES (page + form + table + field + badge)
+   Imported once globally. Resource-specific files (e.g. admin-users.css)
+   only need to add overrides on top of this.
+   ============================================================================ */
+
+/* Field (label + input + error) — shared by all forms */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.field__label {
+  color: #555;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.field__error {
+  color: #b91c1c;
+  font-size: 0.85rem;
+}
+
+/* CRUD page chrome */
+.crud-page {
+  min-height: 100vh;
+  background: #f9f9f9;
+  padding: 3rem 1rem;
+}
+
+.crud-page__container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.crud-page__header {
+  border-bottom: 2px solid #667eea;
+  padding-bottom: 1rem;
+}
+
+.crud-page__title {
+  color: #333;
+  margin-bottom: 0.25rem;
+}
+
+.crud-page__subtitle {
+  color: #666;
+  margin: 0;
+}
+
+/* CRUD form */
+.crud-form {
+  background: white;
+  border-radius: 8px;
+  padding: 1.75rem 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.crud-form__title {
+  color: #333;
+  margin-bottom: 1.25rem;
+  font-size: 1.15rem;
+}
+
+.crud-form__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.crud-form__checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #555;
+  font-weight: 600;
+  font-size: 0.9rem;
+  align-self: end;
+  cursor: pointer;
+}
+
+.crud-form__checkbox input {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: #667eea;
+}
+
+.crud-form__actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.crud-form__submit,
+.crud-form__cancel {
+  padding: 0.7rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.crud-form__submit {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.crud-form__submit:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.crud-form__cancel {
+  background: #f3f4f6;
+  color: #555;
+}
+
+.crud-form__cancel:hover {
+  background: #e5e7eb;
+}
+
+/* CRUD table */
+.crud-table-wrapper {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow-x: auto;
+}
+
+.crud-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 720px;
+}
+
+.crud-table thead {
+  background: #f9fafe;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.crud-table th {
+  padding: 1rem 1.25rem;
+  text-align: left;
+  color: #555;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.crud-table td {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid #eee;
+  color: #333;
+}
+
+.crud-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.crud-table tbody tr:hover {
+  background: #f9fafe;
+}
+
+.crud-table__actions-col {
+  white-space: nowrap;
+  text-align: right;
+}
+
+.crud-table__btn {
+  padding: 0.4rem 0.85rem;
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-left: 0.4rem;
+}
+
+.crud-table__btn--edit {
+  background: #f3f4ff;
+  color: #667eea;
+}
+
+.crud-table__btn--edit:hover {
+  background: #667eea;
+  color: white;
+}
+
+.crud-table__btn--delete {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.crud-table__btn--delete:hover {
+  background: #b91c1c;
+  color: white;
+}
+
+/* CRUD badge (status / role / etc) */
+.crud-badge {
+  display: inline-block;
+  padding: 0.2rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.crud-badge--status-active {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.crud-badge--status-inactive {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.crud-empty {
+  background: white;
+  border-radius: 8px;
+  padding: 3rem 2rem;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.crud-empty p {
+  color: #666;
+  margin: 0;
+}
+
+/* Responsive base */
+@media (max-width: 480px) {
+  .crud-page {
+    padding: 1.5rem 1rem;
+  }
+
+  .crud-form {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .crud-form__actions {
+    flex-direction: column;
+  }
+
+  .crud-form__submit,
+  .crud-form__cancel {
+    width: 100%;
+  }
+}

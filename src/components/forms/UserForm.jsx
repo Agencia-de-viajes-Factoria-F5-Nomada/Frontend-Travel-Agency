@@ -1,26 +1,13 @@
 import { useState } from "react";
+import TextField from "../common/TextField";
 
 const INITIAL = { name: "", lastname: "", email: "", role: "user", active: true };
 const EMAIL_RE = /^\S+@\S+\.\S+$/;
 const TEXT_FIELDS = [
-  ["name", "Nombre"],
-  ["lastname", "Apellido"],
-  ["email", "Email"],
+  { name: "name", label: "Nombre" },
+  { name: "lastname", label: "Apellido" },
+  { name: "email", label: "Email", type: "email" },
 ];
-
-function TextField({ name, label, value, error, onChange }) {
-  return (
-    <div className="user-form__field">
-      <label htmlFor={`user-${name}`}>{label}</label>
-      <input
-        id={`user-${name}`}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-      />
-      {error && <span className="user-form__error">{error}</span>}
-    </div>
-  );
-}
 
 function UserForm({ editingUser, onCreate, onUpdate, onCancel }) {
   const [form, setForm] = useState(editingUser ?? INITIAL);
@@ -63,36 +50,48 @@ function UserForm({ editingUser, onCreate, onUpdate, onCancel }) {
   };
 
   return (
-    <form className="user-form" onSubmit={handleSubmit} noValidate>
-      <h2 className="user-form__title">
+    <form className="crud-form" onSubmit={handleSubmit} noValidate>
+      <h2 className="crud-form__title">
         {editingUser ? "Editar usuario" : "Crear usuario"}
       </h2>
-      <div className="user-form__grid">
-        {TEXT_FIELDS.map(([name, label]) => (
-          <TextField key={name} name={name} label={label}
-            value={form[name]} error={errors[name]}
-            onChange={(v) => updateField(name, v)} />
+      <div className="crud-form__grid">
+        {TEXT_FIELDS.map((f) => (
+          <TextField
+            key={f.name}
+            name={f.name}
+            label={f.label}
+            type={f.type}
+            value={form[f.name]}
+            error={errors[f.name]}
+            onChange={(v) => updateField(f.name, v)}
+          />
         ))}
-        <div className="user-form__field">
-          <label htmlFor="user-role">Rol</label>
-          <select id="user-role" value={form.role}
-            onChange={(e) => updateField("role", e.target.value)}>
+        <div className="field">
+          <label htmlFor="field-role" className="field__label">Rol</label>
+          <select
+            id="field-role"
+            value={form.role}
+            onChange={(e) => updateField("role", e.target.value)}
+          >
             <option value="user">Usuario</option>
             <option value="admin">Administrador</option>
           </select>
         </div>
-        <label className="user-form__checkbox">
-          <input type="checkbox" checked={form.active}
-            onChange={(e) => updateField("active", e.target.checked)} />
+        <label className="crud-form__checkbox">
+          <input
+            type="checkbox"
+            checked={form.active}
+            onChange={(e) => updateField("active", e.target.checked)}
+          />
           Usuario activo
         </label>
       </div>
-      <div className="user-form__actions">
-        <button type="submit" className="user-form__submit">
+      <div className="crud-form__actions">
+        <button type="submit" className="crud-form__submit">
           {editingUser ? "Guardar cambios" : "Crear usuario"}
         </button>
         {editingUser && (
-          <button type="button" className="user-form__cancel" onClick={onCancel}>
+          <button type="button" className="crud-form__cancel" onClick={onCancel}>
             Cancelar
           </button>
         )}

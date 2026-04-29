@@ -1,4 +1,5 @@
 import { useRegisterForm } from "../../hooks/useRegisterForm";
+import TextField from "../common/TextField";
 
 const FIELDS = [
   { name: "name", label: "Nombre", type: "text", autoComplete: "given-name" },
@@ -13,19 +14,16 @@ function RegisterForm() {
   return (
     <form className="auth__form" onSubmit={submit} noValidate>
       {FIELDS.map((f) => (
-        <div className="auth__field" key={f.name}>
-          <label htmlFor={`register-${f.name}`}>{f.label}</label>
-          <input
-            id={`register-${f.name}`}
-            type={f.type}
-            value={form[f.name]}
-            onChange={(e) => updateField(f.name, e.target.value)}
-            autoComplete={f.autoComplete}
-          />
-          {errors[f.name] && (
-            <span className="auth__field-error">{errors[f.name]}</span>
-          )}
-        </div>
+        <TextField
+          key={f.name}
+          name={f.name}
+          label={f.label}
+          type={f.type}
+          autoComplete={f.autoComplete}
+          value={form[f.name]}
+          error={errors[f.name]}
+          onChange={(v) => updateField(f.name, v)}
+        />
       ))}
       {errors.global && <p className="auth__error">{errors.global}</p>}
       <button type="submit" className="auth__button">
