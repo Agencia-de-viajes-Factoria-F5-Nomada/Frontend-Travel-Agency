@@ -1,0 +1,9 @@
+/* Admin Buses — resource-specific overrides on top of crud.css */
+
+.buses-table__thumb {
+  width: 60px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 4px;
+  display: block;
+}
