@@ -17,6 +17,7 @@ const ADMIN_LINKS = [
   { to: "/admin/users", label: "Usuarios" },
   { to: "/admin/hotels", label: "Hoteles" },
   { to: "/admin/buses", label: "Autobuses" },
+  { to: "/admin/drivers", label: "Conductores" },
   { to: "/admin/reservations", label: "Reservas" },
   { to: "/admin/destinations", label: "Destinos" },
 ];

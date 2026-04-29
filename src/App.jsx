@@ -16,6 +16,7 @@ import "./styles/crud.css";
 import "./styles/admin-users.css";
 import "./styles/admin-hotels.css";
 import "./styles/admin-buses.css";
+import "./styles/admin-drivers.css";
 
 function App() {
   return <AppRouter />;
