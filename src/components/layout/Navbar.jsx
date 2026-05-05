@@ -2,33 +2,23 @@ import { NavLink } from "react-router-dom";
 import { useAuth } from "../../context/useAuth";
 
 const PUBLIC_LINKS = [
-  { to: "/", label: "Home", end: true },
-  { to: "/trips", label: "Trips" },
-  { to: "/contact", label: "Contact" },
+  { to: "/", label: "Inicio", end: true },
+  { to: "/trips", label: "Viajes" },
+  { to: "/contact", label: "Contacto" },
 ];
 
 const PRIVATE_LINKS = [
-  { to: "/profile", label: "Profile" },
-  { to: "/favorites", label: "Favorites" },
-];
-
-const ADMIN_LINKS = [
-  { to: "/admin/dashboard", label: "Dashboard" },
-  { to: "/admin/users", label: "Usuarios" },
-  { to: "/admin/hotels", label: "Hoteles" },
-  { to: "/admin/buses", label: "Autobuses" },
-  { to: "/admin/drivers", label: "Conductores" },
-  { to: "/admin/reservations", label: "Reservas" },
-  { to: "/admin/destinations", label: "Destinos" },
+  { to: "/profile", label: "Perfil" },
+  { to: "/favorites", label: "Favoritos" },
 ];
 
 const activeStyle = ({ isActive }) =>
-  isActive ? { fontWeight: 700, textDecoration: "underline" } : undefined;
+  isActive ? "navbar__link navbar__link--active" : "navbar__link";
 
 function NavItem({ to, label, end }) {
   return (
-    <li>
-      <NavLink to={to} end={end} style={activeStyle}>
+    <li className="navbar__item">
+      <NavLink to={to} end={end} className={activeStyle}>
         {label}
       </NavLink>
     </li>
@@ -40,16 +30,25 @@ function Navbar() {
   const isAdmin = user?.role === "admin";
 
   return (
-    <nav>
-      <h2>Frontend Travel Agency</h2>
-      <ul>
+    <nav className="navbar">
+      <NavLink to="/" className="navbar__brand">
+        <span className="navbar__mark">TA</span>
+        <span className="navbar__brand-text">Travel Agency</span>
+      </NavLink>
+      <ul className="navbar__links">
         {PUBLIC_LINKS.map((l) => (
           <NavItem key={l.to} {...l} />
         ))}
+      </ul>
+      <ul className="navbar__actions">
         {!user && (
           <>
             <NavItem to="/login" label="Login" />
-            <NavItem to="/register" label="Register" />
+            <li className="navbar__item">
+              <NavLink to="/register" className="navbar__button-link">
+                Registro
+              </NavLink>
+            </li>
           </>
         )}
         {user && (
@@ -57,11 +56,10 @@ function Navbar() {
             {PRIVATE_LINKS.map((l) => (
               <NavItem key={l.to} {...l} />
             ))}
-            {isAdmin &&
-              ADMIN_LINKS.map((l) => <NavItem key={l.to} {...l} />)}
-            <li>
+            {isAdmin && <NavItem to="/admin/dashboard" label="Admin" />}
+            <li className="navbar__item">
               <button type="button" className="navbar__logout" onClick={logout}>
-                Logout
+                Salir
               </button>
             </li>
           </>
