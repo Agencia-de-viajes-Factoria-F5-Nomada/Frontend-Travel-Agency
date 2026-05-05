@@ -1,5 +1,5 @@
-import Button from '../../components/ui/Button'
-import { PUBLIC_PATHS } from '../../constants/paths'
+import Button from '../components/ui/Button'
+import { PUBLIC_PATHS } from '../constants/paths'
 
 const NotFoundPage = () => (
   <div className="container-page grid place-items-center py-24 text-center">

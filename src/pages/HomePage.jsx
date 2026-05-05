@@ -1,9 +1,9 @@
 import { ArrowRight, Calendar, MapPin, Search, Users } from 'lucide-react'
-import Button from '../../components/ui/Button'
-import Card from '../../components/ui/Card'
-import DestinationCard from '../../components/common/DestinationCard'
-import { FEATURED_DESTINATIONS } from '../../constants/mockData'
-import { PUBLIC_PATHS } from '../../constants/paths'
+import Button from '../components/ui/Button'
+import Card from '../components/ui/Card'
+import DestinationCard from '../components/common/DestinationCard'
+import { FEATURED_DESTINATIONS } from '../constants/mockData'
+import { PUBLIC_PATHS } from '../constants/paths'
 
 const HomePage = () => (
   <>
@@ -19,7 +19,7 @@ const HomePage = () => (
           </span>
           <h1 className="text-4xl font-semibold leading-tight text-white md:text-6xl">
             Planifica viajes inolvidables con
-            <span className="text-brand-400"> Agencia de Viajes</span>
+            <span className="text-brand-400"> Nomada</span>
           </h1>
           <p className="max-w-xl text-base text-ink-muted md:text-lg">
             Descubre experiencias a medida por todo el mundo. Desde playas
@@ -31,8 +31,8 @@ const HomePage = () => (
               Explorar destinos
               <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Button>
-            <Button to={PUBLIC_PATHS.CONTACT} size="lg" variant="secondary">
-              Hablar con un experto
+            <Button to={PUBLIC_PATHS.OFFERS} size="lg" variant="secondary">
+              Ver ofertas
             </Button>
           </div>
         </div>

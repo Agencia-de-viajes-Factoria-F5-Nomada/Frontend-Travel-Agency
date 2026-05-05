@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { LogIn, UserPlus } from 'lucide-react'
-import Button from '../../components/ui/Button'
-import Card from '../../components/ui/Card'
-import Input from '../../components/ui/Input'
-import { classNames } from '../../utils/classNames'
+import Button from '../components/ui/Button'
+import Card from '../components/ui/Card'
+import Input from '../components/ui/Input'
+import { classNames } from '../utils/classNames'
 
 const TABS = [
   { id: 'signin', label: 'Iniciar sesión', icon: LogIn },

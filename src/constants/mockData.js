@@ -4,6 +4,8 @@ export const FEATURED_DESTINATIONS = [
     name: 'Bali',
     country: 'Indonesia',
     price: 1280,
+    oldPrice: 1599,
+    discount: 20,
     rating: 4.8,
     image:
       'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1200&q=70',
@@ -24,6 +26,8 @@ export const FEATURED_DESTINATIONS = [
     name: 'Santorini',
     country: 'Grecia',
     price: 1495,
+    oldPrice: 1795,
+    discount: 17,
     rating: 4.7,
     image:
       'https://images.unsplash.com/photo-1505761671935-60b3a7427bad?auto=format&fit=crop&w=1200&q=70',
@@ -44,6 +48,8 @@ export const FEATURED_DESTINATIONS = [
     name: 'Marrakech',
     country: 'Marruecos',
     price: 980,
+    oldPrice: 1225,
+    discount: 20,
     rating: 4.6,
     image:
       'https://images.unsplash.com/photo-1539635278303-d4002c07eae3?auto=format&fit=crop&w=1200&q=70',

@@ -1,11 +1,11 @@
 import { Mail, MapPin, Plane, User } from 'lucide-react'
-import Button from '../../components/ui/Button'
-import Card from '../../components/ui/Card'
-import PageHeader from '../../components/ui/PageHeader'
-import StatusPill from '../../components/common/StatusPill'
-import { BOOKINGS } from '../../constants/mockData'
-import { PUBLIC_PATHS } from '../../constants/paths'
-import { formatCurrency } from '../../utils/formatters'
+import Button from '../components/ui/Button'
+import Card from '../components/ui/Card'
+import PageHeader from '../components/ui/PageHeader'
+import StatusPill from '../components/common/StatusPill'
+import { BOOKINGS } from '../constants/mockData'
+import { PUBLIC_PATHS } from '../constants/paths'
+import { formatCurrency } from '../utils/formatters'
 
 const ProfilePage = () => (
   <div className="container-page py-12">

@@ -1,10 +1,10 @@
 import { Plus, Search, UserPlus } from 'lucide-react'
-import Button from '../../components/ui/Button'
-import Card from '../../components/ui/Card'
-import PageHeader from '../../components/ui/PageHeader'
-import StatusPill from '../../components/common/StatusPill'
-import Badge from '../../components/ui/Badge'
-import { USERS } from '../../constants/mockData'
+import Button from '../components/ui/Button'
+import Card from '../components/ui/Card'
+import PageHeader from '../components/ui/PageHeader'
+import StatusPill from '../components/common/StatusPill'
+import Badge from '../components/ui/Badge'
+import { USERS } from '../constants/mockData'
 
 const UsersPage = () => (
   <>

@@ -1,12 +1,12 @@
 import { CalendarRange, MapPinned, Ticket, Users } from 'lucide-react'
-import Button from '../../components/ui/Button'
-import Card from '../../components/ui/Card'
-import PageHeader from '../../components/ui/PageHeader'
-import StatCard from '../../components/common/StatCard'
-import StatusPill from '../../components/common/StatusPill'
-import { ADMIN_PATHS } from '../../constants/paths'
-import { BOOKINGS } from '../../constants/mockData'
-import { formatCurrency } from '../../utils/formatters'
+import Button from '../components/ui/Button'
+import Card from '../components/ui/Card'
+import PageHeader from '../components/ui/PageHeader'
+import StatCard from '../components/common/StatCard'
+import StatusPill from '../components/common/StatusPill'
+import { ADMIN_PATHS } from '../constants/paths'
+import { BOOKINGS } from '../constants/mockData'
+import { formatCurrency } from '../utils/formatters'
 
 const STATS = [
   { label: 'Reservas activas', value: '128', delta: '+12% vs mes anterior', icon: Ticket },

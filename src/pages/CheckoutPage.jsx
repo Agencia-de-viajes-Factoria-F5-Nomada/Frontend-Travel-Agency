@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { ArrowLeft, ArrowRight, Check } from 'lucide-react'
-import Button from '../../components/ui/Button'
-import Card from '../../components/ui/Card'
-import Input from '../../components/ui/Input'
-import PageHeader from '../../components/ui/PageHeader'
-import { CHECKOUT_STEPS } from '../../constants/mockData'
-import { PUBLIC_PATHS } from '../../constants/paths'
-import { classNames } from '../../utils/classNames'
+import Button from '../components/ui/Button'
+import Card from '../components/ui/Card'
+import Input from '../components/ui/Input'
+import PageHeader from '../components/ui/PageHeader'
+import { CHECKOUT_STEPS } from '../constants/mockData'
+import { PUBLIC_PATHS } from '../constants/paths'
+import { classNames } from '../utils/classNames'
 
 const Stepper = ({ currentStep }) => (
   <ol className="flex flex-wrap items-center gap-3" aria-label="Progreso de la reserva">

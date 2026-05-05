@@ -1,9 +1,9 @@
 import { SlidersHorizontal } from 'lucide-react'
-import Button from '../../components/ui/Button'
-import Card from '../../components/ui/Card'
-import DestinationCard from '../../components/common/DestinationCard'
-import PageHeader from '../../components/ui/PageHeader'
-import { FEATURED_DESTINATIONS } from '../../constants/mockData'
+import Button from '../components/ui/Button'
+import Card from '../components/ui/Card'
+import DestinationCard from '../components/common/DestinationCard'
+import PageHeader from '../components/ui/PageHeader'
+import { FEATURED_DESTINATIONS } from '../constants/mockData'
 
 const FILTERS = [
   { label: 'Playa', count: 24 },

@@ -3,8 +3,7 @@ import { NavLink } from 'react-router-dom'
 import { Menu, X } from 'lucide-react'
 import BrandMark from './BrandMark'
 import Button from '../ui/Button'
-import { PUBLIC_NAV, PUBLIC_USER_NAV } from '../../constants/navigation'
-import { PUBLIC_PATHS } from '../../constants/paths'
+import { PUBLIC_NAV } from '../../constants/navigation'
 import { classNames } from '../../utils/classNames'
 
 const linkBase =
@@ -35,15 +34,6 @@ const PublicTopbar = () => {
           ))}
         </nav>
 
-        <div className="hidden items-center gap-2 md:flex">
-          <Button variant="ghost" size="sm" to={PUBLIC_PATHS.PROFILE}>
-            Mi perfil
-          </Button>
-          <Button size="sm" to={PUBLIC_PATHS.AUTH}>
-            Iniciar sesión
-          </Button>
-        </div>
-
         <Button
           variant="ghost"
           size="icon"
@@ -67,11 +57,11 @@ const PublicTopbar = () => {
           className="border-t border-surface-700 bg-surface-950 md:hidden"
         >
           <nav aria-label="Principal móvil" className="container-page flex flex-col gap-1 py-4">
-            {[...PUBLIC_NAV, ...PUBLIC_USER_NAV].map((item) => (
+            {PUBLIC_NAV.map((item) => (
               <NavLink
                 key={item.to}
                 to={item.to}
-                end={item.end}
+                end
                 className={buildLinkClass}
                 onClick={() => setOpen(false)}
               >

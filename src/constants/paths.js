@@ -4,9 +4,8 @@ export const PUBLIC_PATHS = {
   DESTINATION: '/destinations/:id',
   CHECKOUT: '/checkout',
   PROFILE: '/profile',
-  FAVORITES: '/favorites',
+  OFFERS: '/offers',
   AUTH: '/auth',
-  CONTACT: '/contact',
 }
 
 export const ADMIN_PATHS = {

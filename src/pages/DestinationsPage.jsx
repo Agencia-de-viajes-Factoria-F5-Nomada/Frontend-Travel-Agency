@@ -1,10 +1,10 @@
 import { Pencil, Plus, Trash2 } from 'lucide-react'
-import Button from '../../components/ui/Button'
-import Card from '../../components/ui/Card'
-import PageHeader from '../../components/ui/PageHeader'
-import Badge from '../../components/ui/Badge'
-import { FEATURED_DESTINATIONS } from '../../constants/mockData'
-import { formatCurrency } from '../../utils/formatters'
+import Button from '../components/ui/Button'
+import Card from '../components/ui/Card'
+import PageHeader from '../components/ui/PageHeader'
+import Badge from '../components/ui/Badge'
+import { FEATURED_DESTINATIONS } from '../constants/mockData'
+import { formatCurrency } from '../utils/formatters'
 
 const DestinationsPage = () => (
   <>

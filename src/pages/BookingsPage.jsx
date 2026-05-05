@@ -1,10 +1,10 @@
 import { Download, Filter, Plus, Search } from 'lucide-react'
-import Button from '../../components/ui/Button'
-import Card from '../../components/ui/Card'
-import PageHeader from '../../components/ui/PageHeader'
-import StatusPill from '../../components/common/StatusPill'
-import { BOOKINGS } from '../../constants/mockData'
-import { formatCurrency } from '../../utils/formatters'
+import Button from '../components/ui/Button'
+import Card from '../components/ui/Card'
+import PageHeader from '../components/ui/PageHeader'
+import StatusPill from '../components/common/StatusPill'
+import { BOOKINGS } from '../constants/mockData'
+import { formatCurrency } from '../utils/formatters'
 
 const BookingsPage = () => (
   <>

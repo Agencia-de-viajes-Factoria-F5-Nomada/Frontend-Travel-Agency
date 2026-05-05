@@ -1,11 +1,11 @@
 import { useParams } from 'react-router-dom'
 import { ArrowLeft, Calendar, Clock, Heart, MapPin, Star } from 'lucide-react'
-import Button from '../../components/ui/Button'
-import Card from '../../components/ui/Card'
-import Badge from '../../components/ui/Badge'
-import { FEATURED_DESTINATIONS } from '../../constants/mockData'
-import { PUBLIC_PATHS } from '../../constants/paths'
-import { formatCurrency } from '../../utils/formatters'
+import Button from '../components/ui/Button'
+import Card from '../components/ui/Card'
+import Badge from '../components/ui/Badge'
+import { FEATURED_DESTINATIONS } from '../constants/mockData'
+import { PUBLIC_PATHS } from '../constants/paths'
+import { formatCurrency } from '../utils/formatters'
 
 const FALLBACK = FEATURED_DESTINATIONS[0]
 
@@ -33,7 +33,7 @@ const DestinationDetailPage = () => {
           <img
             src={destination.image}
             alt={`${destination.name}, ${destination.country}`}
-            className="h-[420px] w-full object-cover"
+            className="aspect-[4/3] h-full w-full object-cover"
           />
         </div>
 
@@ -83,27 +83,24 @@ const DestinationDetailPage = () => {
               Guardar para más tarde
             </Button>
           </div>
-
-          <div>
-            <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-muted">
-              Lo más destacado del viaje
-            </h2>
-            <ul className="mt-3 grid gap-2 text-sm text-ink-soft">
-              {HIGHLIGHTS.map((item) => (
-                <li key={item} className="flex items-center gap-2">
-                  <span
-                    aria-hidden="true"
-                    className="h-1.5 w-1.5 rounded-full bg-brand-400"
-                  />
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
         </Card>
       </div>
 
-      <section className="mt-12 grid gap-6 lg:grid-cols-2">
+      <section className="mt-12 grid gap-6 lg:grid-cols-3">
+        <Card className="p-6">
+          <h2 className="text-xl font-semibold text-white">Lo más destacado</h2>
+          <ul className="mt-4 grid gap-2 text-sm text-ink-soft">
+            {HIGHLIGHTS.map((item) => (
+              <li key={item} className="flex items-center gap-2">
+                <span
+                  aria-hidden="true"
+                  className="h-1.5 w-1.5 rounded-full bg-brand-400"
+                />
+                {item}
+              </li>
+            ))}
+          </ul>
+        </Card>
         <Card className="p-6">
           <h2 className="text-xl font-semibold text-white">Sobre el destino</h2>
           <p className="mt-3 text-sm leading-relaxed text-ink-muted">
