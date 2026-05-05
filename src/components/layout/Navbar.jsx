@@ -3,8 +3,10 @@ import { useAuth } from "../../context/useAuth";
 
 const PUBLIC_LINKS = [
   { to: "/", label: "Inicio", end: true },
-  { to: "/trips", label: "Viajes" },
-  { to: "/contact", label: "Contacto" },
+  { to: "/destinations", label: "Destinos" },
+  { to: "/offers", label: "Ofertas" },
+  { to: "/experiences", label: "Experiencias" },
+  { to: "/about", label: "Nosotros" },
 ];
 
 const PRIVATE_LINKS = [

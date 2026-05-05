@@ -5,12 +5,13 @@ import Footer from "./Footer";
 
 const ADMIN_LINKS = [
   { to: "/admin/dashboard", label: "Dashboard" },
-  { to: "/admin/users", label: "Usuarios" },
-  { to: "/admin/hotels", label: "Hoteles" },
-  { to: "/admin/buses", label: "Autobuses" },
-  { to: "/admin/drivers", label: "Conductores" },
   { to: "/admin/reservations", label: "Reservas" },
   { to: "/admin/destinations", label: "Destinos" },
+  { to: "/admin/users", label: "Usuarios" },
+  { to: "/admin/offers", label: "Ofertas" },
+  { to: "/admin/experiences", label: "Experiencias" },
+  { to: "/admin/reviews", label: "Resenas" },
+  { to: "/admin/settings", label: "Configuracion" },
 ];
 
 const navClass = ({ isActive }) =>
