@@ -1,8 +1,8 @@
 /* Admin Drivers — resource-specific overrides on top of crud.css */
 
 .crud-badge--available-yes {
-  background: #dbeafe;
-  color: #1e40af;
+  background: #e7eef0;
+  color: #485f6a;
 }
 
 .crud-badge--available-no {

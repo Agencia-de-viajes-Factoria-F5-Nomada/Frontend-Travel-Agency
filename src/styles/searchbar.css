@@ -37,7 +37,7 @@
 }
 
 .search-bar__button {
-  background-color: #667eea;
+  background-color: #6e8669;
   color: white;
   padding: 0.75rem 2rem;
   font-weight: 600;
@@ -47,7 +47,7 @@
 }
 
 .search-bar__button:hover {
-  background-color: #764ba2;
+  background-color: #485f6a;
 }
 
 /* Responsive */

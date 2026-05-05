@@ -39,7 +39,7 @@
 
 .trip-hero__badge {
   display: inline-block;
-  background: #667eea;
+  background: #6e8669;
   color: white;
   padding: 0.25rem 0.75rem;
   border-radius: 999px;
@@ -120,7 +120,7 @@
 }
 
 .trip-description__value {
-  color: #667eea;
+  color: #6e8669;
   font-weight: 700;
 }
 
@@ -151,7 +151,7 @@
   height: 32px;
   border: none;
   background: white;
-  color: #667eea;
+  color: #6e8669;
   border-radius: 4px;
   font-size: 1.2rem;
   cursor: pointer;
@@ -160,7 +160,7 @@
 }
 
 .counter__button:hover {
-  background: #667eea;
+  background: #6e8669;
   color: white;
 }
 
@@ -190,7 +190,7 @@
 
 .pricing-card__header {
   margin-bottom: 1.5rem;
-  border-bottom: 2px solid #667eea;
+  border-bottom: 2px solid #6e8669;
   padding-bottom: 1rem;
 }
 
@@ -229,13 +229,13 @@
 .pricing-card__amount {
   font-size: 1.75rem;
   font-weight: 700;
-  color: #667eea;
+  color: #6e8669;
 }
 
 .pricing-card__button {
   width: 100%;
   padding: 1rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #6e8669 0%, #485f6a 100%);
   color: white;
   border: none;
   border-radius: 4px;
@@ -247,7 +247,7 @@
 
 .pricing-card__button:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 12px rgba(72, 95, 106, 0.24);
 }
 
 .pricing-card__button:disabled {
@@ -275,7 +275,7 @@
 
 .trip-detail__error button {
   padding: 0.75rem 2rem;
-  background: #667eea;
+  background: #6e8669;
   color: white;
   border: none;
   border-radius: 4px;
@@ -285,7 +285,7 @@
 }
 
 .trip-detail__error button:hover {
-  background: #764ba2;
+  background: #485f6a;
 }
 
 /* Responsive */

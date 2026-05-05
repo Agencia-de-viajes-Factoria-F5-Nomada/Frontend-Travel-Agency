@@ -17,7 +17,7 @@
 .confirmation__button {
   width: 100%;
   padding: 1rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #6e8669 0%, #485f6a 100%);
   color: white;
   border: none;
   border-radius: 4px;
@@ -29,7 +29,7 @@
 
 .confirmation__button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 12px rgba(72, 95, 106, 0.24);
 }
 
 /* Reservation Card */
@@ -71,8 +71,8 @@
 }
 
 .reservation-card__code {
-  background: #f3f4ff;
-  border: 1px dashed #667eea;
+  background: #e8eee8;
+  border: 1px dashed #6e8669;
   border-radius: 6px;
   padding: 1rem;
   text-align: center;
@@ -91,7 +91,7 @@
 }
 
 .reservation-card__code-value {
-  color: #667eea;
+  color: #6e8669;
   font-size: 1.5rem;
   font-weight: 700;
   font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
@@ -135,7 +135,7 @@
 }
 
 .reservation-card__row--total dd {
-  color: #667eea;
+  color: #6e8669;
   font-size: 1.25rem;
 }
 
@@ -162,9 +162,9 @@
 }
 
 .reservation-card__traveler-type {
-  color: #667eea;
+  color: #6e8669;
   font-size: 0.8rem;
-  background: #f3f4ff;
+  background: #e8eee8;
   padding: 0.2rem 0.6rem;
   border-radius: 999px;
   font-weight: 600;

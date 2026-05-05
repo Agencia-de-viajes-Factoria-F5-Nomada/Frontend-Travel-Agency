@@ -74,7 +74,7 @@
 .destination-card__price {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #667eea;
+  color: #6e8669;
 }
 
 .destination-card__rating {
@@ -84,7 +84,7 @@
 
 .destination-card__link {
   display: inline-block;
-  background-color: #667eea;
+  background-color: #6e8669;
   color: white;
   padding: 0.5rem 1rem;
   border-radius: 4px;
@@ -94,7 +94,7 @@
 }
 
 .destination-card__link:hover {
-  background-color: #764ba2;
+  background-color: #485f6a;
 }
 
 /* Offer Card */
@@ -134,7 +134,7 @@
 
 .offer-card__link {
   display: inline-block;
-  background-color: #667eea;
+  background-color: #6e8669;
   color: white;
   padding: 0.5rem 1rem;
   border-radius: 4px;
@@ -144,7 +144,7 @@
 }
 
 .offer-card__link:hover {
-  background-color: #764ba2;
+  background-color: #485f6a;
 }
 
 /* Trip Card */
@@ -179,8 +179,8 @@
 }
 
 .trip-card__pension {
-  background-color: #e0e7ff;
-  color: #667eea;
+  background-color: #e8eee8;
+  color: #6e8669;
   padding: 0.25rem 0.75rem;
   border-radius: 4px;
   font-size: 0.85rem;
@@ -201,11 +201,11 @@
 .trip-card__price {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #667eea;
+  color: #6e8669;
 }
 
 .trip-card__link {
-  background-color: #667eea;
+  background-color: #6e8669;
   color: white;
   padding: 0.5rem 1rem;
   border-radius: 4px;
@@ -215,7 +215,7 @@
 }
 
 .trip-card__link:hover {
-  background-color: #764ba2;
+  background-color: #485f6a;
 }
 
 /* Responsive */

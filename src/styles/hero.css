@@ -1,6 +1,6 @@
 /* Hero Section */
 .hero {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #6e8669 0%, #485f6a 100%);
   color: white;
   padding: 6rem 2rem;
   text-align: center;
@@ -27,7 +27,7 @@
 .hero__cta {
   display: inline-block;
   background-color: white;
-  color: #667eea;
+  color: #6e8669;
   padding: 0.75rem 2rem;
   border-radius: 4px;
   font-weight: 600;
@@ -42,7 +42,7 @@
 
 /* Trips Header */
 .trips-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #6e8669 0%, #485f6a 100%);
   color: white;
   padding: 3rem 2rem;
   text-align: center;

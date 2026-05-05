@@ -38,7 +38,7 @@
 }
 
 .crud-page__header {
-  border-bottom: 2px solid #667eea;
+  border-bottom: 2px solid #6e8669;
   padding-bottom: 1rem;
 }
 
@@ -88,7 +88,7 @@
   width: 16px;
   height: 16px;
   cursor: pointer;
-  accent-color: #667eea;
+  accent-color: #6e8669;
 }
 
 .crud-form__actions {
@@ -107,13 +107,13 @@
 }
 
 .crud-form__submit {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #6e8669 0%, #485f6a 100%);
   color: white;
 }
 
 .crud-form__submit:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 12px rgba(72, 95, 106, 0.24);
 }
 
 .crud-form__cancel {
@@ -183,12 +183,12 @@
 }
 
 .crud-table__btn--edit {
-  background: #f3f4ff;
-  color: #667eea;
+  background: #e8eee8;
+  color: #6e8669;
 }
 
 .crud-table__btn--edit:hover {
-  background: #667eea;
+  background: #6e8669;
   color: white;
 }
 
