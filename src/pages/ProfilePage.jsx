@@ -2,7 +2,6 @@ import { Mail, MapPin, Plane, User } from 'lucide-react'
 import Button from '../components/ui/Button'
 import Card from '../components/ui/Card'
 import PageHeader from '../components/ui/PageHeader'
-import StatusPill from '../components/common/StatusPill'
 import { BOOKINGS } from '../constants/mockData'
 import { PUBLIC_PATHS } from '../constants/paths'
 import { formatCurrency } from '../utils/formatters'
@@ -14,9 +13,15 @@ const ProfilePage = () => (
       title="Bienvenida de nuevo, Marta"
       description="Gestiona tus viajes, datos personales y preferencias."
       actions={
-        <Button variant="secondary" to={PUBLIC_PATHS.AUTH}>
-          Cerrar sesión
-        </Button>
+        <div className="flex gap-3">
+          <Button variant="ghost" to={PUBLIC_PATHS.SEARCH} size="sm">
+            <Plane className="h-4 w-4" aria-hidden="true" />
+            Planificar un nuevo viaje
+          </Button>
+          <Button variant="secondary" to={PUBLIC_PATHS.AUTH}>
+            Cerrar sesión
+          </Button>
+        </div>
       }
     />
 
@@ -54,34 +59,31 @@ const ProfilePage = () => (
         <Card className="p-6">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-semibold text-white">Mis reservas</h2>
-            <Button variant="ghost" to={PUBLIC_PATHS.SEARCH} size="sm">
-              <Plane className="h-4 w-4" aria-hidden="true" />
-              Planificar un nuevo viaje
-            </Button>
           </div>
 
           <div className="mt-6 overflow-x-auto">
             <table className="w-full min-w-[640px] text-left text-sm">
               <thead className="text-xs uppercase tracking-wide text-ink-muted">
                 <tr>
-                  <th scope="col" className="py-3">Referencia</th>
-                  <th scope="col" className="py-3">Destino</th>
-                  <th scope="col" className="py-3">Fechas</th>
-                  <th scope="col" className="py-3">Total</th>
-                  <th scope="col" className="py-3">Estado</th>
+                  <th scope="col" className="py-3">Nombre</th>
+                  <th scope="col" className="py-3">DNI</th>
+                  <th scope="col" className="py-3">Datos de Contacto</th>
+                  <th scope="col" className="py-3">Señal Pagada</th>
                   <th scope="col" className="py-3"></th>
                 </tr>
               </thead>
               <tbody>
                 {BOOKINGS.map((booking) => (
                   <tr key={booking.id} className="border-t border-surface-700 text-ink-soft">
-                    <td className="py-4 font-medium text-white">{booking.id}</td>
-                    <td className="py-4">{booking.destination}</td>
-                    <td className="py-4">{booking.dates}</td>
-                    <td className="py-4">{formatCurrency(booking.total)}</td>
+                    <td className="py-4 font-medium text-white">{booking.name}</td>
+                    <td className="py-4">{booking.dni}</td>
                     <td className="py-4">
-                      <StatusPill status={booking.status} />
+                      <div className="text-sm">
+                        <div>{booking.email}</div>
+                        <div>{booking.phone}</div>
+                      </div>
                     </td>
+                    <td className="py-4">{formatCurrency(booking.signalPaid)}</td>
                     <td className="py-4 text-right">
                       <Button variant="ghost" size="sm">
                         Ver
