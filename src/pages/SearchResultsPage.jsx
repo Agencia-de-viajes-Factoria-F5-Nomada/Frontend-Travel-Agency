@@ -3,7 +3,7 @@ import Button from '../components/ui/Button'
 import Card from '../components/ui/Card'
 import DestinationCard from '../components/common/DestinationCard'
 import PageHeader from '../components/ui/PageHeader'
-import { FEATURED_DESTINATIONS } from '../constants/mockData'
+import { FEATURED_DESTINATIONS, BUSES, DRIVERS } from '../constants/mockData'
 
 const FILTERS = [
   { label: 'Playa', count: 24 },
@@ -33,24 +33,81 @@ const SearchResultsPage = () => (
         <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-muted">
           Filtros
         </h2>
-        <div className="mt-4 flex flex-col gap-2">
-          {FILTERS.map((filter) => (
-            <label
-              key={filter.label}
-              className="flex items-center justify-between rounded-lg px-2 py-2 text-sm text-ink-soft hover:bg-surface-700"
-            >
-              <span className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  className="h-4 w-4 rounded border-surface-600 bg-surface-900 text-brand-500 focus:ring-brand-500"
-                />
-                {filter.label}
-              </span>
-              <span className="text-xs text-ink-muted">{filter.count}</span>
-            </label>
-          ))}
+        
+        {/* Filtros de tipo de destino */}
+        <div className="mt-4">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-ink-muted">
+            Tipo de destino
+          </p>
+          <div className="flex flex-col gap-2">
+            {FILTERS.map((filter) => (
+              <label
+                key={filter.label}
+                className="flex items-center justify-between rounded-lg px-2 py-2 text-sm text-ink-soft hover:bg-surface-700"
+              >
+                <span className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    className="h-4 w-4 rounded border-surface-600 bg-surface-900 text-brand-500 focus:ring-brand-500"
+                  />
+                  {filter.label}
+                </span>
+                <span className="text-xs text-ink-muted">{filter.count}</span>
+              </label>
+            ))}
+          </div>
         </div>
-        <div className="mt-6">
+
+        {/* Filtros de autobuses */}
+        <div className="mt-6 border-t border-surface-700 pt-6">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-ink-muted">
+            Autobús disponible
+          </p>
+          <div className="flex flex-col gap-2">
+            {BUSES.map((bus) => (
+              <label
+                key={bus.id}
+                className="flex flex-col rounded-lg px-2 py-2 text-sm text-ink-soft hover:bg-surface-700"
+              >
+                <span className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    className="h-4 w-4 rounded border-surface-600 bg-surface-900 text-brand-500 focus:ring-brand-500"
+                  />
+                  <span className="font-medium">{bus.name}</span>
+                </span>
+                <span className="ml-6 text-xs text-ink-muted">{bus.seats} asientos · {bus.amenities}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        {/* Filtros de conductores */}
+        <div className="mt-6 border-t border-surface-700 pt-6">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-ink-muted">
+            Conductor disponible
+          </p>
+          <div className="flex flex-col gap-2">
+            {DRIVERS.map((driver) => (
+              <label
+                key={driver.id}
+                className="flex flex-col rounded-lg px-2 py-2 text-sm text-ink-soft hover:bg-surface-700"
+              >
+                <span className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    className="h-4 w-4 rounded border-surface-600 bg-surface-900 text-brand-500 focus:ring-brand-500"
+                  />
+                  <span className="font-medium">{driver.name}</span>
+                </span>
+                <span className="ml-6 text-xs text-ink-muted">{driver.experience} · ⭐ {driver.rating}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        {/* Rango de precio */}
+        <div className="mt-6 border-t border-surface-700 pt-6">
           <p className="text-sm font-semibold uppercase tracking-wide text-ink-muted">
             Rango de precio
           </p>
@@ -64,6 +121,7 @@ const SearchResultsPage = () => (
           />
           <p className="mt-1 text-xs text-ink-muted">Hasta €2.500</p>
         </div>
+
         <Button fullWidth className="mt-6">
           Aplicar filtros
         </Button>

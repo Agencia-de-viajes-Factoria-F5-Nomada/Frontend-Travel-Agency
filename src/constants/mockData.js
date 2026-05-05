@@ -122,3 +122,18 @@ export const CHECKOUT_STEPS = [
   { id: 3, label: 'Revisión' },
   { id: 4, label: 'Confirmación' },
 ]
+
+export const BUSES = [
+  { id: 'BUS-001', name: 'Volvo B11R', seats: 55, amenities: 'WiFi, AC, Baño' },
+  { id: 'BUS-002', name: 'Mercedes Benz Citaro', seats: 48, amenities: 'AC, USB, Baño' },
+  { id: 'BUS-003', name: 'Scania Touring', seats: 60, amenities: 'WiFi, AC, Baño, Enchufes' },
+  { id: 'BUS-004', name: 'Setra S 531 DT', seats: 57, amenities: 'WiFi, AC, Baño, Cama' },
+]
+
+export const DRIVERS = [
+  { id: 'DRV-001', name: 'Juan García', experience: '15 años', rating: 4.9 },
+  { id: 'DRV-002', name: 'María López', experience: '10 años', rating: 4.8 },
+  { id: 'DRV-003', name: 'Carlos Rodríguez', experience: '12 años', rating: 4.7 },
+  { id: 'DRV-004', name: 'Ana Martínez', experience: '8 años', rating: 4.9 },
+  { id: 'DRV-005', name: 'Pedro Gómez', experience: '18 años', rating: 5.0 },
+]
