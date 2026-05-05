@@ -1,4 +1,6 @@
+import { useState } from 'react'
 import { Mail, MapPin, Plane, User } from 'lucide-react'
+import BookingFormModal from '../components/common/BookingFormModal'
 import Button from '../components/ui/Button'
 import Card from '../components/ui/Card'
 import PageHeader from '../components/ui/PageHeader'
@@ -6,24 +8,49 @@ import { BOOKINGS } from '../constants/mockData'
 import { PUBLIC_PATHS } from '../constants/paths'
 import { formatCurrency } from '../utils/formatters'
 
-const ProfilePage = () => (
-  <div className="container-page py-12">
-    <PageHeader
-      eyebrow="Mi cuenta"
-      title="Bienvenida de nuevo, Marta"
-      description="Gestiona tus viajes, datos personales y preferencias."
-      actions={
-        <div className="flex gap-3">
-          <Button variant="ghost" to={PUBLIC_PATHS.SEARCH} size="sm">
-            <Plane className="h-4 w-4" aria-hidden="true" />
-            Planificar un nuevo viaje
-          </Button>
-          <Button variant="secondary" to={PUBLIC_PATHS.AUTH}>
-            Cerrar sesión
-          </Button>
-        </div>
-      }
-    />
+const ProfilePage = () => {
+  const [isBookingFormOpen, setIsBookingFormOpen] = useState(false)
+  const [bookings, setBookings] = useState(BOOKINGS)
+
+  const handleBookingSubmit = (data) => {
+    const newBooking = {
+      id: `TR-${Date.now().toString().slice(-4)}`,
+      destination: data.destination,
+      dates: `${data.startDate} - ${data.endDate}`,
+      travelers: Number(data.travelers),
+      total: 0,
+      status: 'pending',
+      name: data.name,
+      dni: data.dni,
+      email: data.email,
+      phone: data.phone,
+      signalPaid: 0,
+    }
+    setBookings((prev) => [newBooking, ...prev])
+  }
+
+  return (
+    <div className="container-page py-12">
+      <PageHeader
+        eyebrow="Mi cuenta"
+        title="Bienvenida de nuevo, Marta"
+        description="Gestiona tus viajes, datos personales y preferencias."
+        actions={
+          <div className="flex gap-3">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsBookingFormOpen(true)}
+            >
+              <Plane className="h-4 w-4" aria-hidden="true" />
+              Planificar un nuevo viaje
+            </Button>
+            <Button variant="secondary" to={PUBLIC_PATHS.AUTH}>
+              Cerrar sesión
+            </Button>
+          </div>
+        }
+      />
 
     <div className="mt-8 grid gap-6 lg:grid-cols-[320px_1fr]">
       <Card as="aside" aria-label="Resumen del perfil" className="p-6">
@@ -73,7 +100,7 @@ const ProfilePage = () => (
                 </tr>
               </thead>
               <tbody>
-                {BOOKINGS.map((booking) => (
+                {bookings.map((booking) => (
                   <tr key={booking.id} className="border-t border-surface-700 text-ink-soft">
                     <td className="py-4 font-medium text-white">{booking.name}</td>
                     <td className="py-4">{booking.dni}</td>
@@ -97,7 +124,14 @@ const ProfilePage = () => (
         </Card>
       </div>
     </div>
-  </div>
-)
+
+      <BookingFormModal
+        open={isBookingFormOpen}
+        onClose={() => setIsBookingFormOpen(false)}
+        onSubmit={handleBookingSubmit}
+      />
+    </div>
+  )
+}
 
 export default ProfilePage
