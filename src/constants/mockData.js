@@ -69,6 +69,11 @@ export const BOOKINGS = [
     travelers: 2,
     total: 2560,
     status: 'confirmed',
+    name: 'Marta Sánchez',
+    dni: '12345678A',
+    email: 'marta@travel.io',
+    phone: '+34 654 321 987',
+    signalPaid: 512,
   },
   {
     id: 'TR-1043',
@@ -77,6 +82,11 @@ export const BOOKINGS = [
     travelers: 1,
     total: 1640,
     status: 'pending',
+    name: 'Marta Sánchez',
+    dni: '12345678A',
+    email: 'marta@travel.io',
+    phone: '+34 654 321 987',
+    signalPaid: 328,
   },
   {
     id: 'TR-1044',
@@ -85,6 +95,11 @@ export const BOOKINGS = [
     travelers: 4,
     total: 8420,
     status: 'confirmed',
+    name: 'Marta Sánchez',
+    dni: '12345678A',
+    email: 'marta@travel.io',
+    phone: '+34 654 321 987',
+    signalPaid: 1684,
   },
 ]
 
