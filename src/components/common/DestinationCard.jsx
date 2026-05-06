@@ -5,7 +5,13 @@ import Card from '../ui/Card'
 import { buildDestinationPath } from '../../constants/paths'
 import { formatCurrency } from '../../utils/formatters'
 
-const DestinationCard = ({ destination }) => (
+const DestinationCard = ({ destination, showOfferPrice = false }) => {
+  const originalPrice =
+    showOfferPrice && destination.discount
+      ? Math.round(destination.price / (1 - destination.discount / 100))
+      : null
+
+  return (
   <Card className="overflow-hidden transition-transform duration-200 hover:-translate-y-1">
     <div className="relative h-48 w-full overflow-hidden">
       <img
@@ -40,9 +46,16 @@ const DestinationCard = ({ destination }) => (
       <div className="flex items-center justify-between">
         <div>
           <p className="text-xs uppercase tracking-wide text-ink-muted">Desde</p>
-          <p className="text-xl font-semibold text-white">
-            {formatCurrency(destination.price)}
-          </p>
+          <div className="flex flex-wrap items-baseline gap-2">
+            {originalPrice ? (
+              <span className="text-sm font-medium text-ink-muted line-through">
+                {formatCurrency(originalPrice)}
+              </span>
+            ) : null}
+            <span className="text-xl font-semibold text-white">
+              {formatCurrency(destination.price)}
+            </span>
+          </div>
         </div>
         <Button to={buildDestinationPath(destination.id)} size="sm">
           Ver
@@ -50,6 +63,7 @@ const DestinationCard = ({ destination }) => (
       </div>
     </div>
   </Card>
-)
+  )
+}
 
 export default DestinationCard
