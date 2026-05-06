@@ -3,7 +3,7 @@ import Button from '../components/ui/Button'
 import Card from '../components/ui/Card'
 import DestinationCard from '../components/common/DestinationCard'
 import PageHeader from '../components/ui/PageHeader'
-import { FEATURED_DESTINATIONS, BUSES, DRIVERS } from '../constants/mockData'
+import { FEATURED_DESTINATIONS, BUSES } from '../constants/mockData'
 
 const FILTERS = [
   { label: 'Playa', count: 24 },
@@ -18,7 +18,7 @@ const SearchResultsPage = () => (
   <div className="container-page py-12">
     <PageHeader
       eyebrow="Búsqueda"
-      title="Viajes que coinciden con tus criterios"
+      title="Viajes disponibles"
       description={`${FEATURED_DESTINATIONS.length} destinos encontrados · ordenados por relevancia`}
       actions={
         <Button variant="secondary" size="md">
@@ -77,30 +77,6 @@ const SearchResultsPage = () => (
                   <span className="font-medium">{bus.name}</span>
                 </span>
                 <span className="ml-6 text-xs text-ink-muted">{bus.seats} asientos · {bus.amenities}</span>
-              </label>
-            ))}
-          </div>
-        </div>
-
-        {/* Filtros de conductores */}
-        <div className="mt-6 border-t border-surface-700 pt-6">
-          <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-ink-muted">
-            Conductor disponible
-          </p>
-          <div className="flex flex-col gap-2">
-            {DRIVERS.map((driver) => (
-              <label
-                key={driver.id}
-                className="flex flex-col rounded-lg px-2 py-2 text-sm text-ink-soft hover:bg-surface-700"
-              >
-                <span className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    className="h-4 w-4 rounded border-surface-600 bg-surface-900 text-brand-500 focus:ring-brand-500"
-                  />
-                  <span className="font-medium">{driver.name}</span>
-                </span>
-                <span className="ml-6 text-xs text-ink-muted">{driver.experience} · ⭐ {driver.rating}</span>
               </label>
             ))}
           </div>
