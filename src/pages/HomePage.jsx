@@ -18,14 +18,9 @@ const HomePage = () => (
             Viajes seleccionados · 2026
           </span>
           <h1 className="text-4xl font-semibold leading-tight text-white md:text-6xl">
-            Planifica viajes inolvidables con
-            <span className="text-brand-400"> Nomada</span>
+            planificacion de viajes inolvidables
+            <span className="text-brand-400"> NOMADA</span>
           </h1>
-          <p className="max-w-xl text-base text-ink-muted md:text-lg">
-            Descubre experiencias a medida por todo el mundo. Desde playas
-            tranquilas hasta ciudades vibrantes, encuentra tu próxima aventura
-            en pocos clics.
-          </p>
           <div className="flex flex-wrap gap-3">
             <Button to={PUBLIC_PATHS.SEARCH} size="lg">
               Explorar destinos
@@ -38,7 +33,7 @@ const HomePage = () => (
         </div>
 
         <Card className="p-6 md:p-8">
-          <h2 className="text-lg font-semibold text-white">Busca tu viaje</h2>
+          <h2 className="text-lg font-semibold text-white">buscar nuevo viaje</h2>
           <form className="mt-6 grid gap-4">
             <label className="flex flex-col gap-2 text-sm">
               <span className="font-medium text-ink-soft">Destino</span>
