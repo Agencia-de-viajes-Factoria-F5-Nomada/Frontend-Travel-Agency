@@ -72,10 +72,10 @@ const BookingFormModal = ({ open, onClose, onSubmit }) => {
               Nueva reserva
             </p>
             <h2 id="booking-form-title" className="mt-1 text-2xl font-semibold text-white">
-              Planifica tu próximo viaje
+              Planificacion de vieje
             </h2>
             <p className="mt-1 text-sm text-ink-muted">
-              Rellena los datos y nos pondremos en contacto para confirmar la reserva.
+              rellenar datos para comfirmar reserva
             </p>
           </div>
           <button
