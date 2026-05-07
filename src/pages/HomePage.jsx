@@ -18,8 +18,7 @@ const HomePage = () => (
             Viajes seleccionados · 2026
           </span>
           <h1 className="text-4xl font-semibold leading-tight text-white md:text-6xl">
-            planificacion de viajes inolvidables
-            <span className="text-brand-400"> NOMADA</span>
+            Siempre en el lugar exacto
           </h1>
           <div className="flex flex-wrap gap-3">
             <Button to={PUBLIC_PATHS.SEARCH} size="lg">
