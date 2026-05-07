@@ -1,21 +1,21 @@
 import { Routes, Route, Navigate } from "react-router-dom";
+import AdminLayout from "../components/layout/AdminLayout";
 import AuthPage from "../pages/AuthPage";
 import BookingsPage from "../pages/BookingsPage";
 
-function App() {
+function AppRoutes() {
   return (
-    <div className="min-h-screen bg-slate-50">
-      {/* 1. BORRA LA ETIQUETA <Navbar /> QUE ESTABA AQUÍ */}
+    <Routes>
       
-      <main>
-        <Routes>
-          <Route path="/login" element={<AuthPage />} />
-          <Route path="/bookings" element={<BookingsPage />} />
-          <Route path="/" element={<Navigate to="/login" />} />
-        </Routes>
-      </main>
-    </div>
+      <Route path="/login" element={<AuthPage />} />
+      <Route path="/admin" element={<AdminLayout />}>
+        <Route path="bookings" element={<BookingsPage />} />
+        <Route index element={<Navigate to="bookings" replace />} />
+      </Route>
+      <Route path="/" element={<Navigate to="/login" replace />} />
+      <Route path="*" element={<Navigate to="/login" replace />} />
+    </Routes>
   );
 }
 
-export default App;
+export default AppRoutes;

@@ -1,83 +1,73 @@
-import { useState } from 'react'
-import { LogIn, ShieldCheck } from 'lucide-react'
-import Button from '../components/ui/Button'
-import Card from '../components/ui/Card'
-import Input from '../components/ui/Input'
+import { ShieldCheck } from 'lucide-react'
+import logoNomada from '../assets/logoNomada.a1b2c3.png-removebg-preview.png'
 
 const AuthPage = () => {
-  // Eliminamos los TABS de "Crear cuenta" porque la cliente pide que el login 
-  // sea para empleados y funcione solo en dispositivos de la empresa.
-  
   return (
-    <div className="container-page grid place-items-center py-16 bg-[#2c4a5a]"> 
-      {/* Usamos el azul oscuro de la paleta (image_cbe65c.jpg) para el fondo */}
+    <div className="min-h-screen w-full flex items-center justify-center bg-[#001f3f] px-4 py-8"> 
       
-      <Card className="w-full max-w-md p-8 bg-white shadow-2xl">
-        {/* Usamos fondo blanco para la Card para máxima legibilidad, como sugirió ella */}
+      <div className="w-full max-w-sm bg-white rounded-3xl p-8 shadow-2xl transition-all duration-500 ease-in-out hover:-translate-y-3 hover:shadow-[0_30px_60px_rgba(0,0,0,0.5)] border-t-8 border-[#001f3f]">
         
-        <div className="flex flex-col items-center mb-6">
-          {/* El nombre Nómada con la tipografía Cormorant Garamond (Serif) */}
-          <h1 
-            className="text-4xl text-[#2c4a5a] font-bold" 
+        <div className="flex justify-center mb-6">
+          <img 
+            src={logoNomada} 
+            alt="Nómada" 
+            className="h-28 w-auto object-contain"
+          />
+        </div>
+
+        <div className="text-center mb-8">
+          <h2 className="text-xl font-semibold text-slate-800"
+              style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+            Acceso de Personal
+          </h2>
+          <p className="text-[10px] text-slate-400 uppercase tracking-[0.2em] mt-1">
+             Gestión de Flota
+          </p>
+        </div>
+
+        <form className="flex flex-col gap-4">
+          <div className="flex flex-col gap-1">
+            <label className="text-[10px] font-bold text-slate-500 uppercase ml-1">Correo Corporativo</label>
+            <input 
+              type="email" 
+              className="p-3 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-[#001f3f] outline-none transition-all text-sm"
+              placeholder="empleado@nomada.com"
+            />
+          </div>
+          
+          <div className="flex flex-col gap-1">
+            <label className="text-[10px] font-bold text-slate-500 uppercase ml-1">Contraseña</label>
+            <input 
+              type="password" 
+              className="p-3 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-[#001f3f] outline-none transition-all text-sm"
+              placeholder="••••••••" 
+            />
+          </div>
+          
+          <button 
+            type="submit"
+            className="bg-[#001f3f] text-white font-bold py-3.5 rounded-xl hover:bg-slate-900 transition-all shadow-lg mt-4 active:scale-95 text-sm tracking-widest"
             style={{ fontFamily: "'Cormorant Garamond', serif" }}
           >
-            NÓMADA
-          </h1>
-          <div className="h-[1px] w-12 bg-[#2c4a5a] my-2"></div>
-        </div>
-
-        <h2 
-          className="text-xl font-semibold text-[#2c4a5a] text-center"
-          style={{ fontFamily: "'Cormorant Garamond', serif" }}
-        >
-          Acceso de Personal
-        </h2>
-        
-        <p className="mt-2 text-sm text-slate-500 text-center">
-          Inicia sesión para gestionar la flota y las reservas.
-        </p>
-
-        {/* Indicador de Seguridad Local (Exigencia de la cliente) */}
-        <div className="mt-6 flex items-center justify-center gap-2 p-2 rounded bg-slate-100 border border-slate-200">
-          <ShieldCheck className="h-4 w-4 text-green-600" />
-          <span className="text-[10px] text-slate-600 uppercase tracking-widest">
-            Dispositivo Autorizado
-          </span>
-        </div>
-
-        <form className="mt-8 grid gap-4">
-          <Input 
-            label="Correo Corporativo" 
-            type="email" 
-            placeholder="ejemplo@nomada.com"
-            className="border-slate-300 focus:border-[#2c4a5a]" 
-          />
-          <Input 
-            label="Contraseña" 
-            type="password" 
-            placeholder="••••••••" 
-          />
-          
-          <Button 
-            fullWidth 
-            size="lg"
-            className="bg-[#2c4a5a] hover:bg-[#1e333e] text-white py-3 transition-colors shadow-lg"
-            style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.2rem' }}
-          >
-            Iniciar Sesión
-          </Button>
+            ENTRAR
+          </button>
         </form>
 
-        <div className="mt-10 text-center">
-          {/* Eslogan movido de lugar como ella pidió en su e-mail */}
-          <p 
-            className="text-xs italic text-slate-400"
-            style={{ fontFamily: "'Cormorant Garamond', serif" }}
-          >
+        <div className="mt-8 pt-6 border-t border-slate-50 flex flex-col items-center gap-4">
+          <div className="flex items-center gap-2 px-3 py-1 bg-green-50 rounded-full border border-green-100">
+            <ShieldCheck className="h-3.5 w-3.5 text-green-600" />
+            <span className="text-[9px] text-green-700 font-bold uppercase"> 
+              Conexión Encriptada 
+            </span>
+          </div>
+          
+          <p className="text-xs italic text-slate-400 tracking-wide"
+             style={{ fontFamily: "'Cormorant Garamond', serif" }}>
             "Siempre en el lugar exacto"
           </p>
         </div>
-      </Card>
+
+      </div>
     </div>
   )
 }
