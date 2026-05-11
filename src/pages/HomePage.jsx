@@ -37,7 +37,7 @@ const HomePage = () => {
                 Explorar destinos
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Button>
-              <Button to={PUBLIC_PATHS.OFFERS} size="lg" variant="secondary">
+              <Button to={PUBLIC_PATHS.OFFERS} size="lg">
                 Ver ofertas
               </Button>
             </div>

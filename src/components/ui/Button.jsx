@@ -4,11 +4,11 @@ import { classNames } from '../../utils/classNames'
 
 const VARIANT_STYLES = {
   primary:
-    'bg-brand-500 text-surface-950 hover:bg-brand-400 active:bg-brand-600 shadow-card',
+    'bg-brand-500 text-white hover:bg-brand-400 active:bg-brand-600 shadow-card',
   secondary:
-    'bg-surface-700 text-ink hover:bg-surface-600 active:bg-surface-800 border border-surface-600',
+    'bg-surface-700 text-white hover:bg-surface-600 active:bg-surface-800 border border-surface-600',
   ghost:
-    'bg-transparent text-ink hover:bg-surface-700 active:bg-surface-800',
+    'bg-transparent text-white hover:bg-surface-700 active:bg-surface-800',
   danger:
     'bg-status-pending text-white hover:bg-red-500 active:bg-red-600 shadow-card',
 }
