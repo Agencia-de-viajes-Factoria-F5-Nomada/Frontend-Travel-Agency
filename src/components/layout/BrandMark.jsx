@@ -8,9 +8,9 @@ const BrandMark = ({ to = PUBLIC_PATHS.HOME }) => (
     aria-label="Inicio Agencia de Viajes"
   >
     <img
-      src="/nomada-logo-symbol.png"
-      alt=""
-      className="h-11 w-11 object-contain"
+      src="src/assets/logoNomada.a1b2c3.png.png"
+      alt="logo Nómada"
+      className="h-20 w-20 object-contain"
       aria-hidden="true"
     />
   </Link>

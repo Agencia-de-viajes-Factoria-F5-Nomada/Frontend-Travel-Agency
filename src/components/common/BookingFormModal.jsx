@@ -49,6 +49,7 @@ const BookingFormModal = ({ open, onClose, onSubmit }) => {
   const handleSubmit = (event) => {
     event.preventDefault()
     onSubmit?.(form)
+    alert("¡Planificación enviada con éxito! Se ha añadido a tu historial.");
     onClose?.()
   }
 
