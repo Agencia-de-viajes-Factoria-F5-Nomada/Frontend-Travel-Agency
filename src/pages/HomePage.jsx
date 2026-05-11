@@ -10,7 +10,7 @@ const HomePage = () => (
     <section className="relative overflow-hidden">
       <div
         aria-hidden="true"
-        className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(143,182,201,0.22),_transparent_55%)]"
+        className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(0,31,63,0.4),_transparent_65%)]"
       />
       <div className="container-page relative grid gap-12 py-20 lg:grid-cols-[1.1fr_0.9fr] lg:py-28">
         <div className="flex flex-col justify-center gap-6">
