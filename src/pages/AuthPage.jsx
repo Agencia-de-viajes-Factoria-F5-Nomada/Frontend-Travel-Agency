@@ -1,76 +1,82 @@
 import { useState } from 'react'
-import { LogIn, UserPlus } from 'lucide-react'
+import { LogIn, ShieldCheck } from 'lucide-react'
 import Button from '../components/ui/Button'
 import Card from '../components/ui/Card'
 import Input from '../components/ui/Input'
-import { classNames } from '../utils/classNames'
-
-const TABS = [
-  { id: 'signin', label: 'Iniciar sesión', icon: LogIn },
-  { id: 'signup', label: 'Crear cuenta', icon: UserPlus },
-]
 
 const AuthPage = () => {
-  const [active, setActive] = useState('signin')
-  const isSignIn = active === 'signin'
-
+  // Eliminamos los TABS de "Crear cuenta" porque la cliente pide que el login 
+  // sea para empleados y funcione solo en dispositivos de la empresa.
+  
   return (
-    <div className="container-page grid place-items-center py-16">
-      <Card className="w-full max-w-md p-8">
-        <h1 className="text-2xl font-semibold text-white">
-          {isSignIn ? 'Bienvenido de nuevo' : 'Crea tu cuenta'}
-        </h1>
-        <p className="mt-2 text-sm text-ink-muted">
-          {isSignIn
-            ? 'Inicia sesión para gestionar tus reservas y favoritos.'
-            : 'Únete y comienza a planificar tu próxima aventura.'}
-        </p>
-
-        <div
-          role="tablist"
-          aria-label="Modo de autenticación"
-          className="mt-6 grid grid-cols-2 gap-1 rounded-full bg-surface-900 p-1"
-        >
-          {TABS.map((tab) => {
-            const isActive = tab.id === active
-            return (
-              <button
-                key={tab.id}
-                type="button"
-                role="tab"
-                aria-selected={isActive}
-                onClick={() => setActive(tab.id)}
-                className={classNames(
-                  'inline-flex items-center justify-center gap-2 rounded-full px-3 py-2 text-sm font-medium transition-colors',
-                  isActive
-                    ? 'bg-brand-500 text-surface-950'
-                    : 'text-ink-soft hover:text-white',
-                )}
-              >
-                <tab.icon className="h-4 w-4" aria-hidden="true" />
-                {tab.label}
-              </button>
-            )
-          })}
+    <div className="container-page grid place-items-center py-16 bg-[#2c4a5a]"> 
+      {/* Usamos el azul oscuro de la paleta (image_cbe65c.jpg) para el fondo */}
+      
+      <Card className="w-full max-w-md p-8 bg-white shadow-2xl">
+        {/* Usamos fondo blanco para la Card para máxima legibilidad, como sugirió ella */}
+        
+        <div className="flex flex-col items-center mb-6">
+          {/* El nombre Nómada con la tipografía Cormorant Garamond (Serif) */}
+          <h1 
+            className="text-4xl text-[#2c4a5a] font-bold" 
+            style={{ fontFamily: "'Cormorant Garamond', serif" }}
+          >
+            NÓMADA
+          </h1>
+          <div className="h-[1px] w-12 bg-[#2c4a5a] my-2"></div>
         </div>
 
-        <form className="mt-6 grid gap-4">
-          {!isSignIn ? <Input label="Nombre completo" placeholder="Juan Pérez" /> : null}
-          <Input label="Correo electrónico" type="email" placeholder="tu@ejemplo.com" />
-          <Input label="Contraseña" type="password" placeholder="••••••••" />
-          {isSignIn ? (
-            <a href="#forgot" className="text-right text-xs text-brand-300 hover:text-brand-200">
-              ¿Olvidaste tu contraseña?
-            </a>
-          ) : null}
-          <Button fullWidth size="lg">
-            {isSignIn ? 'Iniciar sesión' : 'Crear cuenta'}
+        <h2 
+          className="text-xl font-semibold text-[#2c4a5a] text-center"
+          style={{ fontFamily: "'Cormorant Garamond', serif" }}
+        >
+          Acceso de Personal
+        </h2>
+        
+        <p className="mt-2 text-sm text-slate-500 text-center">
+          Inicia sesión para gestionar la flota y las reservas.
+        </p>
+
+        {/* Indicador de Seguridad Local (Exigencia de la cliente) */}
+        <div className="mt-6 flex items-center justify-center gap-2 p-2 rounded bg-slate-100 border border-slate-200">
+          <ShieldCheck className="h-4 w-4 text-green-600" />
+          <span className="text-[10px] text-slate-600 uppercase tracking-widest">
+            Dispositivo Autorizado
+          </span>
+        </div>
+
+        <form className="mt-8 grid gap-4">
+          <Input 
+            label="Correo Corporativo" 
+            type="email" 
+            placeholder="ejemplo@nomada.com"
+            className="border-slate-300 focus:border-[#2c4a5a]" 
+          />
+          <Input 
+            label="Contraseña" 
+            type="password" 
+            placeholder="••••••••" 
+          />
+          
+          <Button 
+            fullWidth 
+            size="lg"
+            className="bg-[#2c4a5a] hover:bg-[#1e333e] text-white py-3 transition-colors shadow-lg"
+            style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: '1.2rem' }}
+          >
+            Iniciar Sesión
           </Button>
         </form>
 
-        <p className="mt-6 text-center text-xs text-ink-muted">
-          Al continuar aceptas nuestros términos y la política de privacidad.
-        </p>
+        <div className="mt-10 text-center">
+          {/* Eslogan movido de lugar como ella pidió en su e-mail */}
+          <p 
+            className="text-xs italic text-slate-400"
+            style={{ fontFamily: "'Cormorant Garamond', serif" }}
+          >
+            "Siempre en el lugar exacto"
+          </p>
+        </div>
       </Card>
     </div>
   )
