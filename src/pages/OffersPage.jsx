@@ -18,7 +18,7 @@ const OffersPage = () => (
     {offers.length ? (
       <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {offers.map((destination) => (
-          <DestinationCard key={destination.id} destination={destination} showOfferPrice />
+          <DestinationCard key={destination.id} destination={destination} showOfferPrice featured />
         ))}
       </div>
     ) : (

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Mail, MapPin, Plane, User } from 'lucide-react'
+import { Plane } from 'lucide-react'
 import BookingFormModal from '../components/common/BookingFormModal'
 import Button from '../components/ui/Button'
 import Card from '../components/ui/Card'
@@ -52,36 +52,7 @@ const ProfilePage = () => {
         }
       />
 
-    <div className="mt-8 grid gap-6 lg:grid-cols-[320px_1fr]">
-      <Card as="aside" aria-label="Resumen del perfil" className="p-6">
-        <div className="flex items-center gap-4">
-          <span className="grid h-14 w-14 place-items-center rounded-full bg-brand-500 text-lg font-semibold text-surface-950">
-            MS
-          </span>
-          <div>
-            <p className="font-semibold text-white">Marta Sánchez</p>
-            <p className="text-sm text-ink-muted">Viajera Premium</p>
-          </div>
-        </div>
-        <ul className="mt-6 grid gap-3 text-sm text-ink-soft">
-          <li className="flex items-center gap-2">
-            <Mail className="h-4 w-4 text-brand-400" aria-hidden="true" />
-            marta@travel.io
-          </li>
-          <li className="flex items-center gap-2">
-            <MapPin className="h-4 w-4 text-brand-400" aria-hidden="true" />
-            Madrid, España
-          </li>
-          <li className="flex items-center gap-2">
-            <User className="h-4 w-4 text-brand-400" aria-hidden="true" />
-            Miembro desde 2022
-          </li>
-        </ul>
-        <Button variant="secondary" fullWidth className="mt-6">
-          Editar perfil
-        </Button>
-      </Card>
-
+    <div className="mt-8 grid gap-6">
       <div className="flex flex-col gap-6">
         <Card className="p-6">
           <div className="flex items-center justify-between">

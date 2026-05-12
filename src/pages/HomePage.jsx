@@ -32,7 +32,7 @@ const HomePage = () => (
         </div>
 
         <Card className="p-6 md:p-8">
-          <h2 className="text-lg font-semibold text-white">buscar nuevo viaje</h2>
+          <h2 className="text-lg font-semibold text-white">Buscar nuevo viaje</h2>
           <form className="mt-6 grid gap-4">
             <label className="flex flex-col gap-2 text-sm">
               <span className="font-medium text-ink-soft">Destino</span>
@@ -82,7 +82,7 @@ const HomePage = () => (
       <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
         <div>
           <h2 className="text-3xl font-semibold text-white">Destinos destacados</h2>
-          <p className="mt-2 text-ink-muted">Viajes seleccionados, los favoritos de nuestros viajeros.</p>
+          <p className="mt-2 text-ink-muted">Viajes seleccionados, los favoritos de nuestros viajeros</p>
         </div>
         <Button to={PUBLIC_PATHS.SEARCH} variant="ghost">
           Ver todos
@@ -91,7 +91,7 @@ const HomePage = () => (
       </div>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {FEATURED_DESTINATIONS.slice(0, 6).map((destination) => (
-          <DestinationCard key={destination.id} destination={destination} />
+          <DestinationCard key={destination.id} destination={destination} featured />
         ))}
       </div>
     </section>
