@@ -6,6 +6,7 @@ export const PUBLIC_PATHS = {
   PROFILE: '/profile',
   OFFERS: '/offers',
   AUTH: '/auth',
+  DASHBOARD: '/dashboard',
 }
 
 export const ADMIN_PATHS = {

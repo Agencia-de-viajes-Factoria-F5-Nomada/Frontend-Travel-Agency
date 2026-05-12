@@ -7,6 +7,7 @@ import DestinationDetailPage from '../pages/DestinationDetailPage'
 import CheckoutPage from '../pages/CheckoutPage'
 import ProfilePage from '../pages/ProfilePage'
 import OffersPage from '../pages/OffersPage'
+import PublicDashboardPage from '../pages/PublicDashboardPage'
 import AuthPage from '../pages/AuthPage'
 import NotFoundPage from '../pages/NotFoundPage'
 import DashboardPage from '../pages/DashboardPage'
@@ -24,6 +25,7 @@ const AppRoutes = () => (
       <Route path={PUBLIC_PATHS.CHECKOUT} element={<CheckoutPage />} />
       <Route path={PUBLIC_PATHS.PROFILE} element={<ProfilePage />} />
       <Route path={PUBLIC_PATHS.OFFERS} element={<OffersPage />} />
+      <Route path={PUBLIC_PATHS.DASHBOARD} element={<PublicDashboardPage />} />
       <Route path={PUBLIC_PATHS.AUTH} element={<AuthPage />} />
       <Route path="*" element={<NotFoundPage />} />
     </Route>

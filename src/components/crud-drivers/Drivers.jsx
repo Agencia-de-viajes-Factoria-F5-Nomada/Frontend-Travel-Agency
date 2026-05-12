@@ -81,12 +81,12 @@ const Drivers = () => {
       </form>
 
       <table border="1" width="100%" style={{ borderCollapse: 'collapse', textAlign: 'left' }}>
-        <thead style={{ backgroundColor: '#001f3f', color: 'white' }}>
+        <thead style={{ backgroundColor: '#6faecc', color: 'white' }}>
           <tr>
-            <th style={{ padding: '10px' }}>Licencia</th>
-            <th style={{ padding: '10px' }}>Nombre</th>
-            <th style={{ padding: '10px' }}>Teléfono</th>
-            <th style={{ padding: '10px', textAlign: 'center' }}>Acciones</th>
+            <th style={{ padding: '10px', color: 'white' }}>Licencia</th>
+            <th style={{ padding: '10px', color: 'white' }}>Nombre</th>
+            <th style={{ padding: '10px', color: 'white' }}>Teléfono</th>
+            <th style={{ padding: '10px', textAlign: 'center', color: 'white' }}>Acciones</th>
           </tr>
         </thead>
         <tbody>

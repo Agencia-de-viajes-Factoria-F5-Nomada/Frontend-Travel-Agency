@@ -13,15 +13,15 @@ const buildItemClass = ({ isActive }) =>
   classNames(
     itemBase,
     isActive
-      ? 'bg-brand-500/15 text-brand-300'
-      : 'text-ink-soft hover:bg-surface-700 hover:text-white',
+      ? 'bg-brand-400/25 text-white'
+      : 'text-brand-100 hover:bg-brand-400/15 hover:text-white',
   )
 
 const AdminSidebar = ({ open, onNavigate }) => (
   <aside
     aria-label="Navegación de administración"
     className={classNames(
-      'fixed inset-y-0 left-0 z-30 flex w-72 flex-col border-r border-surface-700 bg-surface-900 px-4 py-6 transition-transform duration-200 lg:static lg:translate-x-0',
+      'fixed inset-y-0 left-0 z-30 flex w-72 flex-col border-r border-brand-500/30 bg-surface-900 px-4 py-6 transition-transform duration-200 lg:static lg:translate-x-0',
       open ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
     )}
   >
@@ -47,7 +47,7 @@ const AdminSidebar = ({ open, onNavigate }) => (
       ))}
     </nav>
 
-    <div className="flex flex-col gap-3 border-t border-surface-700 pt-4">
+    <div className="flex flex-col gap-3 border-t border-brand-500/30 pt-4">
       <Button variant="ghost" size="sm" to={PUBLIC_PATHS.HOME}>
         Volver al sitio
       </Button>

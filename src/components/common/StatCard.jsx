@@ -8,7 +8,7 @@ const StatCard = ({ label, value, icon: Icon, delta }) => (
       {delta ? <span className="text-xs text-brand-400">{delta}</span> : null}
     </div>
     {Icon ? (
-      <span className="grid h-12 w-12 place-items-center rounded-xl bg-brand-500/10 text-brand-400">
+      <span className="grid h-12 w-12 place-items-center rounded-xl bg-brand-400/20 text-brand-300">
         <Icon className="h-5 w-5" aria-hidden="true" />
       </span>
     ) : null}

@@ -88,12 +88,12 @@ const Buses = () => {
 
       <div className="overflow-hidden rounded-lg border border-gray-200 shadow-md">
         <table className="w-full border-collapse bg-white text-left text-sm text-gray-500">
-          <thead className="bg-[#001f3f] text-white">
+          <thead className="bg-[#6faecc] text-white">
             <tr>
-              <th className="px-6 py-4 font-medium">Matrícula</th>
-              <th className="px-6 py-4 font-medium">Modelo</th>
-              <th className="px-6 py-4 font-medium">Capacidad</th>
-              <th className="px-6 py-4 font-medium text-center">Acciones</th>
+              <th className="px-6 py-4 font-medium text-white">Matrícula</th>
+              <th className="px-6 py-4 font-medium text-white">Modelo</th>
+              <th className="px-6 py-4 font-medium text-white">Capacidad</th>
+              <th className="px-6 py-4 font-medium text-white text-center">Acciones</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100 border-t border-gray-100">

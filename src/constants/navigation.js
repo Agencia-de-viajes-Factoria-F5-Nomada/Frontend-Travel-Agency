@@ -17,6 +17,7 @@ export const PUBLIC_NAV = [
   { label: 'Ofertas', to: PUBLIC_PATHS.OFFERS, icon: Tag },
   { label: 'Mi perfil', to: PUBLIC_PATHS.PROFILE, icon: UserCircle },
   { label: 'Iniciar sesión', to: PUBLIC_PATHS.AUTH, icon: LogIn },
+  { label: 'Dashboard', to: PUBLIC_PATHS.DASHBOARD, icon: LayoutDashboard },
 ]
 
 export const ADMIN_NAV = [

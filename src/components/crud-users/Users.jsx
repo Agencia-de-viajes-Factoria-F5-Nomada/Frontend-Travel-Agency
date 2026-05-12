@@ -90,12 +90,12 @@ const Users = () => {
 
       <div className="overflow-hidden rounded-lg border border-gray-200 shadow-md">
         <table className="w-full border-collapse bg-white text-left text-sm text-gray-500">
-          <thead className="bg-[#001f3f] text-white">
+          <thead className="bg-[#6faecc] text-white">
             <tr>
-              <th className="px-6 py-4 font-medium">DNI</th>
-              <th className="px-6 py-4 font-medium">Nombre</th>
-              <th className="px-6 py-4 font-medium">Teléfono</th>
-              <th className="px-6 py-4 font-medium text-center">Acciones</th>
+              <th className="px-6 py-4 font-medium text-white">DNI</th>
+              <th className="px-6 py-4 font-medium text-white">Nombre</th>
+              <th className="px-6 py-4 font-medium text-white">Teléfono</th>
+              <th className="px-6 py-4 font-medium text-white text-center">Acciones</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100 border-t border-gray-100">
