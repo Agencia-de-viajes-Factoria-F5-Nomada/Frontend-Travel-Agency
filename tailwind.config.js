@@ -1,40 +1,52 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
+  content: ['./index.html', './src/**/*.{js,jsx}'],
   theme: {
     extend: {
       colors: {
         brand: {
-          DEFAULT: '#001f3f',
-          50: '#e6f0fa',
-          100: '#cce1f5',
-          200: '#99c2eb',
-          300: '#66a4e0',
-          400: '#3385d6',
-          500: '#0066cc',
-          600: '#0052a3',
-          700: '#003d7a',
-          800: '#002952',
+          50: '#f2f7fb',
+          100: '#e1edf5',
+          200: '#c7e0ed',
+          300: '#9fcce0',
+          400: '#6faecc',
+          500: '#4c91b5',
+          600: '#397598',
+          700: '#2f5e7c',
+          800: '#2a4f68',
           900: '#001f3f',
         },
         surface: {
-          DEFAULT: '#ffffff',
-          50: '#f8fafc',
-          100: '#f1f5f9',
-          200: '#e2e8f0',
+          950: '#00152b',
+          900: '#001f3f',
+          800: '#0a2e52',
+          700: '#143d66',
+          600: '#1e4c7a',
         },
         ink: {
-          DEFAULT: '#001f3f',
-          lighter: '#475569',
-          light: '#1e293b',
+          DEFAULT: '#FFFFFF',
+          muted: '#CBD5E1',
+          soft: '#E2E8F0',
         },
-        nomada: {
-          dark: '#001f3f',
-          white: '#ffffff',
-        }
+        status: {
+          confirmed: '#22c55e',
+          pending: '#ef4444',
+          warning: '#f59e0b',
+          info: '#06b6d4',
+        },
+      },
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'Segoe UI', 'Roboto', 'sans-serif'],
+      },
+      borderRadius: {
+        card: '1rem',
+      },
+      boxShadow: {
+        card: '0 10px 30px -12px rgba(0, 31, 63, 0.3)',
+        focus: '0 0 0 3px rgba(76, 145, 181, 0.5)',
+      },
+      maxWidth: {
+        page: '1280px',
       },
     },
   },

@@ -1,25 +1,8 @@
-import api from './api';
+import axios from 'axios';
 
-const ENDPOINT = '/api/employees';
+const API_URL = 'http://localhost:8080/employees';
 
-export const EmployeeService = {
-    fetchEmployees: async () => {
-        const { data } = await api.get(ENDPOINT);
-        return data;
-    },
-
-    createEmployee: async (employeeData) => {
-        const { data } = await api.post(ENDPOINT, employeeData);
-        return data;
-    },
-
-    updateEmployee: async (id, employeeData) => {
-        const { data } = await api.put(`${ENDPOINT}/${id}`, employeeData);
-        return data;
-    },
-
-    deleteEmployee: async (id) => {
-        await api.delete(`${ENDPOINT}/${id}`);
-        return true;
-    }
-};
+export const getAllEmployees = () => axios.get(API_URL);
+export const createEmployee = (employee) => axios.post(API_URL, employee);
+export const updateEmployee = (id, employee) => axios.put(`${API_URL}/${id}`, employee);
+export const deleteEmployee = (id) => axios.delete(`${API_URL}/${id}`);

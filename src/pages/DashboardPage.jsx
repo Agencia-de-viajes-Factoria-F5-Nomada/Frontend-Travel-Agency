@@ -41,22 +41,22 @@ const DashboardPage = () => (
           </Button>
         </div>
         <div className="mt-5 overflow-x-auto">
-          <table className="w-full min-w-[640px] text-left text-sm">
-            <thead className="text-xs uppercase tracking-wide text-ink-muted">
-              <tr>
-                <th scope="col" className="py-3">Referencia</th>
-                <th scope="col" className="py-3">Destino</th>
-                <th scope="col" className="py-3">Total</th>
-                <th scope="col" className="py-3">Estado</th>
+          <table className="w-full min-w-[640px] border-separate border-spacing-0 text-left text-sm">
+            <thead className="text-xs uppercase tracking-wide text-white">
+              <tr className="bg-brand-400">
+                <th scope="col" className="rounded-l-full px-5 py-3 font-semibold text-white">Referencia</th>
+                <th scope="col" className="px-5 py-3 font-semibold text-white">Destino</th>
+                <th scope="col" className="px-5 py-3 font-semibold text-white">Total</th>
+                <th scope="col" className="rounded-r-full px-5 py-3 font-semibold text-white">Estado</th>
               </tr>
             </thead>
             <tbody>
               {BOOKINGS.map((booking) => (
-                <tr key={booking.id} className="border-t border-surface-700 text-ink-soft">
-                  <td className="py-3 font-medium text-white">{booking.id}</td>
-                  <td className="py-3">{booking.destination}</td>
-                  <td className="py-3">{formatCurrency(booking.total)}</td>
-                  <td className="py-3">
+                <tr key={booking.id} className="text-brand-200">
+                  <td className="border-b border-brand-500/30 px-5 py-3 font-medium text-white">{booking.id}</td>
+                  <td className="border-b border-brand-500/30 px-5 py-3">{booking.destination}</td>
+                  <td className="border-b border-brand-500/30 px-5 py-3">{formatCurrency(booking.total)}</td>
+                  <td className="border-b border-brand-500/30 px-5 py-3">
                     <StatusPill status={booking.status} />
                   </td>
                 </tr>

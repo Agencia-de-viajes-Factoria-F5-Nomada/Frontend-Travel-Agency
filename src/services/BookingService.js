@@ -1,26 +1,25 @@
-import api from './api'; 
+import axios from 'axios';
 
-const ENDPOINT = '/api/bookings';
+const API_URL = 'http://localhost:8080/api/bookings';
 
 export const BookingService = {
     fetchBookings: async () => {
-        // 'api' ya sabe que debe usar la VITE_API_URL del .env
-        const { data } = await api.get(ENDPOINT);
+        const { data } = await axios.get(API_URL);
         return data;
     },
 
     createBooking: async (bookingData) => {
-        const { data } = await api.post(ENDPOINT, bookingData);
+        const { data } = await axios.post(API_URL, bookingData);
         return data;
     },
 
     updateBooking: async (id, bookingData) => {
-        const { data } = await api.put(`${ENDPOINT}/${id}`, bookingData);
+        const { data } = await axios.put(`${API_URL}/${id}`, bookingData);
         return data;
     },
 
     deleteBooking: async (id) => {
-        await api.delete(`${ENDPOINT}/${id}`);
+        await axios.delete(`${API_URL}/${id}`);
         return true;
     }
 };

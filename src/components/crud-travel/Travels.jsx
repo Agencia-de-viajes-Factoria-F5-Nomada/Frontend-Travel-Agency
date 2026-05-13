@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { TravelsService } from '../services/TravelsService';
 
 const Travels = () => {
     const [travels, setTravels] = useState([]);
+    const [isEditing, setIsEditing] = useState(false);
+    const [currentId, setCurrentId] = useState(null);
     const [formData, setFormData] = useState({
         destination: '',
         price: '',
@@ -11,16 +14,16 @@ const Travels = () => {
     });
 
     useEffect(() => {
-        fetchTravels();
+        loadTravels();
     }, []);
 
-    const fetchTravels = async () => {
+    const loadTravels = async () => {
         try {
-            const response = await fetch('http://localhost:8080/api/travels');
-            const data = await response.json();
+            // Axios nos da la data directamente desde el servicio
+            const data = await TravelsService.fetchTravels();
             setTravels(data);
         } catch (error) {
-            console.error(error);
+            console.error("Error al cargar viajes:", error);
         }
     };
 
@@ -35,28 +38,41 @@ const Travels = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch('http://localhost:8080/api/travels', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
-            });
-            if (response.ok) {
-                setFormData({ destination: '', price: '', departureDate: '', availableSeats: '', onSale: false });
-                fetchTravels();
+            if (isEditing) {
+                await TravelsService.updateTravel(currentId, formData);
+                setIsEditing(false);
+                setCurrentId(null);
+            } else {
+                await TravelsService.createTravel(formData);
             }
+            // Reset del formulario
+            setFormData({ destination: '', price: '', departureDate: '', availableSeats: '', onSale: false });
+            loadTravels();
         } catch (error) {
-            console.error(error);
+            console.error("Error al procesar el viaje:", error);
         }
     };
 
+    const handleEditClick = (travel) => {
+        setIsEditing(true);
+        setCurrentId(travel.id);
+        setFormData({
+            destination: travel.destination,
+            price: travel.price,
+            departureDate: travel.departureDate,
+            availableSeats: travel.availableSeats,
+            onSale: travel.onSale
+        });
+    };
+
     const handleDelete = async (id) => {
-        try {
-            await fetch(`http://localhost:8080/api/travels/${id}`, {
-                method: 'DELETE'
-            });
-            fetchTravels();
-        } catch (error) {
-            console.error(error);
+        if (window.confirm("¿Estás seguro de eliminar este viaje?")) {
+            try {
+                await TravelsService.deleteTravel(id);
+                loadTravels();
+            } catch (error) {
+                console.error("Error al eliminar:", error);
+            }
         }
     };
 
@@ -108,21 +124,30 @@ const Travels = () => {
                     />
                     <label>¿Está en oferta?</label>
                 </div>
-                <button type="submit" className="col-span-2 bg-[#001f3f] text-white p-2 rounded hover:bg-blue-900">
-                    Crear Viaje
+                <button type="submit" className="col-span-2 bg-[#001f3f] text-white p-2 rounded hover:bg-blue-900 transition-colors">
+                    {isEditing ? 'Actualizar Viaje' : 'Crear Viaje'}
                 </button>
+                {isEditing && (
+                    <button 
+                        type="button" 
+                        onClick={() => { setIsEditing(false); setFormData({ destination: '', price: '', departureDate: '', availableSeats: '', onSale: false }); }}
+                        className="col-span-2 bg-gray-400 text-white p-2 rounded"
+                    >
+                        Cancelar Edición
+                    </button>
+                )}
             </form>
 
             <div className="overflow-hidden rounded-lg border border-gray-200 shadow-md">
                 <table className="w-full border-collapse bg-white text-left text-sm text-gray-500">
-                    <thead className="bg-[#001f3f] text-white">
+                    <thead className="bg-[#6faecc] text-white">
                         <tr>
-                            <th className="px-6 py-4 font-medium">Destino</th>
-                            <th className="px-6 py-4 font-medium">Precio</th>
-                            <th className="px-6 py-4 font-medium">Fecha</th>
-                            <th className="px-6 py-4 font-medium">Asientos</th>
-                            <th className="px-6 py-4 font-medium">Estado</th>
-                            <th className="px-6 py-4 font-medium text-center">Acciones</th>
+                            <th className="px-6 py-4 font-medium text-white">Destino</th>
+                            <th className="px-6 py-4 font-medium text-white">Precio</th>
+                            <th className="px-6 py-4 font-medium text-white">Fecha</th>
+                            <th className="px-6 py-4 font-medium text-white">Asientos</th>
+                            <th className="px-6 py-4 font-medium text-white">Estado</th>
+                            <th className="px-6 py-4 font-medium text-white text-center">Acciones</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100 border-t border-gray-100">
@@ -140,6 +165,12 @@ const Travels = () => {
                                     )}
                                 </td>
                                 <td className="px-6 py-4 text-center">
+                                    <button 
+                                        onClick={() => handleEditClick(travel)}
+                                        className="text-blue-600 hover:text-blue-800 font-semibold mr-4"
+                                    >
+                                        Editar
+                                    </button>
                                     <button 
                                         onClick={() => handleDelete(travel.id)}
                                         className="text-red-600 hover:text-red-800 font-semibold"

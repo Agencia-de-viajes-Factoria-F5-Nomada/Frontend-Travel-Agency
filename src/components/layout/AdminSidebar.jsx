@@ -1,58 +1,62 @@
-import { LayoutDashboard, Calendar, Users, Settings, LogOut, Car } from 'lucide-react'
-import { Link, useLocation } from 'react-router-dom'
-import logoNomada from '../../assets/logoNomada.a1b2c3.png-removebg-preview.png'
+import { NavLink } from 'react-router-dom'
+import { LogOut } from 'lucide-react'
+import BrandMark from './BrandMark'
+import Button from '../ui/Button'
+import { ADMIN_NAV } from '../../constants/navigation'
+import { PUBLIC_PATHS } from '../../constants/paths'
+import { classNames } from '../../utils/classNames'
 
-const AdminSidebar = ({ open, setOpen }) => {
-  const location = useLocation();
-  const serifStyle = { fontFamily: "'Cormorant Garamond', serif" };
+const itemBase =
+  'flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors'
 
-  const menuItems = [
-    { icon: LayoutDashboard, label: 'Panel', path: '/admin/dashboard' },
-    { icon: Calendar, label: 'Reservas', path: '/admin/bookings' },
-    { icon: Car, label: 'Flota', path: '/admin/fleet' },
-    { icon: Users, label: 'Usuarios', path: '/admin/users' },
-  ];
-
-  return (
-    <aside className={`fixed inset-y-0 left-0 z-30 w-64 bg-[#001f3f] text-white transition-transform duration-300 lg:static lg:translate-x-0 ${open ? 'translate-x-0' : '-translate-x-full'}`}>
-      
-      {/* SECCIÓN LOGO SIDEBAR */}
-      <div className="p-8 mb-6 flex flex-col items-center border-b border-white/5">
-        <img 
-          src={logoNomada} 
-          alt="Nómada" 
-          className="h-14 w-auto brightness-0 invert opacity-90" 
-        />
-        <span className="mt-3 text-[10px] tracking-[0.4em] uppercase opacity-40 font-light text-center">
-          Consola Global
-        </span>
-      </div>
-
-      <nav className="flex-1 px-4 space-y-2">
-        {menuItems.map((item) => (
-          <Link
-            key={item.path}
-            to={item.path}
-            className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
-              location.pathname === item.path 
-              ? 'bg-white/10 text-white shadow-lg' 
-              : 'text-white/50 hover:bg-white/5 hover:text-white'
-            }`}
-          >
-            <item.icon className="h-5 w-5" />
-            <span className="text-sm font-medium tracking-wide">{item.label}</span>
-          </Link>
-        ))}
-      </nav>
-
-      <div className="p-6 border-t border-white/5">
-        <button className="flex items-center gap-3 px-4 py-3 w-full text-red-400 hover:bg-red-500/10 rounded-xl transition-colors">
-          <LogOut className="h-5 w-5" />
-          <span className="text-sm font-bold uppercase tracking-widest">Salir</span>
-        </button>
-      </div>
-    </aside>
+const buildItemClass = ({ isActive }) =>
+  classNames(
+    itemBase,
+    isActive
+      ? 'bg-brand-400/25 text-white'
+      : 'text-brand-100 hover:bg-brand-400/15 hover:text-white',
   )
-}
+
+const AdminSidebar = ({ open, onNavigate }) => (
+  <aside
+    aria-label="Navegación de administración"
+    className={classNames(
+      'fixed inset-y-0 left-0 z-30 flex w-72 flex-col border-r border-brand-500/30 bg-surface-900 px-4 py-6 transition-transform duration-200 lg:static lg:translate-x-0',
+      open ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
+    )}
+  >
+    <div className="px-2">
+      <BrandMark to="/admin" />
+      <p className="mt-1 px-1 text-xs uppercase tracking-[0.2em] text-ink-muted">
+        Consola de Admin
+      </p>
+    </div>
+
+    <nav className="mt-8 flex flex-1 flex-col gap-1">
+      {ADMIN_NAV.map((item) => (
+        <NavLink
+          key={item.to}
+          to={item.to}
+          end={item.end}
+          className={buildItemClass}
+          onClick={onNavigate}
+        >
+          <item.icon className="h-4 w-4" aria-hidden="true" />
+          {item.label}
+        </NavLink>
+      ))}
+    </nav>
+
+    <div className="flex flex-col gap-3 border-t border-brand-500/30 pt-4">
+      <Button variant="ghost" size="sm" to={PUBLIC_PATHS.HOME}>
+        Volver al sitio
+      </Button>
+      <Button variant="secondary" size="sm" to={PUBLIC_PATHS.AUTH}>
+        <LogOut className="h-4 w-4" aria-hidden="true" />
+        Cerrar sesión
+      </Button>
+    </div>
+  </aside>
+)
 
 export default AdminSidebar

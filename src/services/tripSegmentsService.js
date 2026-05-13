@@ -1,30 +1,9 @@
-import api from './api';
+import axios from 'axios';
 
-const ENDPOINT = '/api/trip_segments';
+const API_URL = 'http://localhost:8080/trip_segments';
 
-export const TripSegmentService = {
-    fetchSegments: async () => {
-        const { data } = await api.get(ENDPOINT);
-        return data;
-    },
-
-    getSegmentById: async (id) => {
-        const { data } = await api.get(`${ENDPOINT}/${id}`);
-        return data;
-    },
-
-    createSegment: async (segmentData) => {
-        const { data } = await api.post(ENDPOINT, segmentData);
-        return data;
-    },
-
-    updateSegment: async (id, segmentData) => {
-        const { data } = await api.put(`${ENDPOINT}/${id}`, segmentData);
-        return data;
-    },
-
-    deleteSegment: async (id) => {
-        await api.delete(`${ENDPOINT}/${id}`);
-        return true;
-    }
-};
+export const getAllSegments = () => axios.get(API_URL);
+export const getSegmentById = (id) => axios.get(`${API_URL}/${id}`);
+export const createSegment = (segment) => axios.post(API_URL, segment);
+export const updateSegment = (id, segment) => axios.put(`${API_URL}/${id}`, segment);
+export const deleteSegment = (id) => axios.delete(`${API_URL}/${id}`);

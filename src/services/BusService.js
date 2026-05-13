@@ -1,39 +1,25 @@
-import api from './api';
+import axios from 'axios';
 
-const ENDPOINT = '/api/buses';
+const API_URL = 'http://localhost:8080/api/buses';
 
 export const BusService = {
     fetchBuses: async () => {
-        const { data } = await api.get(ENDPOINT);
+        const { data } = await axios.get(API_URL);
         return data;
     },
 
     createBus: async (busData) => {
-        const payload = {
-            license_plate: busData.license_plate || busData.plate,
-            model: busData.model,
-            capacity: busData.capacity,
-            ac: busData.ac || false,
-            usb: busData.usb || false,
-            bath: busData.bath || false,
-            wifi: busData.wifi || false
-        };
-        const { data } = await api.post(ENDPOINT, payload);
+        const { data } = await axios.post(API_URL, busData);
         return data;
     },
 
     updateBus: async (id, busData) => {
-        const payload = {
-            license_plate: busData.license_plate || busData.plate,
-            model: busData.model,
-            capacity: busData.capacity
-        };
-        const { data } = await api.put(`${ENDPOINT}/${id}`, payload);
+        const { data } = await axios.put(`${API_URL}/${id}`, busData);
         return data;
     },
 
     deleteBus: async (id) => {
-        await api.delete(`${ENDPOINT}/${id}`);
+        await axios.delete(`${API_URL}/${id}`);
         return true;
     }
 };

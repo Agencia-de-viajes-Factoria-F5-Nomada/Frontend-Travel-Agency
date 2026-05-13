@@ -1,25 +1,8 @@
-import api from './api';
+import axios from 'axios';
 
-const ENDPOINT = '/api/offers'; 
+const API_URL = 'http://localhost:8080/offers';
 
-export const OfferService = {
-    fetchOffers: async () => {
-        const { data } = await api.get(ENDPOINT);
-        return data;
-    },
-
-    createOffer: async (offerData) => {
-        const { data } = await api.post(ENDPOINT, offerData);
-        return data;
-    },
-
-    updateOffer: async (id, offerData) => {
-        const { data } = await api.put(`${ENDPOINT}/${id}`, offerData);
-        return data;
-    },
-
-    deleteOffer: async (id) => {
-        await api.delete(`${ENDPOINT}/${id}`);
-        return true;
-    }
-};
+export const getAllOffers = () => axios.get(API_URL);
+export const createOffer = (offer) => axios.post(API_URL, offer);
+export const updateOffer = (id, offer) => axios.put(`${API_URL}/${id}`, offer);
+export const deleteOffer = (id) => axios.delete(`${API_URL}/${id}`);

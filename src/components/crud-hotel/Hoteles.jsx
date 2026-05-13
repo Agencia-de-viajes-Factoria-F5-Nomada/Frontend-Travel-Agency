@@ -1,19 +1,21 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react';
+import { HotelService } from '../services/HotelService';
 
 const Hoteles = () => {
   const [hoteles, setHoteles] = useState([]);
   const [form, setForm] = useState({ nombre: '', ubicacion: '' });
   const [editandoId, setEditandoId] = useState(null);
 
-  const URL = 'http://localhost:8080/api/hotels';
+  useEffect(() => {
+    fetchHoteles();
+  }, []);
 
   const fetchHoteles = async () => {
     try {
-      const { data } = await axios.get(URL);
+      const data = await HotelService.fetchHoteles();
       setHoteles(data);
     } catch (error) {
-      console.error(error);
+      console.error("Error al cargar hoteles:", error);
     }
   };
 
@@ -21,24 +23,25 @@ const Hoteles = () => {
     e.preventDefault();
     try {
       if (editandoId) {
-        await axios.put(`${URL}/${editandoId}`, form);
+        await HotelService.updateHotel(editandoId, form);
       } else {
-        await axios.post(URL, form);
+        await HotelService.createHotel(form);
       }
-      setForm({ nombre: '', ubicacion: '' });
-      setEditandoId(null);
+      resetForm();
       fetchHoteles();
     } catch (error) {
-      console.error(error);
+      console.error("Error en la operación:", error);
     }
   };
 
   const deleteHotel = async (id) => {
-    try {
-      await axios.delete(`${URL}/${id}`);
-      setHoteles(hoteles.filter(h => h.id !== id));
-    } catch (error) {
-      console.error(error);
+    if (window.confirm("¿Deseas eliminar este hotel?")) {
+      try {
+        await HotelService.deleteHotel(id);
+        setHoteles(hoteles.filter(h => h.id !== id));
+      } catch (error) {
+        console.error("Error al eliminar:", error);
+      }
     }
   };
 
@@ -47,9 +50,10 @@ const Hoteles = () => {
     setEditandoId(hotel.id);
   };
 
-  useEffect(() => {
-    fetchHoteles();
-  }, []);
+  const resetForm = () => {
+    setForm({ nombre: '', ubicacion: '' });
+    setEditandoId(null);
+  };
 
   return (
     <div className="p-8 bg-surface-950 min-h-screen text-ink">
@@ -77,7 +81,7 @@ const Hoteles = () => {
         {editandoId && (
           <button 
             type="button" 
-            onClick={() => { setEditandoId(null); setForm({ nombre: '', ubicacion: '' }); }}
+            onClick={resetForm}
             className="w-full mt-2 text-gray-400 text-sm hover:underline"
           >
             Cancelar edición

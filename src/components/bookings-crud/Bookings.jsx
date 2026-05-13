@@ -1,53 +1,22 @@
 import React, { useState, useEffect } from 'react';
+import { BookingService } from '../services/BookingService';
 
 const Bookings = () => {
   const [bookings, setBookings] = useState([]);
-  const [formData, setFormData] = useState({
-    customerName: '',
-    destination: '',
-    bookingDate: ''
-  });
-  const API_URL = 'http://localhost:8080/api/bookings';
+  const [formData, setFormData] = useState({ customerName: '', destination: '', bookingDate: '' });
+  const [isEditing, setIsEditing] = useState(false);
+  const [currentId, setCurrentId] = useState(null);
 
   useEffect(() => {
-    fetchBookings();
+    loadBookings();
   }, []);
 
-  const fetchBookings = async () => {
+  const loadBookings = async () => {
     try {
-      const response = await fetch(API_URL);
-      const data = await response.json();
+      const data = await BookingService.fetchBookings();
       setBookings(data);
     } catch (error) {
-      console.error("Error cargando reservas:", error);
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
-      if (response.ok) {
-        fetchBookings();
-        setFormData({ customerName: '', destination: '', bookingDate: '' });
-      }
-    } catch (error) {
-      console.error("Error al crear reserva:", error);
-    }
-  };
-
-  const deleteBooking = async (id) => {
-    if (window.confirm("¿Anular esta reserva?")) {
-      try {
-        await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
-        fetchBookings();
-      } catch (error) {
-        console.error("Error al eliminar:", error);
-      }
+      console.error(error);
     }
   };
 
@@ -55,41 +24,97 @@ const Bookings = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (isEditing) {
+        await BookingService.updateBooking(currentId, formData);
+      } else {
+        await BookingService.createBooking(formData);
+      }
+      resetForm();
+      loadBookings();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const prepararEdicion = (booking) => {
+    setFormData({
+      customerName: booking.customerName,
+      destination: booking.destination,
+      bookingDate: booking.bookingDate
+    });
+    setCurrentId(booking.id);
+    setIsEditing(true);
+  };
+
+  const deleteBooking = async (id) => {
+    if (window.confirm("¿Anular esta reserva?")) {
+      try {
+        await BookingService.deleteBooking(id);
+        loadBookings();
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
+
+  const resetForm = () => {
+    setFormData({ customerName: '', destination: '', bookingDate: '' });
+    setIsEditing(false);
+    setCurrentId(null);
+  };
+
   return (
-    <div style={{ padding: '20px' }}>
-      <h2>Gestión de Reservas</h2>
+    <div className="p-6">
+      <h2 className="text-2xl font-bold mb-6 text-[#001f3f]">Gestión de Reservas</h2>
       
-      <form onSubmit={handleSubmit} style={{ marginBottom: '20px', display: 'flex', gap: '10px' }}>
-        <input name="customerName" placeholder="Nombre Cliente" value={formData.customerName} onChange={handleChange} required />
-        <input name="destination" placeholder="Destino" value={formData.destination} onChange={handleChange} required />
-        <input type="date" name="bookingDate" value={formData.bookingDate} onChange={handleChange} required />
-        <button type="submit" style={{ backgroundColor: '#28a745', color: 'white' }}>Crear Reserva</button>
+      <form onSubmit={handleSubmit} className="mb-8 grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded shadow">
+        <input name="customerName" placeholder="Nombre Cliente" value={formData.customerName} onChange={handleChange} className="border p-2 rounded" required />
+        <input name="destination" placeholder="Destino" value={formData.destination} onChange={handleChange} className="border p-2 rounded" required />
+        <input type="date" name="bookingDate" value={formData.bookingDate} onChange={handleChange} className="border p-2 rounded" required />
+        
+        <button type="submit" className="col-span-2 bg-[#001f3f] text-white p-2 rounded hover:bg-blue-900 transition-colors">
+          {isEditing ? 'Actualizar Reserva' : 'Crear Reserva'}
+        </button>
+        
+        {isEditing && (
+          <button type="button" onClick={resetForm} className="col-span-2 bg-gray-400 text-white p-2 rounded">
+            Cancelar Edición
+          </button>
+        )}
       </form>
 
-      <table border="1" width="100%" style={{ textAlign: 'left', borderCollapse: 'collapse' }}>
-        <thead style={{ backgroundColor: '#f4f4f4' }}>
-          <tr>
-            <th>ID</th>
-            <th>Cliente</th>
-            <th>Destino</th>
-            <th>Fecha</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {bookings.map((b) => (
-            <tr key={b.id}>
-              <td>{b.id}</td>
-              <td>{b.customerName}</td>
-              <td>{b.destination}</td>
-              <td>{b.bookingDate}</td>
-              <td>
-                <button onClick={() => deleteBooking(b.id)} style={{ color: 'red' }}>Eliminar</button>
-              </td>
+      <div className="overflow-hidden rounded-lg border border-gray-200 shadow-md">
+        <table className="w-full border-collapse bg-white text-left text-sm text-gray-500">
+          <thead className="bg-[#6faecc] text-white">
+            <tr>
+              <th className="px-6 py-4 font-medium text-white">Cliente</th>
+              <th className="px-6 py-4 font-medium text-white">Destino</th>
+              <th className="px-6 py-4 font-medium text-white">Fecha</th>
+              <th className="px-6 py-4 font-medium text-white text-center">Acciones</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody className="divide-y divide-gray-100 border-t border-gray-100">
+            {bookings.map((b) => (
+              <tr key={b.id} className="hover:bg-gray-50">
+                <td className="px-6 py-4 font-medium text-gray-900">{b.customerName}</td>
+                <td className="px-6 py-4">{b.destination}</td>
+                <td className="px-6 py-4">{b.bookingDate}</td>
+                <td className="px-6 py-4 text-center">
+                  <button onClick={() => prepararEdicion(b)} className="text-blue-600 hover:text-blue-800 font-semibold mr-4">
+                    Editar
+                  </button>
+                  <button onClick={() => deleteBooking(b.id)} className="text-red-600 hover:text-red-800 font-semibold">
+                    Eliminar
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
