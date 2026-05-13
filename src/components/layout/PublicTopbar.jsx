@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
-import { Menu, X } from 'lucide-react'
+import { Menu, X, ShieldCheck } from 'lucide-react' 
 import BrandMark from './BrandMark'
 import Button from '../ui/Button'
 import { PUBLIC_NAV } from '../../constants/navigation'
@@ -32,6 +32,11 @@ const PublicTopbar = () => {
               {item.label}
             </NavLink>
           ))}
+
+          <NavLink to="/admin" className={buildLinkClass}>
+            <ShieldCheck className="h-4 w-4 text-brand-400" aria-hidden="true" />
+            Administración
+          </NavLink>
         </nav>
 
         <Button
@@ -69,6 +74,15 @@ const PublicTopbar = () => {
                 {item.label}
               </NavLink>
             ))}
+
+            <NavLink
+              to="/admin"
+              className={buildLinkClass}
+              onClick={() => setOpen(false)}
+            >
+              <ShieldCheck className="h-4 w-4 text-brand-400" aria-hidden="true" />
+              Administración
+            </NavLink>
           </nav>
         </div>
       ) : null}

@@ -6,14 +6,17 @@ export const PUBLIC_PATHS = {
   PROFILE: '/profile',
   OFFERS: '/offers',
   AUTH: '/auth',
-}
+};
 
 export const ADMIN_PATHS = {
   ROOT: '/admin',
   DASHBOARD: '/admin',
-  BOOKINGS: '/admin/bookings',
-  DESTINATIONS: '/admin/destinations',
-  USERS: '/admin/users',
-}
+  BOOKINGS: 'bookings',
+  DESTINATIONS: 'destinations',
+  USERS: 'users',
+  HOTELS: 'hotels',
+  BUSES: 'buses',
+  DRIVERS: 'drivers',
+};
 
-export const buildDestinationPath = (id) => `/destinations/${id}`
+export const buildDestinationPath = (id) => `/destinations/${id}`;

@@ -8,6 +8,9 @@ import {
   Ticket,
   UserCircle,
   Users,
+  Hotel,
+  Bus,
+  UserCog 
 } from 'lucide-react'
 import { ADMIN_PATHS, PUBLIC_PATHS } from './paths'
 
@@ -24,4 +27,8 @@ export const ADMIN_NAV = [
   { label: 'Reservas', to: ADMIN_PATHS.BOOKINGS, icon: Ticket },
   { label: 'Destinos', to: ADMIN_PATHS.DESTINATIONS, icon: MapPinned },
   { label: 'Usuarios', to: ADMIN_PATHS.USERS, icon: Users },
+  // Los tres nuevos anclajes visuales
+  { label: 'Hoteles', to: ADMIN_PATHS.HOTELS, icon: Hotel },
+  { label: 'Autobuses', to: ADMIN_PATHS.BUSES, icon: Bus },
+  { label: 'Conductores', to: ADMIN_PATHS.DRIVERS, icon: UserCog },
 ]
