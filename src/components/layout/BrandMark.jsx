@@ -4,15 +4,16 @@ import { PUBLIC_PATHS } from '../../constants/paths'
 const BrandMark = ({ to = PUBLIC_PATHS.HOME }) => (
   <Link
     to={to}
-    className="inline-flex items-center"
+    className="inline-flex items-center gap-2"
     aria-label="Inicio Agencia de Viajes"
   >
     <img
-      src="src/assets/logoNomada.a1b2c3.png.png"
+      src="/nomada-logo-symbol.png"
       alt="logo Nómada"
-      className="h-20 w-20 object-contain"
+      className="h-10 w-10 object-contain"
       aria-hidden="true"
     />
+    <span className="text-xl font-bold text-white tracking-tight">Nomada</span>
   </Link>
 )
 

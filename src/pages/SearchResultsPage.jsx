@@ -105,7 +105,7 @@ const SearchResultsPage = () => (
 
       <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
         {FEATURED_DESTINATIONS.map((destination) => (
-          <DestinationCard key={destination.id} destination={destination} />
+          <DestinationCard key={destination.id} destination={destination} featured />
         ))}
       </div>
     </div>
