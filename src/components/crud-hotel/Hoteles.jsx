@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { HotelService as hotelService } from '../../services/HotelService'
+import { hotelService } from '../../services/HotelService'
 
 const EMPTY_FORM = {
   name: '',

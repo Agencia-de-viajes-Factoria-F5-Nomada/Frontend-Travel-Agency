@@ -1,29 +1,10 @@
-import axios from 'axios';
+import { API } from '../constants/api';
+const h = () => ({ 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` });
 
-const API_URL = '/api/buses';
-
-export const BusService = {
-    getAll: async () => {
-        const { data } = await axios.get(API_URL);
-        return data;
-    },
-    fetchBuses: async () => BusService.getAll(),
-
-    create: async (busData) => {
-        const { data } = await axios.post(API_URL, busData);
-        return data;
-    },
-    createBus: async (busData) => BusService.create(busData),
-
-    update: async (id, busData) => {
-        const { data } = await axios.put(`${API_URL}/${id}`, busData);
-        return data;
-    },
-    updateBus: async (id, busData) => BusService.update(id, busData),
-
-    delete: async (id) => {
-        await axios.delete(`${API_URL}/${id}`);
-        return true;
-    },
-    deleteBus: async (id) => BusService.delete(id),
+export const busService = {
+  getAll:  async ()     => { const r = await fetch(`${API}/buses`, { headers: h() }); if (!r.ok) throw new Error('Error buses'); return r.json(); },
+  getById: async (id)   => { const r = await fetch(`${API}/buses/${id}`, { headers: h() }); if (!r.ok) throw new Error('Bus no encontrado'); return r.json(); },
+  create:  async (data) => { const r = await fetch(`${API}/buses`, { method: 'POST', headers: h(), body: JSON.stringify(data) }); if (!r.ok) throw new Error('Error crear bus'); return r.json(); },
+  update:  async (id, data) => { const r = await fetch(`${API}/buses/${id}`, { method: 'PUT', headers: h(), body: JSON.stringify(data) }); if (!r.ok) throw new Error('Error actualizar'); return r.json(); },
+  delete:  async (id)   => { const r = await fetch(`${API}/buses/${id}`, { method: 'DELETE', headers: h() }); if (!r.ok) throw new Error('Error eliminar'); },
 };

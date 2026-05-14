@@ -1,29 +1,11 @@
-import axios from 'axios';
+import { API } from '../constants/api';
+const h = () => ({ 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` });
 
-const API_URL = '/api/users';
-
-export const UserService = {
-    getAll: async () => {
-        const { data } = await axios.get(API_URL);
-        return data;
-    },
-    fetchUsers: async () => UserService.getAll(),
-
-    create: async (userData) => {
-        const { data } = await axios.post(API_URL, userData);
-        return data;
-    },
-    createUser: async (userData) => UserService.create(userData),
-
-    update: async (id, userData) => {
-        const { data } = await axios.put(`${API_URL}/${id}`, userData);
-        return data;
-    },
-    updateUser: async (id, userData) => UserService.update(id, userData),
-
-    delete: async (id) => {
-        await axios.delete(`${API_URL}/${id}`);
-        return true;
-    },
-    deleteUser: async (id) => UserService.delete(id),
+export const userService = {
+  getAll:    async ()     => { const r = await fetch(`${API}/users`, { headers: h() }); if (!r.ok) throw new Error('Error usuarios'); return r.json(); },
+  getById:   async (id)   => { const r = await fetch(`${API}/users/${id}`, { headers: h() }); if (!r.ok) throw new Error('Usuario no encontrado'); return r.json(); },
+  getActive: async ()     => { const r = await fetch(`${API}/users/activos`, { headers: h() }); if (!r.ok) throw new Error('Error'); return r.json(); },
+  create:    async (data) => { const r = await fetch(`${API}/users`, { method: 'POST', headers: h(), body: JSON.stringify(data) }); if (!r.ok) throw new Error('Error crear usuario'); return r.json(); },
+  update:    async (id, data) => { const r = await fetch(`${API}/users/${id}`, { method: 'PUT', headers: h(), body: JSON.stringify(data) }); if (!r.ok) throw new Error('Error actualizar'); return r.json(); },
+  delete:    async (id)   => { const r = await fetch(`${API}/users/${id}`, { method: 'DELETE', headers: h() }); if (!r.ok) throw new Error('Error eliminar'); },
 };

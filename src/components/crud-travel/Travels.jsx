@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
-import { TravelsService as travelService } from '../../services/TravelsService'
-import { HotelService as hotelService } from '../../services/HotelService'
-import { BusService as busService } from '../../services/BusService'
+import { travelService } from '../../services/TravelsService'
+import { hotelService } from '../../services/HotelService'
+import { busService } from '../../services/BusService'
 
 const EMPTY_FORM = {
   destiny: '',

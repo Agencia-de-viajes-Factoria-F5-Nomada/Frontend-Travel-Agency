@@ -1,49 +1,13 @@
-import axios from 'axios';
 
-const API_URL = '/api/hotels';
+import { API } from '../constants/api';
+const h = () => ({ 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` });
 
-export const HotelService = {
-    getAll: async () => {
-        try {
-            const { data } = await axios.get(API_URL);
-            return data;
-        } catch (error) {
-            console.error("Error en getAll:", error);
-            throw error;
-        }
-    },
-    fetchHoteles: async () => HotelService.getAll(),
-
-    create: async (hotelData) => {
-        try {
-            const { data } = await axios.post(API_URL, hotelData);
-            return data;
-        } catch (error) {
-            console.error("Error en create:", error);
-            throw error;
-        }
-    },
-    createHotel: async (hotelData) => HotelService.create(hotelData),
-
-    update: async (id, hotelData) => {
-        try {
-            const { data } = await axios.put(`${API_URL}/${id}`, hotelData);
-            return data;
-        } catch (error) {
-            console.error("Error en update:", error);
-            throw error;
-        }
-    },
-    updateHotel: async (id, hotelData) => HotelService.update(id, hotelData),
-
-    delete: async (id) => {
-        try {
-            await axios.delete(`${API_URL}/${id}`);
-            return true;
-        } catch (error) {
-            console.error("Error en delete:", error);
-            throw error;
-        }
-    },
-    deleteHotel: async (id) => HotelService.delete(id),
+export const hotelService = {
+  getAll:       async ()     => { const r = await fetch(`${API}/hotels`, { headers: h() }); if (!r.ok) throw new Error('Error hoteles'); return r.json(); },
+  getById:      async (id)   => { const r = await fetch(`${API}/hotels/${id}`, { headers: h() }); if (!r.ok) throw new Error('Hotel no encontrado'); return r.json(); },
+  getActive:    async ()     => { const r = await fetch(`${API}/hotels/activos`, { headers: h() }); if (!r.ok) throw new Error('Error'); return r.json(); },
+  getAvailable: async ()     => { const r = await fetch(`${API}/hotels/disponibles`, { headers: h() }); if (!r.ok) throw new Error('Error'); return r.json(); },
+  create:       async (data) => { const r = await fetch(`${API}/hotels`, { method: 'POST', headers: h(), body: JSON.stringify(data) }); if (!r.ok) throw new Error('Error crear hotel'); return r.json(); },
+  update:       async (id, data) => { const r = await fetch(`${API}/hotels/${id}`, { method: 'PUT', headers: h(), body: JSON.stringify(data) }); if (!r.ok) throw new Error('Error actualizar'); return r.json(); },
+  delete:       async (id)   => { const r = await fetch(`${API}/hotels/${id}`, { method: 'DELETE', headers: h() }); if (!r.ok) throw new Error('Error eliminar'); },
 };

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BookingService } from '../../services/BookingService';
+import { bookingService } from '../../services/BookingService';
 
 const Bookings = () => {
   const [bookings, setBookings] = useState([]);
@@ -13,7 +13,7 @@ const Bookings = () => {
 
   const loadBookings = async () => {
     try {
-      const data = await BookingService.fetchBookings();
+      const data = await bookingService.getAll();
       setBookings(data);
     } catch (error) {
       console.error(error);
@@ -28,9 +28,9 @@ const Bookings = () => {
     e.preventDefault();
     try {
       if (isEditing) {
-        await BookingService.updateBooking(currentId, formData);
+        await bookingService.confirm({ ...formData, id: currentId });
       } else {
-        await BookingService.createBooking(formData);
+        await bookingService.confirm(formData);
       }
       resetForm();
       loadBookings();
@@ -52,7 +52,7 @@ const Bookings = () => {
   const deleteBooking = async (id) => {
     if (window.confirm("¿Anular esta reserva?")) {
       try {
-        await BookingService.deleteBooking(id);
+        await bookingService.delete(id);
         loadBookings();
       } catch (error) {
         console.error(error);

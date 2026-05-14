@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { UserService as userService } from '../../services/UserService'
+import { userService } from '../../services/UserService'
 
 const EMPTY_FORM = {
   name: '',
