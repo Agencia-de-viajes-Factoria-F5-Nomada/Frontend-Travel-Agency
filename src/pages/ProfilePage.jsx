@@ -1,106 +1,168 @@
-import { useState } from 'react'
-import { Plane } from 'lucide-react'
-import BookingFormModal from '../components/common/BookingFormModal'
+import { useState, useEffect } from 'react'
+import { LogOut, Plane } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import Button from '../components/ui/Button'
 import Card from '../components/ui/Card'
 import PageHeader from '../components/ui/PageHeader'
-import { BOOKINGS } from '../constants/mockData'
-import { PUBLIC_PATHS } from '../constants/paths'
-import { formatCurrency } from '../utils/formatters'
+import { authService } from '../services/authService'
+import { bookingService } from '../services/BookingService'
 
 const ProfilePage = () => {
-  const [isBookingFormOpen, setIsBookingFormOpen] = useState(false)
-  const [bookings, setBookings] = useState(BOOKINGS)
+  const navigate                  = useNavigate()
+  const user                      = authService.getUser()
+  const [bookings, setBookings]   = useState([])
+  const [loading, setLoading]     = useState(true)
+  const [error, setError]         = useState(null)
 
-  const handleBookingSubmit = (data) => {
-    const newBooking = {
-      id: `TR-${Date.now().toString().slice(-4)}`,
-      destination: data.destination,
-      dates: `${data.startDate} - ${data.endDate}`,
-      travelers: Number(data.travelers),
-      total: 0,
-      status: 'pending',
-      name: data.name,
-      dni: data.dni,
-      email: data.email,
-      phone: data.phone,
-      signalPaid: 0,
+  useEffect(() => {
+    if (!authService.isAuthenticated()) {
+      navigate('/auth')
+      return
     }
-    setBookings((prev) => [newBooking, ...prev])
+    bookingService.getAll()
+      .then(data => {
+        // Filtrar solo las reservas del usuario actual
+        const mine = Array.isArray(data)
+          ? data.filter(b => b.userId === user?.id)
+          : []
+        setBookings(mine)
+      })
+      .catch(e => setError(e.message))
+      .finally(() => setLoading(false))
+  }, [])
+
+  const handleLogout = () => {
+    authService.logout()
+    navigate('/')
+  }
+
+  const statusLabel = (status) => {
+    const map = {
+      PENDING:   { label: 'Pendiente',  bg: '#FAEEDA', color: '#854F0B' },
+      CONFIRMED: { label: 'Confirmada', bg: '#EAF3DE', color: '#3B6D11' },
+      CANCELLED: { label: 'Cancelada',  bg: '#FCEBEB', color: '#A32D2D' },
+    }
+    return map[status] ?? { label: status, bg: '#DAEEF7', color: '#1A3A5C' }
   }
 
   return (
     <div className="container-page py-12">
       <PageHeader
         eyebrow="Mi cuenta"
-        title="Bienvenida de nuevo, Marta"
-        description="Gestiona tus viajes, datos personales y preferencias."
+        title={`Bienvenido/a, ${user?.name ?? 'Viajero'}`}
+        description="Gestiona tus reservas y datos personales."
         actions={
           <div className="flex gap-3">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsBookingFormOpen(true)}
-            >
+            <Button variant="ghost" size="sm" onClick={() => navigate('/destinations')}>
               <Plane className="h-4 w-4" aria-hidden="true" />
-              Planificar un nuevo viaje
+              Buscar viajes
             </Button>
-            <Button variant="secondary" to={PUBLIC_PATHS.AUTH}>
+            <Button variant="secondary" size="sm" onClick={handleLogout}>
+              <LogOut className="h-4 w-4" aria-hidden="true" />
               Cerrar sesión
             </Button>
           </div>
         }
       />
 
-    <div className="mt-8 grid gap-6">
-      <div className="flex flex-col gap-6">
-        <Card className="p-6">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold text-white">Mis reservas</h2>
+      {/* Datos del usuario */}
+      <div className="mt-8 grid gap-6 lg:grid-cols-[300px_1fr]">
+        <Card className="h-fit p-6 space-y-3">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-muted">
+            Mis datos
+          </h2>
+          <div className="space-y-2 text-sm">
+            <div className="flex justify-between">
+              <span className="text-ink-muted">Nombre</span>
+              <span className="text-white">{user?.name} {user?.surname}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-ink-muted">Email</span>
+              <span className="text-white">{user?.email}</span>
+            </div>
+            {user?.passport && (
+              <div className="flex justify-between">
+                <span className="text-ink-muted">Pasaporte</span>
+                <span className="text-white">{user.passport}</span>
+              </div>
+            )}
+            <div className="flex justify-between">
+              <span className="text-ink-muted">Rol</span>
+              <span className="rounded-full px-2 py-0.5 text-xs font-medium"
+                style={{ background: '#DAEEF7', color: '#1A3A5C' }}>
+                {user?.rol ?? 'USER'}
+              </span>
+            </div>
           </div>
+          {authService.isAdmin() && (
+            <Button fullWidth size="sm" onClick={() => navigate('/admin')}
+              className="mt-2">
+              Ir al panel admin
+            </Button>
+          )}
+        </Card>
 
-          <div className="mt-6 overflow-x-auto">
-            <table className="w-full min-w-[640px] text-left text-sm">
-              <thead className="text-xs uppercase tracking-wide text-ink-muted">
-                <tr>
-                  <th scope="col" className="py-3">Nombre</th>
-                  <th scope="col" className="py-3">DNI</th>
-                  <th scope="col" className="py-3">Datos de Contacto</th>
-                  <th scope="col" className="py-3">Señal Pagada</th>
-                  <th scope="col" className="py-3"></th>
-                </tr>
-              </thead>
-              <tbody>
-                {bookings.map((booking) => (
-                  <tr key={booking.id} className="border-t border-surface-700 text-ink-soft">
-                    <td className="py-4 font-medium text-white">{booking.name}</td>
-                    <td className="py-4">{booking.dni}</td>
-                    <td className="py-4">
-                      <div className="text-sm">
-                        <div>{booking.email}</div>
-                        <div>{booking.phone}</div>
-                      </div>
-                    </td>
-                    <td className="py-4">{formatCurrency(booking.signalPaid)}</td>
-                    <td className="py-4 text-right">
-                      <Button variant="ghost" size="sm">
-                        Ver
-                      </Button>
-                    </td>
+        {/* Reservas */}
+        <Card className="p-6">
+          <h2 className="text-xl font-semibold text-white">Mis reservas</h2>
+
+          {error && (
+            <div className="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</div>
+          )}
+
+          {loading ? (
+            <div className="mt-6 space-y-3">
+              {[...Array(3)].map((_, i) => (
+                <div key={i} className="h-16 animate-pulse rounded-xl bg-surface-800" />
+              ))}
+            </div>
+          ) : bookings.length === 0 ? (
+            <div className="mt-8 text-center">
+              <Plane className="mx-auto h-10 w-10 text-brand-400" />
+              <p className="mt-3 font-semibold text-white">No tienes reservas aún</p>
+              <p className="text-sm text-ink-muted">Encuentra tu próximo viaje y resérvalo</p>
+              <Button className="mt-4" onClick={() => navigate('/destinations')}>
+                Buscar viajes
+              </Button>
+            </div>
+          ) : (
+            <div className="mt-6 overflow-x-auto">
+              <table className="w-full min-w-[600px] text-left text-sm">
+                <thead className="text-xs uppercase tracking-wide text-ink-muted">
+                  <tr>
+                    <th className="py-3">Nº reserva</th>
+                    <th className="py-3">Destino</th>
+                    <th className="py-3">Fechas</th>
+                    <th className="py-3">Pasajeros</th>
+                    <th className="py-3">Total</th>
+                    <th className="py-3">Estado</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {bookings.map(b => {
+                    const st = statusLabel(b.status)
+                    return (
+                      <tr key={b.id} className="border-t border-surface-700 text-ink-soft">
+                        <td className="py-4 font-medium text-white">#{b.id}</td>
+                        <td className="py-4">{b.travelDestiny ?? b.destiny ?? '—'}</td>
+                        <td className="py-4">{b.startDate ?? '—'}</td>
+                        <td className="py-4">{b.passengers?.length ?? '—'}</td>
+                        <td className="py-4 font-medium text-white">{b.total ?? '—'}€</td>
+                        <td className="py-4">
+                          <span className="rounded-full px-2 py-1 text-xs font-medium"
+                            style={{ background: st.bg, color: st.color }}>
+                            {st.label}
+                          </span>
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
         </Card>
       </div>
-    </div>
-
-      <BookingFormModal
-        open={isBookingFormOpen}
-        onClose={() => setIsBookingFormOpen(false)}
-        onSubmit={handleBookingSubmit}
-      />
     </div>
   )
 }
