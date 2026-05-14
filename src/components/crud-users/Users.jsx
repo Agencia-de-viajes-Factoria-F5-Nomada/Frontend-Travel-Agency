@@ -1,124 +1,255 @@
-import React, { useState, useEffect } from 'react';
-import { UserService } from '../services/UserService';
+import { useState, useEffect } from 'react'
+import { userService } from '../../services/UserService'
 
-const Users = () => {
-  const [users, setUsers] = useState([]);
-  const [formData, setFormData] = useState({ dni: '', name: '', phone: '', email: '' });
-  const [isEditing, setIsEditing] = useState(false);
-  const [currentId, setCurrentId] = useState(null);
+const EMPTY_FORM = {
+  name: '',
+  surname: '',
+  email: '',
+  password: '',
+  passport: '',
+  birthDate: '',
+  tutorId: '',
+  rol: 'USER',
+  active: true,
+}
 
-  useEffect(() => {
-    loadUsers();
-  }, []);
+export default function Users() {
+  const [users, setUsers]       = useState([])
+  const [loading, setLoading]   = useState(true)
+  const [error, setError]       = useState(null)
+  const [showForm, setShowForm] = useState(false)
+  const [editing, setEditing]   = useState(null)
+  const [form, setForm]         = useState(EMPTY_FORM)
 
-  const loadUsers = async () => {
+  const load = async () => {
     try {
-      const data = await UserService.fetchUsers();
-      setUsers(data);
-    } catch (error) {
-      console.error(error);
+      setLoading(true)
+      const data = await userService.getAll()
+      setUsers(data)
+    } catch (e) {
+      setError(e.message)
+    } finally {
+      setLoading(false)
     }
-  };
+  }
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  useEffect(() => { load() }, [])
+
+  const openCreate = () => {
+    setEditing(null)
+    setForm(EMPTY_FORM)
+    setShowForm(true)
+  }
+
+  const openEdit = (user) => {
+    setEditing(user)
+    setForm({
+      name:      user.name      ?? '',
+      surname:   user.surname   ?? '',
+      email:     user.email     ?? '',
+      password:  '',
+      passport:  user.passport  ?? '',
+      birthDate: user.birthDate ?? '',
+      tutorId:   user.tutorId   ?? '',
+      rol:       user.rol       ?? 'USER',
+      active:    user.active    ?? true,
+    })
+    setShowForm(true)
+  }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
     try {
-      if (isEditing) {
-        await UserService.updateUser(currentId, formData);
+      const payload = { ...form }
+      if (!payload.password) delete payload.password
+      if (!payload.tutorId)  delete payload.tutorId
+
+      if (editing) {
+        await userService.update(editing.id, payload)
       } else {
-        await UserService.createUser(formData);
+        await userService.create(payload)
       }
-      resetForm();
-      loadUsers();
-    } catch (error) {
-      console.error(error);
+      setShowForm(false)
+      load()
+    } catch (e) {
+      setError(e.message)
     }
-  };
+  }
 
-  const prepararEdicion = (user) => {
-    setFormData({
-      dni: user.dni,
-      name: user.name,
-      phone: user.phone,
-      email: user.email
-    });
-    setCurrentId(user.id);
-    setIsEditing(true);
-  };
-
-  const deleteUser = async (id) => {
-    if (window.confirm("¿Eliminar usuario?")) {
-      try {
-        await UserService.deleteUser(id);
-        loadUsers();
-      } catch (error) {
-        console.error(error);
-      }
+  const handleDelete = async (id) => {
+    if (!confirm('¿Eliminar este usuario?')) return
+    try {
+      await userService.delete(id)
+      load()
+    } catch (e) {
+      setError(e.message)
     }
-  };
+  }
 
-  const resetForm = () => {
-    setFormData({ dni: '', name: '', phone: '', email: '' });
-    setIsEditing(false);
-    setCurrentId(null);
-  };
+  const change = (e) => {
+    const { name, value, type, checked } = e.target
+    setForm(f => ({ ...f, [name]: type === 'checkbox' ? checked : value }))
+  }
+
+  if (loading) return <p className="p-8 text-center">Cargando usuarios...</p>
 
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-bold mb-6 text-[#001f3f]">Gestión de Usuarios</h2>
-      
-      <form onSubmit={handleSubmit} className="mb-8 grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded shadow">
-        <input name="dni" placeholder="DNI" value={formData.dni} onChange={handleChange} className="border p-2 rounded" required />
-        <input name="name" placeholder="Nombre" value={formData.name} onChange={handleChange} className="border p-2 rounded" required />
-        <input name="phone" placeholder="Teléfono" value={formData.phone} onChange={handleChange} className="border p-2 rounded" required />
-        <input name="email" placeholder="Email" type="email" value={formData.email} onChange={handleChange} className="border p-2 rounded" required />
-        
-        <button type="submit" className="col-span-2 bg-[#001f3f] text-white p-2 rounded hover:bg-blue-900 transition-colors">
-          {isEditing ? 'Actualizar Usuario' : 'Registrar Usuario'}
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold" style={{ color: '#1A3A5C' }}>Usuarios</h1>
+        <button
+          onClick={openCreate}
+          className="rounded-lg px-4 py-2 text-white font-medium"
+          style={{ background: '#4A8FA8' }}
+        >
+          + Nuevo usuario
         </button>
-        
-        {isEditing && (
-          <button type="button" onClick={resetForm} className="col-span-2 bg-gray-400 text-white p-2 rounded">
-            Cancelar Edición
-          </button>
-        )}
-      </form>
+      </div>
 
-      <div className="overflow-hidden rounded-lg border border-gray-200 shadow-md">
-        <table className="w-full border-collapse bg-white text-left text-sm text-gray-500">
-          <thead className="bg-[#6faecc] text-white">
+      {error && (
+        <div className="rounded-lg bg-red-50 p-4 text-red-700">{error}</div>
+      )}
+
+      {/* Tabla */}
+      <div className="overflow-x-auto rounded-xl border border-gray-200">
+        <table className="w-full text-sm">
+          <thead style={{ background: '#DAEEF7' }}>
             <tr>
-              <th className="px-6 py-4 font-medium text-white">DNI</th>
-              <th className="px-6 py-4 font-medium text-white">Nombre</th>
-              <th className="px-6 py-4 font-medium text-white">Teléfono</th>
-              <th className="px-6 py-4 font-medium text-white text-center">Acciones</th>
+              {['Nombre', 'Apellido', 'Email', 'Rol', 'Activo', 'Acciones'].map(h => (
+                <th key={h} className="px-4 py-3 text-left font-semibold" style={{ color: '#1A3A5C' }}>{h}</th>
+              ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100 border-t border-gray-100">
-            {users.map((user) => (
-              <tr key={user.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 font-medium text-gray-900">{user.dni}</td>
-                <td className="px-6 py-4">{user.name}</td>
-                <td className="px-6 py-4">{user.phone}</td>
-                <td className="px-6 py-4 text-center">
-                  <button onClick={() => prepararEdicion(user)} className="text-blue-600 hover:text-blue-800 font-semibold mr-4">
+          <tbody>
+            {users.map((u, i) => (
+              <tr key={u.id} className={i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                <td className="px-4 py-3">{u.name}</td>
+                <td className="px-4 py-3">{u.surname}</td>
+                <td className="px-4 py-3">{u.email}</td>
+                <td className="px-4 py-3">
+                  <span className="rounded-full px-2 py-1 text-xs font-medium"
+                    style={{ background: u.rol === 'ADMIN' ? '#1A3A5C' : '#DAEEF7', color: u.rol === 'ADMIN' ? 'white' : '#1A3A5C' }}>
+                    {u.rol}
+                  </span>
+                </td>
+                <td className="px-4 py-3">{u.active ? '✅' : '❌'}</td>
+                <td className="px-4 py-3 flex gap-2">
+                  <button onClick={() => openEdit(u)}
+                    className="rounded px-3 py-1 text-xs font-medium text-white"
+                    style={{ background: '#7AAFC0' }}>
                     Editar
                   </button>
-                  <button onClick={() => deleteUser(user.id)} className="text-red-600 hover:text-red-800 font-semibold">
+                  <button onClick={() => handleDelete(u.id)}
+                    className="rounded px-3 py-1 text-xs font-medium text-white bg-red-500">
                     Eliminar
                   </button>
                 </td>
               </tr>
             ))}
+            {users.length === 0 && (
+              <tr><td colSpan={6} className="px-4 py-8 text-center text-gray-400">No hay usuarios</td></tr>
+            )}
           </tbody>
         </table>
       </div>
-    </div>
-  );
-};
 
-export default Users;
+      {/* Modal formulario */}
+      {showForm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl">
+            <h2 className="mb-4 text-lg font-bold" style={{ color: '#1A3A5C' }}>
+              {editing ? 'Editar usuario' : 'Nuevo usuario'}
+            </h2>
+            <form onSubmit={handleSubmit} className="space-y-3">
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-medium text-gray-600">Nombre *</label>
+                  <input name="name" value={form.name} onChange={change} required
+                    className="mt-1 w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2"
+                    style={{ borderColor: '#7AAFC0' }} />
+                </div>
+                <div>
+                  <label className="text-xs font-medium text-gray-600">Apellido *</label>
+                  <input name="surname" value={form.surname} onChange={change} required
+                    className="mt-1 w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2"
+                    style={{ borderColor: '#7AAFC0' }} />
+                </div>
+              </div>
+
+              <div>
+                <label className="text-xs font-medium text-gray-600">Email *</label>
+                <input name="email" type="email" value={form.email} onChange={change} required
+                  className="mt-1 w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2"
+                  style={{ borderColor: '#7AAFC0' }} />
+              </div>
+
+              <div>
+                <label className="text-xs font-medium text-gray-600">
+                  {editing ? 'Contraseña (dejar vacío para no cambiar)' : 'Contraseña *'}
+                </label>
+                <input name="password" type="password" value={form.password} onChange={change}
+                  required={!editing}
+                  className="mt-1 w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2"
+                  style={{ borderColor: '#7AAFC0' }} />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-medium text-gray-600">Pasaporte</label>
+                  <input name="passport" value={form.passport} onChange={change}
+                    className="mt-1 w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2"
+                    style={{ borderColor: '#7AAFC0' }} />
+                </div>
+                <div>
+                  <label className="text-xs font-medium text-gray-600">Fecha nacimiento</label>
+                  <input name="birthDate" type="date" value={form.birthDate} onChange={change}
+                    className="mt-1 w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2"
+                    style={{ borderColor: '#7AAFC0' }} />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-medium text-gray-600">Rol</label>
+                  <select name="rol" value={form.rol} onChange={change}
+                    className="mt-1 w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2"
+                    style={{ borderColor: '#7AAFC0' }}>
+                    <option value="USER">USER</option>
+                    <option value="ADMIN">ADMIN</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="text-xs font-medium text-gray-600">ID Tutor (menores)</label>
+                  <input name="tutorId" type="number" value={form.tutorId} onChange={change}
+                    className="mt-1 w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2"
+                    style={{ borderColor: '#7AAFC0' }} />
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <input name="active" type="checkbox" checked={form.active} onChange={change}
+                  className="h-4 w-4 rounded" />
+                <label className="text-sm text-gray-600">Usuario activo</label>
+              </div>
+
+              <div className="flex gap-3 pt-2">
+                <button type="submit"
+                  className="flex-1 rounded-lg py-2 text-sm font-medium text-white"
+                  style={{ background: '#4A8FA8' }}>
+                  {editing ? 'Guardar cambios' : 'Crear usuario'}
+                </button>
+                <button type="button" onClick={() => setShowForm(false)}
+                  className="flex-1 rounded-lg border py-2 text-sm font-medium"
+                  style={{ borderColor: '#7AAFC0', color: '#1A3A5C' }}>
+                  Cancelar
+                </button>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}

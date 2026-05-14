@@ -1,190 +1,249 @@
-import React, { useState, useEffect } from 'react';
-import { TravelsService } from '../services/TravelsService';
+import { useState, useEffect } from 'react'
+import { travelService } from '../../services/TravelsService'
+import { hotelService } from '../../services/HotelService'
+import { busService } from '../../services/BusService'
 
-const Travels = () => {
-    const [travels, setTravels] = useState([]);
-    const [isEditing, setIsEditing] = useState(false);
-    const [currentId, setCurrentId] = useState(null);
-    const [formData, setFormData] = useState({
-        destination: '',
-        price: '',
-        departureDate: '',
-        availableSeats: '',
-        onSale: false
-    });
+const EMPTY_FORM = {
+  destiny: '',
+  startDate: '',
+  endDate: '',
+  availablePlaces: 0,
+  sale: false,
+  hotelId: '',
+  busId: '',
+}
 
-    useEffect(() => {
-        loadTravels();
-    }, []);
+export default function Travels() {
+  const [travels, setTravels]   = useState([])
+  const [hotels, setHotels]     = useState([])
+  const [buses, setBuses]       = useState([])
+  const [loading, setLoading]   = useState(true)
+  const [error, setError]       = useState(null)
+  const [showForm, setShowForm] = useState(false)
+  const [editing, setEditing]   = useState(null)
+  const [form, setForm]         = useState(EMPTY_FORM)
 
-    const loadTravels = async () => {
-        try {
-            // Axios nos da la data directamente desde el servicio
-            const data = await TravelsService.fetchTravels();
-            setTravels(data);
-        } catch (error) {
-            console.error("Error al cargar viajes:", error);
-        }
-    };
+  const load = async () => {
+    try {
+      setLoading(true)
+      const [travelsData, hotelsData, busesData] = await Promise.all([
+        travelService.getAll(),
+        hotelService.getAll(),
+        busService.getAll(),
+      ])
+      setTravels(travelsData)
+      setHotels(hotelsData)
+      setBuses(busesData)
+    } catch (e) {
+      setError(e.message)
+    } finally {
+      setLoading(false)
+    }
+  }
 
-    const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
-        setFormData({
-            ...formData,
-            [name]: type === 'checkbox' ? checked : value
-        });
-    };
+  useEffect(() => { load() }, [])
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            if (isEditing) {
-                await TravelsService.updateTravel(currentId, formData);
-                setIsEditing(false);
-                setCurrentId(null);
-            } else {
-                await TravelsService.createTravel(formData);
-            }
-            // Reset del formulario
-            setFormData({ destination: '', price: '', departureDate: '', availableSeats: '', onSale: false });
-            loadTravels();
-        } catch (error) {
-            console.error("Error al procesar el viaje:", error);
-        }
-    };
+  const openCreate = () => {
+    setEditing(null)
+    setForm(EMPTY_FORM)
+    setShowForm(true)
+  }
 
-    const handleEditClick = (travel) => {
-        setIsEditing(true);
-        setCurrentId(travel.id);
-        setFormData({
-            destination: travel.destination,
-            price: travel.price,
-            departureDate: travel.departureDate,
-            availableSeats: travel.availableSeats,
-            onSale: travel.onSale
-        });
-    };
+  const openEdit = (travel) => {
+    setEditing(travel)
+    setForm({
+      destiny:         travel.destiny         ?? '',
+      startDate:       travel.startDate       ?? '',
+      endDate:         travel.endDate         ?? '',
+      availablePlaces: travel.availablePlaces ?? 0,
+      sale:            travel.sale            ?? false,
+      hotelId:         travel.hotelId         ?? '',
+      busId:           travel.busId           ?? '',
+    })
+    setShowForm(true)
+  }
 
-    const handleDelete = async (id) => {
-        if (window.confirm("¿Estás seguro de eliminar este viaje?")) {
-            try {
-                await TravelsService.deleteTravel(id);
-                loadTravels();
-            } catch (error) {
-                console.error("Error al eliminar:", error);
-            }
-        }
-    };
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    try {
+      const payload = {
+        ...form,
+        availablePlaces: Number(form.availablePlaces),
+        hotelId:         Number(form.hotelId),
+        busId:           form.busId ? Number(form.busId) : null,
+      }
+      if (!payload.busId) delete payload.busId
 
-    return (
-        <div className="p-6">
-            <h2 className="text-2xl font-bold mb-6 text-[#001f3f]">Panel de Viajes</h2>
-            
-            <form onSubmit={handleSubmit} className="mb-8 grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded shadow">
-                <input 
-                    name="destination" 
-                    value={formData.destination} 
-                    onChange={handleChange} 
-                    placeholder="Destino"
-                    className="border p-2 rounded"
-                    required
-                />
-                <input 
-                    name="price" 
-                    type="number"
-                    value={formData.price} 
-                    onChange={handleChange} 
-                    placeholder="Precio"
-                    className="border p-2 rounded"
-                    required
-                />
-                <input 
-                    name="departureDate" 
-                    type="date"
-                    value={formData.departureDate} 
-                    onChange={handleChange} 
-                    className="border p-2 rounded"
-                    required
-                />
-                <input 
-                    name="availableSeats" 
-                    type="number"
-                    value={formData.availableSeats} 
-                    onChange={handleChange} 
-                    placeholder="Asientos"
-                    className="border p-2 rounded"
-                    required
-                />
-                <div className="flex items-center gap-2">
-                    <input 
-                        name="onSale" 
-                        type="checkbox"
-                        checked={formData.onSale} 
-                        onChange={handleChange} 
-                    />
-                    <label>¿Está en oferta?</label>
+      if (editing) {
+        await travelService.update(editing.id, payload)
+      } else {
+        await travelService.create(payload)
+      }
+      setShowForm(false)
+      load()
+    } catch (e) {
+      setError(e.message)
+    }
+  }
+
+  const handleDelete = async (id) => {
+    if (!confirm('¿Eliminar este viaje?')) return
+    try {
+      await travelService.delete(id)
+      load()
+    } catch (e) {
+      setError(e.message)
+    }
+  }
+
+  const change = (e) => {
+    const { name, value, type, checked } = e.target
+    setForm(f => ({ ...f, [name]: type === 'checkbox' ? checked : value }))
+  }
+
+  const getHotelName = (id) => hotels.find(h => h.id === id)?.name ?? id
+  const getBusPlate  = (id) => buses.find(b => b.id === id)?.licensePlate ?? id
+
+  if (loading) return <p className="p-8 text-center">Cargando viajes...</p>
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold" style={{ color: '#1A3A5C' }}>Viajes</h1>
+        <button onClick={openCreate}
+          className="rounded-lg px-4 py-2 text-white font-medium"
+          style={{ background: '#4A8FA8' }}>
+          + Nuevo viaje
+        </button>
+      </div>
+
+      {error && <div className="rounded-lg bg-red-50 p-4 text-red-700">{error}</div>}
+
+      {/* Tabla */}
+      <div className="overflow-x-auto rounded-xl border border-gray-200">
+        <table className="w-full text-sm">
+          <thead style={{ background: '#DAEEF7' }}>
+            <tr>
+              {['Destino', 'Fecha inicio', 'Fecha fin', 'Plazas', 'Hotel', 'Bus', 'Oferta', 'Acciones'].map(h => (
+                <th key={h} className="px-4 py-3 text-left font-semibold" style={{ color: '#1A3A5C' }}>{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {travels.map((t, i) => (
+              <tr key={t.id} className={i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                <td className="px-4 py-3 font-medium">{t.destiny}</td>
+                <td className="px-4 py-3">{t.startDate}</td>
+                <td className="px-4 py-3">{t.endDate}</td>
+                <td className="px-4 py-3">{t.availablePlaces}</td>
+                <td className="px-4 py-3">{getHotelName(t.hotelId)}</td>
+                <td className="px-4 py-3">{t.busId ? getBusPlate(t.busId) : '—'}</td>
+                <td className="px-4 py-3">{t.sale ? '🏷 Sí' : 'No'}</td>
+                <td className="px-4 py-3 flex gap-2">
+                  <button onClick={() => openEdit(t)}
+                    className="rounded px-3 py-1 text-xs font-medium text-white"
+                    style={{ background: '#7AAFC0' }}>
+                    Editar
+                  </button>
+                  <button onClick={() => handleDelete(t.id)}
+                    className="rounded px-3 py-1 text-xs font-medium text-white bg-red-500">
+                    Eliminar
+                  </button>
+                </td>
+              </tr>
+            ))}
+            {travels.length === 0 && (
+              <tr><td colSpan={8} className="px-4 py-8 text-center text-gray-400">No hay viajes</td></tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Modal */}
+      {showForm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl max-h-[90vh] overflow-y-auto">
+            <h2 className="mb-4 text-lg font-bold" style={{ color: '#1A3A5C' }}>
+              {editing ? 'Editar viaje' : 'Nuevo viaje'}
+            </h2>
+            <form onSubmit={handleSubmit} className="space-y-3">
+
+              <div>
+                <label className="text-xs font-medium text-gray-600">Destino *</label>
+                <input name="destiny" value={form.destiny} onChange={change} required
+                  placeholder="Ej: París, Francia"
+                  className="mt-1 w-full rounded-lg border px-3 py-2 text-sm"
+                  style={{ borderColor: '#7AAFC0' }} />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-medium text-gray-600">Fecha inicio *</label>
+                  <input name="startDate" type="date" value={form.startDate} onChange={change} required
+                    className="mt-1 w-full rounded-lg border px-3 py-2 text-sm"
+                    style={{ borderColor: '#7AAFC0' }} />
                 </div>
-                <button type="submit" className="col-span-2 bg-[#001f3f] text-white p-2 rounded hover:bg-blue-900 transition-colors">
-                    {isEditing ? 'Actualizar Viaje' : 'Crear Viaje'}
+                <div>
+                  <label className="text-xs font-medium text-gray-600">Fecha fin *</label>
+                  <input name="endDate" type="date" value={form.endDate} onChange={change} required
+                    className="mt-1 w-full rounded-lg border px-3 py-2 text-sm"
+                    style={{ borderColor: '#7AAFC0' }} />
+                </div>
+              </div>
+
+              <div>
+                <label className="text-xs font-medium text-gray-600">Plazas disponibles *</label>
+                <input name="availablePlaces" type="number" min="0" value={form.availablePlaces} onChange={change} required
+                  className="mt-1 w-full rounded-lg border px-3 py-2 text-sm"
+                  style={{ borderColor: '#7AAFC0' }} />
+              </div>
+
+              <div>
+                <label className="text-xs font-medium text-gray-600">Hotel *</label>
+                <select name="hotelId" value={form.hotelId} onChange={change} required
+                  className="mt-1 w-full rounded-lg border px-3 py-2 text-sm"
+                  style={{ borderColor: '#7AAFC0' }}>
+                  <option value="">Selecciona un hotel</option>
+                  {hotels.map(h => (
+                    <option key={h.id} value={h.id}>{h.name} — {h.city}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="text-xs font-medium text-gray-600">Autobús</label>
+                <select name="busId" value={form.busId} onChange={change}
+                  className="mt-1 w-full rounded-lg border px-3 py-2 text-sm"
+                  style={{ borderColor: '#7AAFC0' }}>
+                  <option value="">Sin autobús asignado</option>
+                  {buses.map(b => (
+                    <option key={b.id} value={b.id}>{b.licensePlate} ({b.capacity} plazas)</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <input name="sale" type="checkbox" checked={form.sale} onChange={change} className="h-4 w-4" />
+                <label className="text-sm text-gray-600">En oferta</label>
+              </div>
+
+              <div className="flex gap-3 pt-2">
+                <button type="submit"
+                  className="flex-1 rounded-lg py-2 text-sm font-medium text-white"
+                  style={{ background: '#4A8FA8' }}>
+                  {editing ? 'Guardar cambios' : 'Crear viaje'}
                 </button>
-                {isEditing && (
-                    <button 
-                        type="button" 
-                        onClick={() => { setIsEditing(false); setFormData({ destination: '', price: '', departureDate: '', availableSeats: '', onSale: false }); }}
-                        className="col-span-2 bg-gray-400 text-white p-2 rounded"
-                    >
-                        Cancelar Edición
-                    </button>
-                )}
+                <button type="button" onClick={() => setShowForm(false)}
+                  className="flex-1 rounded-lg border py-2 text-sm font-medium"
+                  style={{ borderColor: '#7AAFC0', color: '#1A3A5C' }}>
+                  Cancelar
+                </button>
+              </div>
+
             </form>
-
-            <div className="overflow-hidden rounded-lg border border-gray-200 shadow-md">
-                <table className="w-full border-collapse bg-white text-left text-sm text-gray-500">
-                    <thead className="bg-[#6faecc] text-white">
-                        <tr>
-                            <th className="px-6 py-4 font-medium text-white">Destino</th>
-                            <th className="px-6 py-4 font-medium text-white">Precio</th>
-                            <th className="px-6 py-4 font-medium text-white">Fecha</th>
-                            <th className="px-6 py-4 font-medium text-white">Asientos</th>
-                            <th className="px-6 py-4 font-medium text-white">Estado</th>
-                            <th className="px-6 py-4 font-medium text-white text-center">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-100 border-t border-gray-100">
-                        {travels.map((travel) => (
-                            <tr key={travel.id} className="hover:bg-gray-50">
-                                <td className="px-6 py-4 font-medium text-gray-900">{travel.destination}</td>
-                                <td className="px-6 py-4">{travel.price}</td>
-                                <td className="px-6 py-4">{travel.departureDate}</td>
-                                <td className="px-6 py-4">{travel.availableSeats}</td>
-                                <td className="px-6 py-4">
-                                    {travel.onSale ? (
-                                        <span className="rounded-full bg-green-50 px-2 py-1 text-xs font-semibold text-green-600">En Oferta</span>
-                                    ) : (
-                                        <span className="rounded-full bg-blue-50 px-2 py-1 text-xs font-semibold text-blue-600">Normal</span>
-                                    )}
-                                </td>
-                                <td className="px-6 py-4 text-center">
-                                    <button 
-                                        onClick={() => handleEditClick(travel)}
-                                        className="text-blue-600 hover:text-blue-800 font-semibold mr-4"
-                                    >
-                                        Editar
-                                    </button>
-                                    <button 
-                                        onClick={() => handleDelete(travel.id)}
-                                        className="text-red-600 hover:text-red-800 font-semibold"
-                                    >
-                                        Eliminar
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
+          </div>
         </div>
-    );
-};
-
-export default Travels;
+      )}
+    </div>
+  )
+}
