@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { API } from '../constants/api';
 
-const API_URL = 'http://localhost:8080/api/bookings';
+const API_URL = `${API}/bookings`;
 
 const authHeader = () => {
     const token = localStorage.getItem('token');
@@ -10,7 +10,7 @@ const authHeader = () => {
 
 export const BookingService = {
     fetchBookings: async () => {
-        const { data } = await axios.get(API_URL);
+        const { data } = await axios.get(API_URL, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
         return data;
     },
 

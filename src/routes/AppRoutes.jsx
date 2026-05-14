@@ -19,14 +19,16 @@ import NotFoundPage         from '../pages/NotFoundPage';
 // Páginas admin
 import DashboardPage        from '../pages/DashboardPage';
 import BookingsPage         from '../pages/BookingsPage';
-import UsersPage            from '../pages/UsersPage';
 
 // CRUDs admin (componentes existentes)
-import Hoteles    from '../components/crud-hotel/Hoteles';
-import Buses      from '../components/crud-buses/Buses';
-import Drivers    from '../components/crud-drivers/Drivers';
-import Travels    from '../components/crud-travel/Travels';
-import Bookings   from '../components/bookings-crud/Bookings';
+import Hoteles      from '../components/crud-hotel/Hoteles';
+import Buses        from '../components/crud-buses/Buses';
+import Drivers      from '../components/crud-drivers/Drivers';
+import Travels      from '../components/crud-travel/Travels';
+import Users        from '../components/crud-users/Users';
+import Offers       from '../components/crud-offers/OffersForm';
+import Employees    from '../components/crud-employees/EmployeesForm';
+import TripSegments from '../components/crud-tripsegments/TripSegmentsForm';
 
 export default function AppRoutes() {
   return (
@@ -56,11 +58,15 @@ export default function AppRoutes() {
       }>
         <Route index                       element={<DashboardPage />} />
         <Route path="bookings"             element={<BookingsPage />} />
-        <Route path="users"                element={<UsersPage />} />
+        <Route path="users"                element={<Users />} />
         <Route path="hotels"               element={<Hoteles />} />
         <Route path="buses"                element={<Buses />} />
         <Route path="drivers"              element={<Drivers />} />
         <Route path="travels"              element={<Travels />} />
+        <Route path="destinations"         element={<Travels />} />
+        <Route path="offers"               element={<Offers />} />
+        <Route path="employees"            element={<Employees />} />
+        <Route path="trip-segments"        element={<TripSegments />} />
       </Route>
 
       {/* ── 404 ── */}

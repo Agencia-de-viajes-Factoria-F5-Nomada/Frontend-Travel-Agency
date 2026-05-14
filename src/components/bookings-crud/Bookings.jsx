@@ -6,6 +6,7 @@ const Bookings = () => {
   const [formData, setFormData] = useState({ customerName: '', destination: '', bookingDate: '' });
   const [isEditing, setIsEditing] = useState(false);
   const [currentId, setCurrentId] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     loadBookings();
@@ -16,7 +17,7 @@ const Bookings = () => {
       const data = await bookingService.getAll();
       setBookings(data);
     } catch (error) {
-      console.error(error);
+      setError(error.message);
     }
   };
 
@@ -35,7 +36,7 @@ const Bookings = () => {
       resetForm();
       loadBookings();
     } catch (error) {
-      console.error(error);
+      setError(error.message);
     }
   };
 
@@ -55,7 +56,7 @@ const Bookings = () => {
         await bookingService.delete(id);
         loadBookings();
       } catch (error) {
-        console.error(error);
+        setError(error.message);
       }
     }
   };
@@ -69,6 +70,7 @@ const Bookings = () => {
   return (
     <div className="p-6">
       <h2 className="text-2xl font-bold mb-6 text-[#001f3f]">Gestión de Reservas</h2>
+      {error && <div className="mb-4 rounded-lg bg-red-50 p-4 text-red-700">{error}</div>}
       
       <form onSubmit={handleSubmit} className="mb-8 grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded shadow">
         <input name="customerName" placeholder="Nombre Cliente" value={formData.customerName} onChange={handleChange} className="border p-2 rounded" required />

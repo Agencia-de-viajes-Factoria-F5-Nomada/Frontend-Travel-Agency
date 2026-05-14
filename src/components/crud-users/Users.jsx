@@ -57,8 +57,23 @@ export default function Users() {
     setShowForm(true)
   }
 
+  const validate = () => {
+    if (form.passport && !/^[A-Z0-9]{5,20}$/i.test(form.passport))
+      return 'El pasaporte debe tener entre 5 y 20 caracteres alfanuméricos'
+    if (form.birthDate) {
+      const date = new Date(form.birthDate)
+      const now  = new Date()
+      const min  = new Date(now.getFullYear() - 120, now.getMonth(), now.getDate())
+      if (date > now)  return 'La fecha de nacimiento no puede ser futura'
+      if (date < min)  return 'Fecha de nacimiento no válida (más de 120 años)'
+    }
+    return null
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
+    const validationError = validate()
+    if (validationError) { setError(validationError); return }
     try {
       const payload = { ...form }
       if (!payload.password) delete payload.password

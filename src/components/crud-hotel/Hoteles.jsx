@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { hotelService } from '../../services/HotelService'
+import { cloudinaryService } from '../../services/cloudinaryService'
 
 const EMPTY_FORM = {
   name: '',
@@ -62,15 +63,26 @@ export default function Hoteles() {
     setShowForm(true)
   }
 
-  const handleImage = (e) => {
+  const handleImage = async (e) => {
     const file = e.target.files[0]
     if (!file) return
-    const url = URL.createObjectURL(file)
-    setForm(f => ({ ...f, imageUrl: url }))
+    try {
+      setUploading(true)
+      const url = await cloudinaryService.upload(file)
+      setForm(f => ({ ...f, imageUrl: url }))
+    } catch {
+      setError('Error al subir imagen')
+    } finally {
+      setUploading(false)
+    }
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    if (Number(form.availablePlaces) > Number(form.capacity)) {
+      setError('Las plazas disponibles no pueden superar la capacidad total')
+      return
+    }
     try {
       const payload = {
         ...form,
@@ -247,13 +259,12 @@ export default function Hoteles() {
                 </div>
               </div>
 
-              {/* Cloudinary */}
               <div>
                 <label className="text-xs font-medium text-gray-600">Imagen</label>
-                <input type="file" accept="image/*" onChange={handleImage}
+                <input type="file" accept="image/*" onChange={handleImage} disabled={uploading}
                   className="mt-1 w-full text-sm text-gray-500" />
-
-                {form.imageUrl && (
+                {uploading && <p className="mt-1 text-xs text-blue-500">Subiendo imagen...</p>}
+                {form.imageUrl && !uploading && (
                   <img src={form.imageUrl} alt="preview"
                     className="mt-2 h-24 w-full rounded-lg object-cover" />
                 )}

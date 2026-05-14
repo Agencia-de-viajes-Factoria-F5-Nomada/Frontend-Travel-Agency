@@ -8,7 +8,11 @@ export const authService = {
       method: 'POST', headers,
       body: JSON.stringify({ email, password }),
     });
-    if (!res.ok) throw new Error('Credenciales incorrectas');
+    if (!res.ok) {
+      let msg = 'Credenciales incorrectas';
+      try { const body = await res.json(); msg = body.message ?? body.error ?? msg; } catch {}
+      throw new Error(msg);
+    }
     const data = await res.json();
     localStorage.setItem('token', data.token);
     localStorage.setItem('user', JSON.stringify(data.user ?? data));
@@ -18,7 +22,18 @@ export const authService = {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
   },
-  isAuthenticated: () => !!localStorage.getItem('token'),
+  isAuthenticated: () => {
+    const token = localStorage.getItem('token');
+    if (!token) return false;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      if (payload.exp && Date.now() / 1000 > payload.exp) {
+        authService.logout();
+        return false;
+      }
+    } catch {}
+    return true;
+  },
   getUser: () => {
     const u = localStorage.getItem('user');
     return u ? JSON.parse(u) : null;

@@ -16,7 +16,7 @@ const HomePage = () => {
   useEffect(() => {
     travelService.getAvailable()
       .then(data => setTravels(data))
-      .catch(console.error)
+      .catch(() => {})
       .finally(() => setLoading(false))
   }, [])
 

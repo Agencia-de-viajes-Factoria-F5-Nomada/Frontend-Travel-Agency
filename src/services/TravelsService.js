@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { API } from '../constants/api';
 
-const API_URL = "http://localhost:8080/api/travels";
+const API_URL = `${API}/travels`;
 
 export const TravelsService = {
     fetchTravels: async () => {

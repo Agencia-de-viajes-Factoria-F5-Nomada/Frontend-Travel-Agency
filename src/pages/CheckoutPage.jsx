@@ -94,6 +94,10 @@ const CheckoutPage = () => {
       setError('Un menor necesita al menos un adulto o pensionista en el grupo.')
       return
     }
+    if (travel?.availablePlaces != null && passengers.length > travel.availablePlaces) {
+      setError(`No hay suficientes plazas disponibles. Plazas libres: ${travel.availablePlaces}`)
+      return
+    }
     setLoading(true)
     setError(null)
     try {
