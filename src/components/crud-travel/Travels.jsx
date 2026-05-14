@@ -1,190 +1,154 @@
-import React, { useState, useEffect } from 'react';
-import { TravelsService } from '../services/TravelsService';
+import { useState, useEffect } from 'react'
+import { TravelsService } from '../../services/TravelsService'
+
+const FORM_INICIAL = { destiny: '', startDate: '', endDate: '', availablePlaces: '', hotelId: '', sale: false }
 
 const Travels = () => {
-    const [travels, setTravels] = useState([]);
-    const [isEditing, setIsEditing] = useState(false);
-    const [currentId, setCurrentId] = useState(null);
-    const [formData, setFormData] = useState({
-        destination: '',
-        price: '',
-        departureDate: '',
-        availableSeats: '',
-        onSale: false
-    });
+  const [travels, setTravels] = useState([])
+  const [formData, setFormData] = useState(FORM_INICIAL)
+  const [isEditing, setIsEditing] = useState(false)
+  const [currentId, setCurrentId] = useState(null)
+  const [error, setError] = useState(null)
 
-    useEffect(() => {
-        loadTravels();
-    }, []);
+  useEffect(() => { cargarTravels() }, [])
 
-    const loadTravels = async () => {
-        try {
-            // Axios nos da la data directamente desde el servicio
-            const data = await TravelsService.fetchTravels();
-            setTravels(data);
-        } catch (error) {
-            console.error("Error al cargar viajes:", error);
-        }
-    };
+  const cargarTravels = async () => {
+    try {
+      const data = await TravelsService.fetchTravels()
+      setTravels(data)
+      setError(null)
+    } catch {
+      setError('No se pudieron cargar los viajes.')
+    }
+  }
 
-    const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
-        setFormData({
-            ...formData,
-            [name]: type === 'checkbox' ? checked : value
-        });
-    };
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target
+    setFormData({ ...formData, [name]: type === 'checkbox' ? checked : value })
+  }
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            if (isEditing) {
-                await TravelsService.updateTravel(currentId, formData);
-                setIsEditing(false);
-                setCurrentId(null);
-            } else {
-                await TravelsService.createTravel(formData);
-            }
-            // Reset del formulario
-            setFormData({ destination: '', price: '', departureDate: '', availableSeats: '', onSale: false });
-            loadTravels();
-        } catch (error) {
-            console.error("Error al procesar el viaje:", error);
-        }
-    };
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    try {
+      const payload = {
+        ...formData,
+        availablePlaces: Number(formData.availablePlaces),
+        hotelId: formData.hotelId ? Number(formData.hotelId) : undefined,
+      }
+      if (isEditing) {
+        await TravelsService.updateTravel(currentId, payload)
+      } else {
+        await TravelsService.createTravel(payload)
+      }
+      resetForm()
+      cargarTravels()
+    } catch {
+      setError('Error al guardar el viaje.')
+    }
+  }
 
-    const handleEditClick = (travel) => {
-        setIsEditing(true);
-        setCurrentId(travel.id);
-        setFormData({
-            destination: travel.destination,
-            price: travel.price,
-            departureDate: travel.departureDate,
-            availableSeats: travel.availableSeats,
-            onSale: travel.onSale
-        });
-    };
+  const handleEditar = (travel) => {
+    setFormData({
+      destiny: travel.destiny ?? '',
+      startDate: travel.startDate ?? '',
+      endDate: travel.endDate ?? '',
+      availablePlaces: travel.availablePlaces ?? '',
+      hotelId: travel.hotelId ?? '',
+      sale: travel.sale ?? false,
+    })
+    setCurrentId(travel.id)
+    setIsEditing(true)
+  }
 
-    const handleDelete = async (id) => {
-        if (window.confirm("¿Estás seguro de eliminar este viaje?")) {
-            try {
-                await TravelsService.deleteTravel(id);
-                loadTravels();
-            } catch (error) {
-                console.error("Error al eliminar:", error);
-            }
-        }
-    };
+  const handleEliminar = async (id) => {
+    if (!window.confirm('¿Estás seguro de eliminar este viaje?')) return
+    try {
+      await TravelsService.deleteTravel(id)
+      cargarTravels()
+    } catch {
+      setError('Error al eliminar el viaje.')
+    }
+  }
 
-    return (
-        <div className="p-6">
-            <h2 className="text-2xl font-bold mb-6 text-[#001f3f]">Panel de Viajes</h2>
-            
-            <form onSubmit={handleSubmit} className="mb-8 grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded shadow">
-                <input 
-                    name="destination" 
-                    value={formData.destination} 
-                    onChange={handleChange} 
-                    placeholder="Destino"
-                    className="border p-2 rounded"
-                    required
-                />
-                <input 
-                    name="price" 
-                    type="number"
-                    value={formData.price} 
-                    onChange={handleChange} 
-                    placeholder="Precio"
-                    className="border p-2 rounded"
-                    required
-                />
-                <input 
-                    name="departureDate" 
-                    type="date"
-                    value={formData.departureDate} 
-                    onChange={handleChange} 
-                    className="border p-2 rounded"
-                    required
-                />
-                <input 
-                    name="availableSeats" 
-                    type="number"
-                    value={formData.availableSeats} 
-                    onChange={handleChange} 
-                    placeholder="Asientos"
-                    className="border p-2 rounded"
-                    required
-                />
-                <div className="flex items-center gap-2">
-                    <input 
-                        name="onSale" 
-                        type="checkbox"
-                        checked={formData.onSale} 
-                        onChange={handleChange} 
-                    />
-                    <label>¿Está en oferta?</label>
-                </div>
-                <button type="submit" className="col-span-2 bg-[#001f3f] text-white p-2 rounded hover:bg-blue-900 transition-colors">
-                    {isEditing ? 'Actualizar Viaje' : 'Crear Viaje'}
-                </button>
-                {isEditing && (
-                    <button 
-                        type="button" 
-                        onClick={() => { setIsEditing(false); setFormData({ destination: '', price: '', departureDate: '', availableSeats: '', onSale: false }); }}
-                        className="col-span-2 bg-gray-400 text-white p-2 rounded"
-                    >
-                        Cancelar Edición
-                    </button>
-                )}
-            </form>
+  const resetForm = () => {
+    setFormData(FORM_INICIAL)
+    setIsEditing(false)
+    setCurrentId(null)
+  }
 
-            <div className="overflow-hidden rounded-lg border border-gray-200 shadow-md">
-                <table className="w-full border-collapse bg-white text-left text-sm text-gray-500">
-                    <thead className="bg-[#6faecc] text-white">
-                        <tr>
-                            <th className="px-6 py-4 font-medium text-white">Destino</th>
-                            <th className="px-6 py-4 font-medium text-white">Precio</th>
-                            <th className="px-6 py-4 font-medium text-white">Fecha</th>
-                            <th className="px-6 py-4 font-medium text-white">Asientos</th>
-                            <th className="px-6 py-4 font-medium text-white">Estado</th>
-                            <th className="px-6 py-4 font-medium text-white text-center">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-100 border-t border-gray-100">
-                        {travels.map((travel) => (
-                            <tr key={travel.id} className="hover:bg-gray-50">
-                                <td className="px-6 py-4 font-medium text-gray-900">{travel.destination}</td>
-                                <td className="px-6 py-4">{travel.price}</td>
-                                <td className="px-6 py-4">{travel.departureDate}</td>
-                                <td className="px-6 py-4">{travel.availableSeats}</td>
-                                <td className="px-6 py-4">
-                                    {travel.onSale ? (
-                                        <span className="rounded-full bg-green-50 px-2 py-1 text-xs font-semibold text-green-600">En Oferta</span>
-                                    ) : (
-                                        <span className="rounded-full bg-blue-50 px-2 py-1 text-xs font-semibold text-blue-600">Normal</span>
-                                    )}
-                                </td>
-                                <td className="px-6 py-4 text-center">
-                                    <button 
-                                        onClick={() => handleEditClick(travel)}
-                                        className="text-blue-600 hover:text-blue-800 font-semibold mr-4"
-                                    >
-                                        Editar
-                                    </button>
-                                    <button 
-                                        onClick={() => handleDelete(travel.id)}
-                                        className="text-red-600 hover:text-red-800 font-semibold"
-                                    >
-                                        Eliminar
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
+  return (
+    <div className="p-6">
+      <h2 className="mb-6 text-2xl font-bold text-white">Gestión de Viajes</h2>
+      {error && (
+        <p className="mb-4 rounded-lg border border-status-pending/30 bg-status-pending/10 px-4 py-3 text-sm text-status-pending">{error}</p>
+      )}
+      <form onSubmit={handleSubmit} className="mb-8 grid grid-cols-2 gap-4 rounded-xl border border-surface-700 bg-surface-800 p-5">
+        <input name="destiny" placeholder="Destino" value={formData.destiny} onChange={handleChange}
+          className="col-span-2 rounded-lg border border-surface-600 bg-surface-900 px-3 py-2 text-sm text-ink placeholder:text-ink-muted focus:border-brand-500 focus:outline-none" required />
+        <div className="flex flex-col gap-1">
+          <label className="text-xs text-ink-muted">Fecha de inicio</label>
+          <input type="date" name="startDate" value={formData.startDate} onChange={handleChange}
+            className="rounded-lg border border-surface-600 bg-surface-900 px-3 py-2 text-sm text-ink focus:border-brand-500 focus:outline-none" required />
         </div>
-    );
-};
+        <div className="flex flex-col gap-1">
+          <label className="text-xs text-ink-muted">Fecha de fin</label>
+          <input type="date" name="endDate" value={formData.endDate} onChange={handleChange}
+            className="rounded-lg border border-surface-600 bg-surface-900 px-3 py-2 text-sm text-ink focus:border-brand-500 focus:outline-none" required />
+        </div>
+        <input name="availablePlaces" type="number" placeholder="Plazas disponibles" value={formData.availablePlaces} onChange={handleChange}
+          className="rounded-lg border border-surface-600 bg-surface-900 px-3 py-2 text-sm text-ink placeholder:text-ink-muted focus:border-brand-500 focus:outline-none" required />
+        <input name="hotelId" type="number" placeholder="ID del hotel" value={formData.hotelId} onChange={handleChange}
+          className="rounded-lg border border-surface-600 bg-surface-900 px-3 py-2 text-sm text-ink placeholder:text-ink-muted focus:border-brand-500 focus:outline-none" />
+        <label className="col-span-2 flex items-center gap-2 text-sm text-ink-soft">
+          <input type="checkbox" name="sale" checked={formData.sale} onChange={handleChange} />
+          Marcar como oferta
+        </label>
+        <button type="submit" className="col-span-2 rounded-full bg-brand-500 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-400">
+          {isEditing ? 'Actualizar viaje' : 'Crear viaje'}
+        </button>
+        {isEditing && (
+          <button type="button" onClick={resetForm} className="col-span-2 text-sm text-ink-muted hover:text-white">Cancelar edición</button>
+        )}
+      </form>
+      <div className="overflow-hidden rounded-xl border border-surface-700">
+        <table className="w-full text-left text-sm">
+          <thead className="bg-brand-400 text-white">
+            <tr>
+              <th className="px-5 py-3 font-semibold">Destino</th>
+              <th className="px-5 py-3 font-semibold">Inicio</th>
+              <th className="px-5 py-3 font-semibold">Fin</th>
+              <th className="px-5 py-3 font-semibold">Plazas</th>
+              <th className="px-5 py-3 font-semibold">Estado</th>
+              <th className="px-5 py-3 text-center font-semibold">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {travels.map((travel) => (
+              <tr key={travel.id} className="border-t border-surface-700 text-ink-soft hover:bg-surface-800">
+                <td className="px-5 py-3 font-medium text-white">{travel.destiny}</td>
+                <td className="px-5 py-3">{travel.startDate}</td>
+                <td className="px-5 py-3">{travel.endDate}</td>
+                <td className="px-5 py-3">{travel.availablePlaces}</td>
+                <td className="px-5 py-3">
+                  {travel.sale
+                    ? <span className="rounded-full bg-status-warning/10 px-2 py-1 text-xs text-status-warning">Oferta</span>
+                    : <span className="rounded-full bg-brand-500/10 px-2 py-1 text-xs text-brand-300">Normal</span>
+                  }
+                </td>
+                <td className="px-5 py-3 text-center">
+                  <button onClick={() => handleEditar(travel)} className="mr-4 text-brand-300 hover:text-brand-200">Editar</button>
+                  <button onClick={() => handleEliminar(travel.id)} className="text-status-pending hover:text-red-400">Eliminar</button>
+                </td>
+              </tr>
+            ))}
+            {travels.length === 0 && (
+              <tr><td colSpan={6} className="px-5 py-8 text-center text-ink-muted">No hay viajes registrados.</td></tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  )
+}
 
-export default Travels;
+export default Travels

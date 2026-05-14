@@ -1,8 +1,6 @@
-import axios from 'axios';
+import api from './api'
 
-const API_URL = 'http://localhost:8080/employees';
-
-export const getAllEmployees = () => axios.get(API_URL);
-export const createEmployee = (employee) => axios.post(API_URL, employee);
-export const updateEmployee = (id, employee) => axios.put(`${API_URL}/${id}`, employee);
-export const deleteEmployee = (id) => axios.delete(`${API_URL}/${id}`);
+export const getAllEmployees = () => api.get('/employees')
+export const createEmployee  = (employee) => api.post('/employees', employee)
+export const updateEmployee  = (id, employee) => api.put(`/employees/${id}`, employee)
+export const deleteEmployee  = (id) => api.delete(`/employees/${id}`)

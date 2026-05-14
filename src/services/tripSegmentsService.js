@@ -1,9 +1,7 @@
-import axios from 'axios';
+import api from './api'
 
-const API_URL = 'http://localhost:8080/trip_segments';
-
-export const getAllSegments = () => axios.get(API_URL);
-export const getSegmentById = (id) => axios.get(`${API_URL}/${id}`);
-export const createSegment = (segment) => axios.post(API_URL, segment);
-export const updateSegment = (id, segment) => axios.put(`${API_URL}/${id}`, segment);
-export const deleteSegment = (id) => axios.delete(`${API_URL}/${id}`);
+export const getAllSegments  = () => api.get('/trip-segments')
+export const getSegmentById = (id) => api.get(`/trip-segments/${id}`)
+export const createSegment  = (segment) => api.post('/trip-segments', segment)
+export const updateSegment  = (id, segment) => api.put(`/trip-segments/${id}`, segment)
+export const deleteSegment  = (id) => api.delete(`/trip-segments/${id}`)

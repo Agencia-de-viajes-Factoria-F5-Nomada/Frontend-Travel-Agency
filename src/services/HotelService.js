@@ -1,49 +1,19 @@
-import axios from 'axios';
-
-const API_URL = 'http://localhost:8080/api/hotels';
+import api from './api'
 
 export const HotelService = {
-    // R - Read (Obtener todos los hoteles)
-    fetchHoteles: async () => {
-        try {
-            const { data } = await axios.get(API_URL);
-            return data;
-        } catch (error) {
-            console.error("Error en fetchHoteles:", error);
-            throw error;
-        }
-    },
-
-    // C - Create (Registrar un nuevo hotel)
-    createHotel: async (hotelData) => {
-        try {
-            const { data } = await axios.post(API_URL, hotelData);
-            return data;
-        } catch (error) {
-            console.error("Error en createHotel:", error);
-            throw error;
-        }
-    },
-
-    // U - Update (Actualizar un hotel existente)
-    updateHotel: async (id, hotelData) => {
-        try {
-            const { data } = await axios.put(`${API_URL}/${id}`, hotelData);
-            return data;
-        } catch (error) {
-            console.error("Error en updateHotel:", error);
-            throw error;
-        }
-    },
-
-    // D - Delete (Borrar un hotel)
-    deleteHotel: async (id) => {
-        try {
-            await axios.delete(`${API_URL}/${id}`);
-            return true;
-        } catch (error) {
-            console.error("Error en deleteHotel:", error);
-            throw error;
-        }
-    }
-};
+  fetchHoteles: async () => {
+    const { data } = await api.get('/hotels')
+    return data
+  },
+  createHotel: async (hotelData) => {
+    const { data } = await api.post('/hotels', hotelData)
+    return data
+  },
+  updateHotel: async (id, hotelData) => {
+    const { data } = await api.put(`/hotels/${id}`, hotelData)
+    return data
+  },
+  deleteHotel: async (id) => {
+    await api.delete(`/hotels/${id}`)
+  },
+}

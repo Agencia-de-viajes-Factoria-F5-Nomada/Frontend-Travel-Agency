@@ -1,124 +1,122 @@
-import React, { useState, useEffect } from 'react';
-import { UserService } from '../services/UserService';
+import { useState, useEffect } from 'react'
+import { UserService } from '../../services/UserService'
+
+const FORM_INICIAL = { name: '', surname: '', email: '', dni: '', phone: '' }
 
 const Users = () => {
-  const [users, setUsers] = useState([]);
-  const [formData, setFormData] = useState({ dni: '', name: '', phone: '', email: '' });
-  const [isEditing, setIsEditing] = useState(false);
-  const [currentId, setCurrentId] = useState(null);
+  const [users, setUsers] = useState([])
+  const [formData, setFormData] = useState(FORM_INICIAL)
+  const [isEditing, setIsEditing] = useState(false)
+  const [currentId, setCurrentId] = useState(null)
+  const [error, setError] = useState(null)
 
-  useEffect(() => {
-    loadUsers();
-  }, []);
+  useEffect(() => { cargarUsers() }, [])
 
-  const loadUsers = async () => {
+  const cargarUsers = async () => {
     try {
-      const data = await UserService.fetchUsers();
-      setUsers(data);
-    } catch (error) {
-      console.error(error);
+      const data = await UserService.fetchUsers()
+      setUsers(data)
+      setError(null)
+    } catch {
+      setError('No se pudieron cargar los usuarios.')
     }
-  };
+  }
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+    setFormData({ ...formData, [e.target.name]: e.target.value })
+  }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
     try {
       if (isEditing) {
-        await UserService.updateUser(currentId, formData);
+        await UserService.updateUser(currentId, formData)
       } else {
-        await UserService.createUser(formData);
+        await UserService.createUser(formData)
       }
-      resetForm();
-      loadUsers();
-    } catch (error) {
-      console.error(error);
+      resetForm()
+      cargarUsers()
+    } catch {
+      setError('Error al guardar el usuario.')
     }
-  };
+  }
 
-  const prepararEdicion = (user) => {
-    setFormData({
-      dni: user.dni,
-      name: user.name,
-      phone: user.phone,
-      email: user.email
-    });
-    setCurrentId(user.id);
-    setIsEditing(true);
-  };
+  const handleEditar = (user) => {
+    setFormData({ name: user.name ?? '', surname: user.surname ?? '', email: user.email ?? '', dni: user.dni ?? '', phone: user.phone ?? '' })
+    setCurrentId(user.id)
+    setIsEditing(true)
+  }
 
-  const deleteUser = async (id) => {
-    if (window.confirm("¿Eliminar usuario?")) {
-      try {
-        await UserService.deleteUser(id);
-        loadUsers();
-      } catch (error) {
-        console.error(error);
-      }
+  const handleEliminar = async (id) => {
+    if (!window.confirm('¿Eliminar usuario?')) return
+    try {
+      await UserService.deleteUser(id)
+      cargarUsers()
+    } catch {
+      setError('Error al eliminar el usuario.')
     }
-  };
+  }
 
   const resetForm = () => {
-    setFormData({ dni: '', name: '', phone: '', email: '' });
-    setIsEditing(false);
-    setCurrentId(null);
-  };
+    setFormData(FORM_INICIAL)
+    setIsEditing(false)
+    setCurrentId(null)
+  }
 
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold mb-6 text-[#001f3f]">Gestión de Usuarios</h2>
-      
-      <form onSubmit={handleSubmit} className="mb-8 grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded shadow">
-        <input name="dni" placeholder="DNI" value={formData.dni} onChange={handleChange} className="border p-2 rounded" required />
-        <input name="name" placeholder="Nombre" value={formData.name} onChange={handleChange} className="border p-2 rounded" required />
-        <input name="phone" placeholder="Teléfono" value={formData.phone} onChange={handleChange} className="border p-2 rounded" required />
-        <input name="email" placeholder="Email" type="email" value={formData.email} onChange={handleChange} className="border p-2 rounded" required />
-        
-        <button type="submit" className="col-span-2 bg-[#001f3f] text-white p-2 rounded hover:bg-blue-900 transition-colors">
-          {isEditing ? 'Actualizar Usuario' : 'Registrar Usuario'}
+      <h2 className="mb-6 text-2xl font-bold text-white">Gestión de Usuarios</h2>
+      {error && (
+        <p className="mb-4 rounded-lg border border-status-pending/30 bg-status-pending/10 px-4 py-3 text-sm text-status-pending">{error}</p>
+      )}
+      <form onSubmit={handleSubmit} className="mb-8 grid grid-cols-2 gap-4 rounded-xl border border-surface-700 bg-surface-800 p-5">
+        <input name="name" placeholder="Nombre" value={formData.name} onChange={handleChange}
+          className="rounded-lg border border-surface-600 bg-surface-900 px-3 py-2 text-sm text-ink placeholder:text-ink-muted focus:border-brand-500 focus:outline-none" required />
+        <input name="surname" placeholder="Apellido" value={formData.surname} onChange={handleChange}
+          className="rounded-lg border border-surface-600 bg-surface-900 px-3 py-2 text-sm text-ink placeholder:text-ink-muted focus:border-brand-500 focus:outline-none" required />
+        <input name="email" type="email" placeholder="Email" value={formData.email} onChange={handleChange}
+          className="col-span-2 rounded-lg border border-surface-600 bg-surface-900 px-3 py-2 text-sm text-ink placeholder:text-ink-muted focus:border-brand-500 focus:outline-none" required />
+        <input name="dni" placeholder="DNI" value={formData.dni} onChange={handleChange}
+          className="rounded-lg border border-surface-600 bg-surface-900 px-3 py-2 text-sm text-ink placeholder:text-ink-muted focus:border-brand-500 focus:outline-none" />
+        <input name="phone" placeholder="Teléfono" value={formData.phone} onChange={handleChange}
+          className="rounded-lg border border-surface-600 bg-surface-900 px-3 py-2 text-sm text-ink placeholder:text-ink-muted focus:border-brand-500 focus:outline-none" />
+        <button type="submit" className="col-span-2 rounded-full bg-brand-500 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-400">
+          {isEditing ? 'Actualizar usuario' : 'Registrar usuario'}
         </button>
-        
         {isEditing && (
-          <button type="button" onClick={resetForm} className="col-span-2 bg-gray-400 text-white p-2 rounded">
-            Cancelar Edición
-          </button>
+          <button type="button" onClick={resetForm} className="col-span-2 text-sm text-ink-muted hover:text-white">Cancelar edición</button>
         )}
       </form>
-
-      <div className="overflow-hidden rounded-lg border border-gray-200 shadow-md">
-        <table className="w-full border-collapse bg-white text-left text-sm text-gray-500">
-          <thead className="bg-[#6faecc] text-white">
+      <div className="overflow-hidden rounded-xl border border-surface-700">
+        <table className="w-full text-left text-sm">
+          <thead className="bg-brand-400 text-white">
             <tr>
-              <th className="px-6 py-4 font-medium text-white">DNI</th>
-              <th className="px-6 py-4 font-medium text-white">Nombre</th>
-              <th className="px-6 py-4 font-medium text-white">Teléfono</th>
-              <th className="px-6 py-4 font-medium text-white text-center">Acciones</th>
+              <th className="px-5 py-3 font-semibold">Nombre</th>
+              <th className="px-5 py-3 font-semibold">Email</th>
+              <th className="px-5 py-3 font-semibold">DNI</th>
+              <th className="px-5 py-3 text-center font-semibold">Acciones</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100 border-t border-gray-100">
+          <tbody>
             {users.map((user) => (
-              <tr key={user.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 font-medium text-gray-900">{user.dni}</td>
-                <td className="px-6 py-4">{user.name}</td>
-                <td className="px-6 py-4">{user.phone}</td>
-                <td className="px-6 py-4 text-center">
-                  <button onClick={() => prepararEdicion(user)} className="text-blue-600 hover:text-blue-800 font-semibold mr-4">
-                    Editar
-                  </button>
-                  <button onClick={() => deleteUser(user.id)} className="text-red-600 hover:text-red-800 font-semibold">
-                    Eliminar
-                  </button>
+              <tr key={user.id} className="border-t border-surface-700 text-ink-soft hover:bg-surface-800">
+                <td className="px-5 py-3 font-medium text-white">{user.name} {user.surname}</td>
+                <td className="px-5 py-3">{user.email}</td>
+                <td className="px-5 py-3">{user.dni ?? '—'}</td>
+                <td className="px-5 py-3 text-center">
+                  <button onClick={() => handleEditar(user)} className="mr-4 text-brand-300 hover:text-brand-200">Editar</button>
+                  <button onClick={() => handleEliminar(user.id)} className="text-status-pending hover:text-red-400">Eliminar</button>
                 </td>
               </tr>
             ))}
+            {users.length === 0 && (
+              <tr><td colSpan={4} className="px-5 py-8 text-center text-ink-muted">No hay usuarios registrados.</td></tr>
+            )}
           </tbody>
         </table>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Users;
+export default Users

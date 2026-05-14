@@ -1,25 +1,19 @@
-import axios from 'axios';
-
-const API_URL = 'http://localhost:8080/api/bookings';
+import api from './api'
 
 export const BookingService = {
-    fetchBookings: async () => {
-        const { data } = await axios.get(API_URL);
-        return data;
-    },
-
-    createBooking: async (bookingData) => {
-        const { data } = await axios.post(API_URL, bookingData);
-        return data;
-    },
-
-    updateBooking: async (id, bookingData) => {
-        const { data } = await axios.put(`${API_URL}/${id}`, bookingData);
-        return data;
-    },
-
-    deleteBooking: async (id) => {
-        await axios.delete(`${API_URL}/${id}`);
-        return true;
-    }
-};
+  fetchBookings: async () => {
+    const { data } = await api.get('/bookings')
+    return data
+  },
+  createBooking: async (bookingData) => {
+    const { data } = await api.post('/bookings', bookingData)
+    return data
+  },
+  updateBooking: async (id, bookingData) => {
+    const { data } = await api.put(`/bookings/${id}`, bookingData)
+    return data
+  },
+  deleteBooking: async (id) => {
+    await api.delete(`/bookings/${id}`)
+  },
+}
