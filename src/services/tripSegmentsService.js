@@ -1,9 +1,10 @@
-import axios from 'axios';
+import { API } from '../constants/api';
+const h = () => ({ 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` });
 
-const API_URL = 'http://localhost:8080/trip_segments';
-
-export const getAllSegments = () => axios.get(API_URL);
-export const getSegmentById = (id) => axios.get(`${API_URL}/${id}`);
-export const createSegment = (segment) => axios.post(API_URL, segment);
-export const updateSegment = (id, segment) => axios.put(`${API_URL}/${id}`, segment);
-export const deleteSegment = (id) => axios.delete(`${API_URL}/${id}`);
+export const tripSegmentsService = {
+  getAll:  async ()         => { const r = await fetch(`${API}/trip-segments`, { headers: h() }); if (!r.ok) throw new Error('Error segmentos'); return r.json(); },
+  getById: async (id)       => { const r = await fetch(`${API}/trip-segments/${id}`, { headers: h() }); if (!r.ok) throw new Error('Segmento no encontrado'); return r.json(); },
+  create:  async (data)     => { const r = await fetch(`${API}/trip-segments`, { method: 'POST', headers: h(), body: JSON.stringify(data) }); if (!r.ok) throw new Error('Error crear segmento'); return r.json(); },
+  update:  async (id, data) => { const r = await fetch(`${API}/trip-segments/${id}`, { method: 'PUT', headers: h(), body: JSON.stringify(data) }); if (!r.ok) throw new Error('Error actualizar'); return r.json(); },
+  delete:  async (id)       => { const r = await fetch(`${API}/trip-segments/${id}`, { method: 'DELETE', headers: h() }); if (!r.ok) throw new Error('Error eliminar'); },
+};
