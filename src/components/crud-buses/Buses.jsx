@@ -1,122 +1,223 @@
-import React, { useState, useEffect } from 'react';
-import { BusService } from '../services/BusService';
+import { useState, useEffect } from 'react'
+import { busService } from '../../services/BusService'
 
-const Buses = () => {
-  const [buses, setBuses] = useState([]);
-  const [formData, setFormData] = useState({ plate: '', model: '', capacity: '' });
-  const [isEditing, setIsEditing] = useState(false);
-  const [currentId, setCurrentId] = useState(null);
+const EMPTY_FORM = {
+  licensePlate: '',
+  capacity: 0,
+  available: true,
+  bath: false,
+  wifi: false,
+  ac: false,
+  usb: false,
+  driverId: '',
+}
 
-  useEffect(() => {
-    loadBuses();
-  }, []);
+export default function Buses() {
+  const [buses, setBuses]       = useState([])
+  const [loading, setLoading]   = useState(true)
+  const [error, setError]       = useState(null)
+  const [showForm, setShowForm] = useState(false)
+  const [editing, setEditing]   = useState(null)
+  const [form, setForm]         = useState(EMPTY_FORM)
 
-  const loadBuses = async () => {
+  const load = async () => {
     try {
-      const data = await BusService.fetchBuses();
-      setBuses(data);
-    } catch (error) {
-      console.error(error);
+      setLoading(true)
+      const data = await busService.getAll()
+      setBuses(data)
+    } catch (e) {
+      setError(e.message)
+    } finally {
+      setLoading(false)
     }
-  };
+  }
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  useEffect(() => { load() }, [])
+
+  const openCreate = () => {
+    setEditing(null)
+    setForm(EMPTY_FORM)
+    setShowForm(true)
+  }
+
+  const openEdit = (bus) => {
+    setEditing(bus)
+    setForm({
+      licensePlate: bus.licensePlate ?? '',
+      capacity:     bus.capacity     ?? 0,
+      available:    bus.available    ?? true,
+      bath:         bus.bath         ?? false,
+      wifi:         bus.wifi         ?? false,
+      ac:           bus.ac           ?? false,
+      usb:          bus.usb          ?? false,
+      driverId:     bus.driverId     ?? '',
+    })
+    setShowForm(true)
+  }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
     try {
-      if (isEditing) {
-        await BusService.updateBus(currentId, formData);
+      const payload = {
+        ...form,
+        capacity: Number(form.capacity),
+        driverId: form.driverId ? Number(form.driverId) : null,
+      }
+      if (!payload.driverId) delete payload.driverId
+
+      if (editing) {
+        await busService.update(editing.id, payload)
       } else {
-        await BusService.createBus(formData);
+        await busService.create(payload)
       }
-      resetForm();
-      loadBuses();
-    } catch (error) {
-      console.error(error);
+      setShowForm(false)
+      load()
+    } catch (e) {
+      setError(e.message)
     }
-  };
+  }
 
-  const prepararEdicion = (bus) => {
-    setFormData({
-      plate: bus.plate,
-      model: bus.model,
-      capacity: bus.capacity
-    });
-    setCurrentId(bus.id);
-    setIsEditing(true);
-  };
-
-  const deleteBus = async (id) => {
-    if (window.confirm("¿Eliminar autobús?")) {
-      try {
-        await BusService.deleteBus(id);
-        loadBuses();
-      } catch (error) {
-        console.error(error);
-      }
+  const handleDelete = async (id) => {
+    if (!confirm('¿Eliminar este autobús?')) return
+    try {
+      await busService.delete(id)
+      load()
+    } catch (e) {
+      setError(e.message)
     }
-  };
+  }
 
-  const resetForm = () => {
-    setFormData({ plate: '', model: '', capacity: '' });
-    setIsEditing(false);
-    setCurrentId(null);
-  };
+  const change = (e) => {
+    const { name, value, type, checked } = e.target
+    setForm(f => ({ ...f, [name]: type === 'checkbox' ? checked : value }))
+  }
+
+  if (loading) return <p className="p-8 text-center">Cargando autobuses...</p>
 
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-bold mb-6 text-[#001f3f]">Gestión de Autobuses</h2>
-      
-      <form onSubmit={handleSubmit} className="mb-8 grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded shadow">
-        <input name="plate" placeholder="Matrícula" value={formData.plate} onChange={handleChange} className="border p-2 rounded" required />
-        <input name="model" placeholder="Modelo" value={formData.model} onChange={handleChange} className="border p-2 rounded" required />
-        <input name="capacity" type="number" placeholder="Capacidad" value={formData.capacity} onChange={handleChange} className="border p-2 rounded" required />
-        
-        <button type="submit" className="col-span-2 bg-[#001f3f] text-white p-2 rounded hover:bg-blue-900 transition-colors">
-          {isEditing ? 'Actualizar Autobús' : 'Registrar Autobús'}
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold" style={{ color: '#1A3A5C' }}>Autobuses</h1>
+        <button onClick={openCreate}
+          className="rounded-lg px-4 py-2 text-white font-medium"
+          style={{ background: '#4A8FA8' }}>
+          + Nuevo autobús
         </button>
-        
-        {isEditing && (
-          <button type="button" onClick={resetForm} className="col-span-2 bg-gray-400 text-white p-2 rounded">
-            Cancelar Edición
-          </button>
-        )}
-      </form>
+      </div>
 
-      <div className="overflow-hidden rounded-lg border border-gray-200 shadow-md">
-        <table className="w-full border-collapse bg-white text-left text-sm text-gray-500">
-          <thead className="bg-[#6faecc] text-white">
+      {error && <div className="rounded-lg bg-red-50 p-4 text-red-700">{error}</div>}
+
+      {/* Tabla */}
+      <div className="overflow-x-auto rounded-xl border border-gray-200">
+        <table className="w-full text-sm">
+          <thead style={{ background: '#DAEEF7' }}>
             <tr>
-              <th className="px-6 py-4 font-medium text-white">Matrícula</th>
-              <th className="px-6 py-4 font-medium text-white">Modelo</th>
-              <th className="px-6 py-4 font-medium text-white">Capacidad</th>
-              <th className="px-6 py-4 font-medium text-white text-center">Acciones</th>
+              {['Matrícula', 'Capacidad', 'Disponible', 'Baño', 'Wifi', 'AC', 'USB', 'Acciones'].map(h => (
+                <th key={h} className="px-4 py-3 text-left font-semibold" style={{ color: '#1A3A5C' }}>{h}</th>
+              ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100 border-t border-gray-100">
-            {buses.map((bus) => (
-              <tr key={bus.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 font-medium text-gray-900">{bus.plate}</td>
-                <td className="px-6 py-4">{bus.model}</td>
-                <td className="px-6 py-4">{bus.capacity}</td>
-                <td className="px-6 py-4 text-center">
-                  <button onClick={() => prepararEdicion(bus)} className="text-blue-600 hover:text-blue-800 font-semibold mr-4">
+          <tbody>
+            {buses.map((b, i) => (
+              <tr key={b.id} className={i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                <td className="px-4 py-3 font-medium">{b.licensePlate}</td>
+                <td className="px-4 py-3">{b.capacity}</td>
+                <td className="px-4 py-3">{b.available ? '✅' : '❌'}</td>
+                <td className="px-4 py-3">{b.bath ? '✅' : '❌'}</td>
+                <td className="px-4 py-3">{b.wifi ? '✅' : '❌'}</td>
+                <td className="px-4 py-3">{b.ac   ? '✅' : '❌'}</td>
+                <td className="px-4 py-3">{b.usb  ? '✅' : '❌'}</td>
+                <td className="px-4 py-3 flex gap-2">
+                  <button onClick={() => openEdit(b)}
+                    className="rounded px-3 py-1 text-xs font-medium text-white"
+                    style={{ background: '#7AAFC0' }}>
                     Editar
                   </button>
-                  <button onClick={() => deleteBus(bus.id)} className="text-red-600 hover:text-red-800 font-semibold">
+                  <button onClick={() => handleDelete(b.id)}
+                    className="rounded px-3 py-1 text-xs font-medium text-white bg-red-500">
                     Eliminar
                   </button>
                 </td>
               </tr>
             ))}
+            {buses.length === 0 && (
+              <tr><td colSpan={8} className="px-4 py-8 text-center text-gray-400">No hay autobuses</td></tr>
+            )}
           </tbody>
         </table>
       </div>
-    </div>
-  );
-};
 
-export default Buses;
+      {/* Modal */}
+      {showForm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+            <h2 className="mb-4 text-lg font-bold" style={{ color: '#1A3A5C' }}>
+              {editing ? 'Editar autobús' : 'Nuevo autobús'}
+            </h2>
+            <form onSubmit={handleSubmit} className="space-y-3">
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-medium text-gray-600">Matrícula *</label>
+                  <input name="licensePlate" value={form.licensePlate} onChange={change} required
+                    className="mt-1 w-full rounded-lg border px-3 py-2 text-sm"
+                    style={{ borderColor: '#7AAFC0' }} />
+                </div>
+                <div>
+                  <label className="text-xs font-medium text-gray-600">Capacidad *</label>
+                  <input name="capacity" type="number" min="1" value={form.capacity} onChange={change} required
+                    className="mt-1 w-full rounded-lg border px-3 py-2 text-sm"
+                    style={{ borderColor: '#7AAFC0' }} />
+                </div>
+              </div>
+
+              <div>
+                <label className="text-xs font-medium text-gray-600">ID Conductor</label>
+                <input name="driverId" type="number" value={form.driverId} onChange={change}
+                  placeholder="Dejar vacío si no asignado"
+                  className="mt-1 w-full rounded-lg border px-3 py-2 text-sm"
+                  style={{ borderColor: '#7AAFC0' }} />
+              </div>
+
+              <div className="rounded-lg p-3 space-y-2" style={{ background: '#DAEEF7' }}>
+                <p className="text-xs font-semibold" style={{ color: '#1A3A5C' }}>Equipamiento</p>
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    { name: 'bath', label: 'Baño' },
+                    { name: 'wifi', label: 'Wifi' },
+                    { name: 'ac',   label: 'Aire acondicionado' },
+                    { name: 'usb',  label: 'USB' },
+                  ].map(({ name, label }) => (
+                    <label key={name} className="flex items-center gap-2 text-sm cursor-pointer">
+                      <input type="checkbox" name={name} checked={form[name]} onChange={change} className="h-4 w-4 rounded" />
+                      {label}
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <input name="available" type="checkbox" checked={form.available} onChange={change} className="h-4 w-4" />
+                <label className="text-sm text-gray-600">Disponible</label>
+              </div>
+
+              <div className="flex gap-3 pt-2">
+                <button type="submit"
+                  className="flex-1 rounded-lg py-2 text-sm font-medium text-white"
+                  style={{ background: '#4A8FA8' }}>
+                  {editing ? 'Guardar cambios' : 'Crear autobús'}
+                </button>
+                <button type="button" onClick={() => setShowForm(false)}
+                  className="flex-1 rounded-lg border py-2 text-sm font-medium"
+                  style={{ borderColor: '#7AAFC0', color: '#1A3A5C' }}>
+                  Cancelar
+                </button>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
