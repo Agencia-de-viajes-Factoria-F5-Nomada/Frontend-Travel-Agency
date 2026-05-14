@@ -1,124 +1,183 @@
-import { Download, Filter, Plus, Search, ShieldCheck, ShieldX } from 'lucide-react'
-import Button from '../components/ui/Button'
-import Card from '../components/ui/Card'
-import PageHeader from '../components/ui/PageHeader'
-import StatusPill from '../components/common/StatusPill'
-import { BOOKINGS } from '../constants/mockData'
-import { formatCurrency } from '../utils/formatters'
+import { useEffect, useState } from 'react';
+import { BookingService } from '../services/bookingService';
+import { Trash2, Edit3, X, Calendar, User, ShieldCheck, Hash, Users } from 'lucide-react';
 
 const BookingsPage = () => {
-  const serifStyle = { fontFamily: "'Cormorant Garamond', serif" };
+    const [bookings, setBookings] = useState([]);
+    const [showModal, setShowModal] = useState(false);
+    
+    // Estado inicial con los atributos exactos de tu base de datos
+    const [formData, setFormData] = useState({
+        bought_date: new Date().toISOString().split('T')[0],
+        total_price: '',
+        type_board: 'FULL',
+        is_group: false,
+        employee_id: '',
+        travels_id: ''
+    });
 
-  return (
-    <>
-      <PageHeader
-        eyebrow="Operaciones"
-        title={<span style={serifStyle} className="text-3xl">Listado de Reservas</span>}
-        description="Gestión integral de clientes, seguros y pagos de la flota."
-        actions={
-          <>
-            <Button variant="secondary" className="border-slate-200 text-slate-600 hover:bg-slate-50">
-              <Download className="h-4 w-4" />
-              Exportar
-            </Button>
-            <Button className="bg-[#001f3f] hover:bg-slate-900 transition-colors">
-              <Plus className="h-4 w-4" />
-              Nueva reserva
-            </Button>
-          </>
+    const loadData = async () => {
+        try {
+            const data = await BookingService.getAll();
+            setBookings(data || []);
+        } catch (error) { console.error("Error cargando tabla:", error); }
+    };
+
+    useEffect(() => { loadData(); }, []);
+
+    const handleChange = (e) => {
+        const { name, value, type, checked } = e.target;
+        setFormData({ 
+            ...formData, 
+            [name]: type === 'checkbox' ? checked : value 
+        });
+    };
+
+    // FUNCIÓN CLAVE: Envía los datos y refresca la tabla
+    const handleConfirmarRegistro = async (e) => {
+        e.preventDefault();
+        try {
+            // Convertimos a los tipos de datos que espera Java (Numbers)
+            const dataToSave = {
+                ...formData,
+                total_price: parseFloat(formData.total_price),
+                employee_id: parseInt(formData.employee_id),
+                travels_id: parseInt(formData.travels_id)
+            };
+
+            await BookingService.create(dataToSave);
+            
+            // Si sale bien:
+            setShowModal(false); // Cierra el formulario
+            loadData();         // Vuelve a llamar a la base de datos para ver el nuevo registro
+            
+            // Limpiar el formulario para la próxima vez
+            setFormData({
+                bought_date: new Date().toISOString().split('T')[0],
+                total_price: '',
+                type_board: 'FULL',
+                is_group: false,
+                employee_id: '',
+                travels_id: ''
+            });
+        } catch (error) {
+            alert("Error al guardar. Revisa que el Backend esté encendido.");
+            console.error(error);
         }
-      />
+    };
 
-      <Card className="mt-8 p-4 md:p-6 bg-white border-none shadow-xl rounded-2xl">
-        <div className="flex flex-wrap items-center gap-4">
-          <label className="flex flex-1 items-center gap-3 rounded-xl border border-slate-100 bg-slate-50 px-4 focus-within:border-[#001f3f] focus-within:bg-white transition-all">
-            <Search className="h-4 w-4 text-slate-400" />
-            <input
-              type="search"
-              placeholder="Buscar por DNI, cliente o referencia..."
-              className="h-12 w-full bg-transparent text-sm text-slate-700 focus:outline-none"
-            />
-          </label>
-          <Button variant="secondary" className="border-slate-100 bg-slate-50 text-slate-600 hover:bg-white">
-            <Filter className="h-4 w-4" />
-            Filtros Avanzados
-          </Button>
+    return (
+        <div className="w-full text-white p-6">
+            <style>
+                {`@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&display=swap');
+                  .font-nomada { font-family: 'Playfair Display', serif; }
+                  .glow-card { box-shadow: 0 0 40px rgba(109, 179, 209, 0.15); border: 1px solid rgba(109, 179, 209, 0.1); }
+                `}
+            </style>
+
+            <div className="flex justify-between items-center mb-10">
+                <h1 className="text-5xl font-nomada tracking-tight">Reservas</h1>
+                <button 
+                    onClick={() => setShowModal(true)}
+                    className="px-8 py-3 bg-[#6db3d1] text-[#00162b] rounded-full text-[10px] font-black tracking-[0.2em] uppercase hover:bg-white transition-all shadow-lg"
+                >
+                    + NUEVA RESERVA
+                </button>
+            </div>
+
+            {/* TABLA QUE MUESTRA LOS DATOS */}
+            <div className="bg-[#002a4d]/20 rounded-[2.5rem] overflow-hidden border border-white/5 backdrop-blur-md">
+                <table className="w-full text-left">
+                    <thead>
+                        <tr className="bg-[#6db3d1] text-[#00162b]">
+                            <th className="px-6 py-4 text-[9px] font-black uppercase tracking-[0.3em]">ID</th>
+                            <th className="px-6 py-4 text-[9px] font-black uppercase tracking-[0.3em]">Detalle</th>
+                            <th className="px-6 py-4 text-[9px] font-black uppercase tracking-[0.3em]">Fecha</th>
+                            <th className="px-6 py-4 text-[9px] font-black uppercase tracking-[0.3em]">Importe</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {bookings.map((b) => (
+                            <tr key={b.booking_id} className="border-b border-white/5 hover:bg-white/5 transition-all">
+                                <td className="px-6 py-6 font-mono text-[10px] text-blue-400/30">TR-{b.booking_id}</td>
+                                <td className="px-6 py-6">
+                                    <div className="font-nomada text-lg italic">Viaje #{b.travels_id}</div>
+                                    <div className="text-[8px] text-[#6db3d1] font-bold opacity-40">AGENTE {b.employee_id}</div>
+                                </td>
+                                <td className="px-6 py-6 text-xs text-white/40">{b.bought_date}</td>
+                                <td className="px-6 py-6 font-nomada text-2xl">{b.total_price}€</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+
+            {/* MODAL / FORMULARIO PARA METER DATOS */}
+            {showModal && (
+                <div className="fixed inset-0 bg-[#000b14]/90 backdrop-blur-sm flex items-center justify-center z-[100]">
+                    <form onSubmit={handleConfirmarRegistro} className="glow-card bg-[#001b33] rounded-[3rem] w-full max-w-sm p-10 relative">
+                        
+                        <div className="text-center mb-8">
+                            <h2 className="text-[9px] tracking-[0.5em] text-[#6db3d1] font-bold uppercase mb-4 opacity-60">Nuevo Registro</h2>
+                            <div className="flex items-center justify-center gap-2 border-b border-white/5 pb-4">
+                                <input 
+                                    name="total_price" 
+                                    type="number" 
+                                    step="0.01"
+                                    placeholder="0.00" 
+                                    value={formData.total_price}
+                                    onChange={handleChange}
+                                    className="bg-transparent text-5xl font-nomada text-center outline-none w-32" 
+                                    required
+                                />
+                                <span className="text-xl font-nomada text-white/20 pt-4">EUR</span>
+                            </div>
+                        </div>
+
+                        <div className="space-y-6">
+                            <div className="grid grid-cols-2 gap-6">
+                                <div className="border-b border-white/5 pb-2">
+                                    <label className="flex items-center gap-2 text-[7px] font-black text-[#6db3d1] uppercase mb-2"><Calendar size={10}/> Fecha</label>
+                                    <input type="date" name="bought_date" value={formData.bought_date} onChange={handleChange} className="bg-transparent text-[11px] font-nomada w-full outline-none" />
+                                </div>
+                                <div className="border-b border-white/5 pb-2">
+                                    <label className="flex items-center gap-2 text-[7px] font-black text-[#6db3d1] uppercase mb-2"><ShieldCheck size={10}/> Pensión</label>
+                                    <select name="type_board" value={formData.type_board} onChange={handleChange} className="bg-transparent text-[11px] font-nomada w-full outline-none">
+                                        <option value="FULL" className="bg-[#001b33]">COMPLETA</option>
+                                        <option value="HALF" className="bg-[#001b33]">MEDIA</option>
+                                    </select>
+                                </div>
+                                <div className="border-b border-white/5 pb-2">
+                                    <label className="flex items-center gap-2 text-[7px] font-black text-[#6db3d1] uppercase mb-2"><Hash size={10}/> ID Viaje</label>
+                                    <input type="number" name="travels_id" value={formData.travels_id} onChange={handleChange} placeholder="105" className="bg-transparent text-[11px] font-nomada w-full outline-none" required />
+                                </div>
+                                <div className="border-b border-white/5 pb-2">
+                                    <label className="flex items-center gap-2 text-[7px] font-black text-[#6db3d1] uppercase mb-2"><User size={10}/> ID Agente</label>
+                                    <input type="number" name="employee_id" value={formData.employee_id} onChange={handleChange} placeholder="22" className="bg-transparent text-[11px] font-nomada w-full outline-none" required />
+                                </div>
+                            </div>
+
+                            <div className="flex items-center justify-between py-3 px-4 bg-white/[0.02] rounded-xl border border-white/5">
+                                <span className="text-[8px] font-bold text-white/30 tracking-widest uppercase">¿Reserva Grupal?</span>
+                                <input type="checkbox" name="is_group" checked={formData.is_group} onChange={handleChange} className="accent-[#6db3d1] w-3 h-3" />
+                            </div>
+
+                            <button 
+                                type="submit"
+                                className="w-full bg-[#6db3d1] text-[#00162b] py-4 rounded-2xl text-[9px] font-black uppercase tracking-[0.4em] mt-4 hover:bg-white shadow-lg transition-all"
+                            >
+                                CONFIRMAR REGISTRO
+                            </button>
+                        </div>
+
+                        <button type="button" onClick={() => setShowModal(false)} className="absolute top-6 right-6 text-white/10 hover:text-white">
+                            <X size={16} />
+                        </button>
+                    </form>
+                </div>
+            )}
         </div>
+    );
+};
 
-        <div className="mt-8 overflow-x-auto">
-          <table className="w-full min-w-[950px] text-left text-sm">
-            <thead className="border-b border-slate-50 text-[10px] uppercase tracking-[0.15em] text-slate-400 font-bold">
-              <tr>
-                <th className="py-5 px-2">Cliente / DNI</th>
-                <th className="py-5 px-2">Contacto</th>
-                <th className="py-5 px-2">Destino</th>
-                <th className="py-5 px-2 text-center">Seguro</th>
-                <th className="py-5 px-2">Precio (Desglose)</th>
-                <th className="py-5 px-2 text-center">Estado</th>
-                <th className="py-5 px-2 text-right">Acciones</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-50">
-              {BOOKINGS.map((booking) => (
-                <tr key={booking.id} className="hover:bg-slate-50/80 transition-all group">
-                  <td className="py-5 px-2">
-                    <div className="font-bold text-slate-800 text-base" style={serifStyle}>
-                      {booking.customerName}
-                    </div>
-                    <div className="text-[10px] text-slate-400 font-mono">{booking.dni || '12345678X'}</div>
-                  </td>
-                  <td className="py-5 px-2 text-slate-600">
-                    <div className="text-xs font-medium">{booking.email || 'cliente@mail.com'}</div>
-                    <div className="text-[10px] text-slate-400 mt-0.5">{booking.phone || '+34 600 000 000'}</div>
-                  </td>
-                  <td className="py-5 px-2">
-                    <span className="px-2 py-1 bg-slate-100 text-slate-700 rounded-md text-[11px] font-medium">
-                      {booking.destination}
-                    </span>
-                  </td>
-                  <td className="py-5 px-2 text-center">
-                    {booking.hasInsurance ? (
-                      <div className="flex justify-center">
-                        <ShieldCheck className="h-5 w-5 text-green-500 bg-green-50 rounded-full p-0.5" />
-                      </div>
-                    ) : (
-                      <div className="flex justify-center opacity-30">
-                        <ShieldX className="h-5 w-5 text-slate-400" />
-                      </div>
-                    )}
-                  </td>
-                  <td className="py-5 px-2">
-                    <div className="font-bold text-[#001f3f] text-sm">{formatCurrency(booking.total)}</div>
-                    <div className="text-[9px] text-slate-400 uppercase tracking-tighter mt-0.5">
-                      {Math.round(booking.total / (booking.travelers || 1))}€ por pers. ({booking.travelers})
-                    </div>
-                    {booking.prepaid > 0 && (
-                      <div className="text-[9px] text-emerald-600 font-bold mt-1 bg-emerald-50 inline-block px-1 rounded">
-                        PAGADO: {formatCurrency(booking.prepaid)}
-                      </div>
-                    )}
-                  </td>
-                  <td className="py-5 px-2 text-center">
-                    <StatusPill status={booking.status} />
-                  </td>
-                  <td className="py-5 px-2 text-right">
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      className="text-[#001f3f] hover:bg-[#001f3f] hover:text-white transition-all rounded-lg font-bold" 
-                      style={serifStyle}
-                    >
-                      Gestionar
-                    </Button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </Card>
-    </>
-  )
-}
-
-export default BookingsPage
+export default BookingsPage;

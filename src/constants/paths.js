@@ -15,6 +15,11 @@ export const ADMIN_PATHS = {
   BOOKINGS: '/admin/bookings',
   DESTINATIONS: '/admin/destinations',
   USERS: '/admin/users',
+  EMPLOYEES: '/admin/employees',
+  TRIP_SEGMENTS: '/admin/trip-segments',
+  DRIVERS: '/admin/drivers',
+  BUSES: '/admin/buses',
+  HOTELS: '/admin/hotels',
 }
 
 export const buildDestinationPath = (id) => `/destinations/${id}`

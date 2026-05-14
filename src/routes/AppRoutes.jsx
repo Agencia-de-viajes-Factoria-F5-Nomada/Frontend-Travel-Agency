@@ -14,6 +14,11 @@ import DashboardPage from '../pages/DashboardPage'
 import BookingsPage from '../pages/BookingsPage'
 import DestinationsPage from '../pages/DestinationsPage'
 import UsersPage from '../pages/UsersPage'
+import EmployeePage from '../pages/EmployeePage';    
+import TripSegmentPage from '../pages/TripSegmentPage'; 
+import DriversPage from '../pages/DriversPage';     
+import BusesPage from '../pages/BusesPage';           
+import HotelsPage from '../pages/HotelsPage';
 import { ADMIN_PATHS, PUBLIC_PATHS } from '../constants/paths'
 
 const AppRoutes = () => (
@@ -35,6 +40,11 @@ const AppRoutes = () => (
       <Route path="bookings" element={<BookingsPage />} />
       <Route path="destinations" element={<DestinationsPage />} />
       <Route path="users" element={<UsersPage />} />
+      <Route path="employees" element={<EmployeePage />} />
+      <Route path="drivers" element={<DriversPage />} />
+      <Route path="trip-segments" element={<TripSegmentPage />} />
+      <Route path="buses" element={<BusesPage />} />
+      <Route path="hotels" element={<HotelsPage />} />
       <Route path="*" element={<Navigate to={ADMIN_PATHS.DASHBOARD} replace />} />
     </Route>
   </Routes>
