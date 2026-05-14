@@ -1,49 +1,49 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8080/api/hotels';
+const API_URL = '/api/hotels';
 
 export const HotelService = {
-    // R - Read (Obtener todos los hoteles)
-    fetchHoteles: async () => {
+    getAll: async () => {
         try {
             const { data } = await axios.get(API_URL);
             return data;
         } catch (error) {
-            console.error("Error en fetchHoteles:", error);
+            console.error("Error en getAll:", error);
             throw error;
         }
     },
+    fetchHoteles: async () => HotelService.getAll(),
 
-    // C - Create (Registrar un nuevo hotel)
-    createHotel: async (hotelData) => {
+    create: async (hotelData) => {
         try {
             const { data } = await axios.post(API_URL, hotelData);
             return data;
         } catch (error) {
-            console.error("Error en createHotel:", error);
+            console.error("Error en create:", error);
             throw error;
         }
     },
+    createHotel: async (hotelData) => HotelService.create(hotelData),
 
-    // U - Update (Actualizar un hotel existente)
-    updateHotel: async (id, hotelData) => {
+    update: async (id, hotelData) => {
         try {
             const { data } = await axios.put(`${API_URL}/${id}`, hotelData);
             return data;
         } catch (error) {
-            console.error("Error en updateHotel:", error);
+            console.error("Error en update:", error);
             throw error;
         }
     },
+    updateHotel: async (id, hotelData) => HotelService.update(id, hotelData),
 
-    // D - Delete (Borrar un hotel)
-    deleteHotel: async (id) => {
+    delete: async (id) => {
         try {
             await axios.delete(`${API_URL}/${id}`);
             return true;
         } catch (error) {
-            console.error("Error en deleteHotel:", error);
+            console.error("Error en delete:", error);
             throw error;
         }
-    }
+    },
+    deleteHotel: async (id) => HotelService.delete(id),
 };

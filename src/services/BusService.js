@@ -1,25 +1,29 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8080/api/buses';
+const API_URL = '/api/buses';
 
 export const BusService = {
-    fetchBuses: async () => {
+    getAll: async () => {
         const { data } = await axios.get(API_URL);
         return data;
     },
+    fetchBuses: async () => BusService.getAll(),
 
-    createBus: async (busData) => {
+    create: async (busData) => {
         const { data } = await axios.post(API_URL, busData);
         return data;
     },
+    createBus: async (busData) => BusService.create(busData),
 
-    updateBus: async (id, busData) => {
+    update: async (id, busData) => {
         const { data } = await axios.put(`${API_URL}/${id}`, busData);
         return data;
     },
+    updateBus: async (id, busData) => BusService.update(id, busData),
 
-    deleteBus: async (id) => {
+    delete: async (id) => {
         await axios.delete(`${API_URL}/${id}`);
         return true;
-    }
+    },
+    deleteBus: async (id) => BusService.delete(id),
 };

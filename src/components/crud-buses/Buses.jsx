@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { busService } from '../../services/BusService'
+import { BusService as busService } from '../../services/BusService'
 
 const EMPTY_FORM = {
   licensePlate: '',

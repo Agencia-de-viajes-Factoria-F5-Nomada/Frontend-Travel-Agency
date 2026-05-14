@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
-import { hotelService } from '../../services/HotelService'
-import { cloudinaryService } from '../../services/cloudinaryService'
+import { HotelService as hotelService } from '../../services/HotelService'
 
 const EMPTY_FORM = {
   name: '',
@@ -63,18 +62,11 @@ export default function Hoteles() {
     setShowForm(true)
   }
 
-  const handleImage = async (e) => {
+  const handleImage = (e) => {
     const file = e.target.files[0]
     if (!file) return
-    try {
-      setUploading(true)
-      const url = await cloudinaryService.upload(file)
-      setForm(f => ({ ...f, imageUrl: url }))
-    } catch (e) {
-      setError('Error al subir imagen: ' + e.message)
-    } finally {
-      setUploading(false)
-    }
+    const url = URL.createObjectURL(file)
+    setForm(f => ({ ...f, imageUrl: url }))
   }
 
   const handleSubmit = async (e) => {
@@ -260,7 +252,7 @@ export default function Hoteles() {
                 <label className="text-xs font-medium text-gray-600">Imagen</label>
                 <input type="file" accept="image/*" onChange={handleImage}
                   className="mt-1 w-full text-sm text-gray-500" />
-                {uploading && <p className="text-xs text-blue-500 mt-1">Subiendo imagen...</p>}
+
                 {form.imageUrl && (
                   <img src={form.imageUrl} alt="preview"
                     className="mt-2 h-24 w-full rounded-lg object-cover" />

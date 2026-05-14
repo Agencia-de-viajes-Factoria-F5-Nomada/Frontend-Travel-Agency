@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { driverService } from '../../services/DriverService'
+import { DriverService as driverService } from '../../services/DriverService'
 
 const EMPTY_FORM = {
   name: '',

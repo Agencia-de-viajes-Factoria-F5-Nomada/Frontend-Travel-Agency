@@ -1,0 +1,108 @@
+package com.inditex.g1_agencia_viajes.service;
+
+import com.inditex.g1_agencia_viajes.dto.HotelRequestDTO;
+import com.inditex.g1_agencia_viajes.dto.HotelResponseDTO;
+import com.inditex.g1_agencia_viajes.exception.HotelNotAvailableException;
+import com.inditex.g1_agencia_viajes.exception.ResourceNotFoundException;
+import com.inditex.g1_agencia_viajes.mapper.HotelMapper;
+import com.inditex.g1_agencia_viajes.model.Hotel;
+import com.inditex.g1_agencia_viajes.repository.HotelRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+public class HotelService {
+
+    private final HotelRepository hotelRepository;
+    private final HotelMapper hotelMapper;
+
+    public HotelService(HotelRepository hotelRepository, HotelMapper hotelMapper) {
+        this.hotelRepository = hotelRepository;
+        this.hotelMapper = hotelMapper;
+    }
+
+    @Transactional
+    public HotelResponseDTO create(HotelRequestDTO dto) {
+        Hotel hotel = hotelMapper.toEntity(dto);
+        return hotelMapper.toDTO(hotelRepository.save(hotel));
+    }
+
+    @Transactional(readOnly = true)
+    public List<HotelResponseDTO> getAll() {
+        return hotelRepository.findAll()
+                .stream()
+                .map(hotelMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public HotelResponseDTO getById(Long id) {
+        Hotel hotel = hotelRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("l hotel", id));
+        return hotelMapper.toDTO(hotel);
+    }
+
+    @Transactional(readOnly = true)
+    public List<HotelResponseDTO> getActive() {
+        return hotelRepository.findByActive(true)
+                .stream()
+                .map(hotelMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<HotelResponseDTO> getAvailable() {
+        return hotelRepository.findByAvailablePlacesGreaterThan(0)
+                .stream()
+                .map(hotelMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public HotelResponseDTO update(Long id, HotelRequestDTO dto) {
+        Hotel hotel = hotelRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("l hotel", id));
+        if (dto.getName() != null)            hotel.setName(dto.getName());
+        if (dto.getAddress() != null)         hotel.setAddress(dto.getAddress());
+        if (dto.getCity() != null)            hotel.setCity(dto.getCity());
+        if (dto.getCountry() != null)         hotel.setCountry(dto.getCountry());
+        if (dto.getStars() != null)           hotel.setStars(dto.getStars());
+        if (dto.getCapacity() != null)        hotel.setCapacity(dto.getCapacity());
+        if (dto.getAvailablePlaces() != null) hotel.setAvailablePlaces(dto.getAvailablePlaces());
+        if (dto.getHalfBoardPrice() != null)  hotel.setHalfBoardPrice(dto.getHalfBoardPrice());
+        if (dto.getFullBoardPrice() != null)  hotel.setFullBoardPrice(dto.getFullBoardPrice());
+        if (dto.getImageUrl() != null)        hotel.setImageUrl(dto.getImageUrl());
+        if (dto.getActive() != null)          hotel.setActive(dto.getActive());
+        return hotelMapper.toDTO(hotelRepository.save(hotel));
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        if (!hotelRepository.existsById(id)) {
+            throw new ResourceNotFoundException("l hotel", id);
+        }
+        hotelRepository.deleteById(id);
+    }
+
+    @Transactional
+    public void reducirPlazas(Long id, Integer plazas) {
+        Hotel hotel = hotelRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("l hotel", id));
+        if (hotel.getAvailablePlaces() < plazas) {
+            throw new HotelNotAvailableException(id);
+        }
+        hotel.setAvailablePlaces(hotel.getAvailablePlaces() - plazas);
+        hotelRepository.save(hotel);
+    }
+
+    @Transactional
+    public void liberarPlazas(Long id, Integer plazas) {
+        Hotel hotel = hotelRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("l hotel", id));
+        hotel.setAvailablePlaces(hotel.getAvailablePlaces() + plazas);
+        hotelRepository.save(hotel);
+    }
+}

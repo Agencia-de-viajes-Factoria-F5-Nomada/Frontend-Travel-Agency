@@ -1,25 +1,29 @@
 import axios from 'axios';
 
-const API_URL = "http://localhost:8080/api/travels";
+const API_URL = "/api/travels";
 
 export const TravelsService = {
-    fetchTravels: async () => {
+    getAll: async () => {
         const { data } = await axios.get(API_URL);
         return data;
     },
+    fetchTravels: async () => TravelsService.getAll(),
 
-    createTravel: async (formData) => {
+    create: async (formData) => {
         const { data } = await axios.post(API_URL, formData);
         return data;
     },
+    createTravel: async (formData) => TravelsService.create(formData),
 
-    updateTravel: async (id, formData) => {
+    update: async (id, formData) => {
         const { data } = await axios.put(`${API_URL}/${id}`, formData);
         return data;
     },
+    updateTravel: async (id, formData) => TravelsService.update(id, formData),
 
-    deleteTravel: async (id) => {
+    delete: async (id) => {
         await axios.delete(`${API_URL}/${id}`);
         return true;
-    }
+    },
+    deleteTravel: async (id) => TravelsService.delete(id),
 };
