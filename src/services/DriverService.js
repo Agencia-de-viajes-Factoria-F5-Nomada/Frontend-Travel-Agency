@@ -1,25 +1,11 @@
-import axios from 'axios';
+import { API } from '../constants/api';
+const h = () => ({ 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` });
 
-const API_URL = 'http://localhost:8080/api/drivers';
-
-export const DriverService = {
-    fetchDrivers: async () => {
-        const { data } = await axios.get(API_URL);
-        return data;
-    },
-
-    createDriver: async (driverData) => {
-        const { data } = await axios.post(API_URL, driverData);
-        return data;
-    },
-
-    updateDriver: async (id, driverData) => {
-        const { data } = await axios.put(`${API_URL}/${id}`, driverData);
-        return data;
-    },
-
-    deleteDriver: async (id) => {
-        await axios.delete(`${API_URL}/${id}`);
-        return true;
-    }
+export const driverService = {
+  getAll:    async ()     => { const r = await fetch(`${API}/drivers`, { headers: h() }); if (!r.ok) throw new Error('Error conductores'); return r.json(); },
+  getById:   async (id)   => { const r = await fetch(`${API}/drivers/${id}`, { headers: h() }); if (!r.ok) throw new Error('Conductor no encontrado'); return r.json(); },
+  getActive: async ()     => { const r = await fetch(`${API}/drivers/activos`, { headers: h() }); if (!r.ok) throw new Error('Error'); return r.json(); },
+  create:    async (data) => { const r = await fetch(`${API}/drivers`, { method: 'POST', headers: h(), body: JSON.stringify(data) }); if (!r.ok) throw new Error('Error crear conductor'); return r.json(); },
+  update:    async (id, data) => { const r = await fetch(`${API}/drivers/${id}`, { method: 'PUT', headers: h(), body: JSON.stringify(data) }); if (!r.ok) throw new Error('Error actualizar'); return r.json(); },
+  delete:    async (id)   => { const r = await fetch(`${API}/drivers/${id}`, { method: 'DELETE', headers: h() }); if (!r.ok) throw new Error('Error eliminar'); },
 };

@@ -1,25 +1,12 @@
-import axios from 'axios';
+import { API } from '../constants/api';
+const h = () => ({ 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` });
 
-const API_URL = "http://localhost:8080/api/travels";
-
-export const TravelsService = {
-    fetchTravels: async () => {
-        const { data } = await axios.get(API_URL);
-        return data;
-    },
-
-    createTravel: async (formData) => {
-        const { data } = await axios.post(API_URL, formData);
-        return data;
-    },
-
-    updateTravel: async (id, formData) => {
-        const { data } = await axios.put(`${API_URL}/${id}`, formData);
-        return data;
-    },
-
-    deleteTravel: async (id) => {
-        await axios.delete(`${API_URL}/${id}`);
-        return true;
-    }
+export const travelService = {
+  getAll:      async ()     => { const r = await fetch(`${API}/travels`); if (!r.ok) throw new Error('Error viajes'); return r.json(); },
+  getById:     async (id)   => { const r = await fetch(`${API}/travels/${id}`); if (!r.ok) throw new Error('Viaje no encontrado'); return r.json(); },
+  getAvailable:async ()     => { const r = await fetch(`${API}/travels/available`); if (!r.ok) throw new Error('Error'); return r.json(); },
+  getOnSale:   async ()     => { const r = await fetch(`${API}/travels/sale`); if (!r.ok) throw new Error('Error'); return r.json(); },
+  create:      async (data) => { const r = await fetch(`${API}/travels`, { method: 'POST', headers: h(), body: JSON.stringify(data) }); if (!r.ok) throw new Error('Error crear viaje'); return r.json(); },
+  update:      async (id, data) => { const r = await fetch(`${API}/travels/${id}`, { method: 'PUT', headers: h(), body: JSON.stringify(data) }); if (!r.ok) throw new Error('Error actualizar'); return r.json(); },
+  delete:      async (id)   => { const r = await fetch(`${API}/travels/${id}`, { method: 'DELETE', headers: h() }); if (!r.ok) throw new Error('Error eliminar'); },
 };
