@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { API } from '../constants/api';
 
-import { API } from '../constants/api';
 const h = () => ({ 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` });
 
 export const HotelService = {
