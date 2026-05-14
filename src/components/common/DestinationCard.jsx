@@ -7,10 +7,11 @@ import { buildDestinationPath } from '../../constants/paths'
 import { formatCurrency } from '../../utils/formatters'
 
 const DestinationCard = ({ destination, showOfferPrice = false, featured = false }) => {
-  const image   = destination.hotelImageUrl || destination.image
+  const image   = destination.hotelImageUrl || destination.imageUrl || destination.image
   const name    = destination.destiny       || destination.name
   const country = destination.hotelCity     || destination.country
-  const price   = destination.price         || 0
+  const price   = destination.halfBoardPrice || destination.price || 0
+
   const rating  = destination.hotelStars    || destination.rating || 0
   const tag     = destination.tag           || (destination.sale ? 'Oferta' : 'Disponible')
 
