@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { API } from '../constants/api';
 
 const API_URL = 'http://localhost:8080/api/hotels';
 
@@ -46,4 +47,12 @@ export const HotelService = {
             throw error;
         }
     }
+};
+
+export const hotelService = {
+    getById: async (id) => {
+        const res = await fetch(`${API}/hotels/${id}`);
+        if (!res.ok) throw new Error('Hotel no encontrado');
+        return res.json();
+    },
 };
