@@ -1,18 +1,67 @@
 import { useState } from 'react'
 import { LogIn, UserPlus } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import Button from '../components/ui/Button'
 import Card from '../components/ui/Card'
 import Input from '../components/ui/Input'
 import { classNames } from '../utils/classNames'
+import { authService } from '../services/authService'
 
 const TABS = [
   { id: 'signin', label: 'Iniciar sesión', icon: LogIn },
-  { id: 'signup', label: 'Crear cuenta', icon: UserPlus },
+  { id: 'signup', label: 'Crear cuenta',   icon: UserPlus },
 ]
 
 const AuthPage = () => {
-  const [active, setActive] = useState('signin')
-  const isSignIn = active === 'signin'
+  const [active, setActive]   = useState('signin')
+  const [loading, setLoading] = useState(false)
+  const [error, setError]     = useState(null)
+  const navigate              = useNavigate()
+  const isSignIn              = active === 'signin'
+
+  const [form, setForm] = useState({
+    name: '', email: '', password: ''
+  })
+
+  const change = (e) => {
+    setForm(f => ({ ...f, [e.target.name]: e.target.value }))
+    setError(null)
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setLoading(true)
+    setError(null)
+    try {
+      if (isSignIn) {
+        await authService.login(form.email, form.password)
+      } else {
+        // Registro — ajusta el endpoint según tu backend
+        const res = await fetch(`${import.meta.env.VITE_API_URL ?? 'http://localhost:8080'}/api/auth/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name:     form.name,
+            email:    form.email,
+            password: form.password,
+          }),
+        })
+        if (!res.ok) throw new Error('Error al crear la cuenta')
+        await authService.login(form.email, form.password)
+      }
+
+      // Redirigir según rol
+      if (authService.isAdmin()) {
+        navigate('/admin')
+      } else {
+        navigate('/')
+      }
+    } catch (e) {
+      setError(e.message)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <div className="container-page grid place-items-center py-16">
@@ -26,6 +75,7 @@ const AuthPage = () => {
             : 'Únete y comienza a planificar tu próxima aventura.'}
         </p>
 
+        {/* Tabs */}
         <div
           role="tablist"
           aria-label="Modo de autenticación"
@@ -39,7 +89,7 @@ const AuthPage = () => {
                 type="button"
                 role="tab"
                 aria-selected={isActive}
-                onClick={() => setActive(tab.id)}
+                onClick={() => { setActive(tab.id); setError(null) }}
                 className={classNames(
                   'inline-flex items-center justify-center gap-2 rounded-full px-3 py-2 text-sm font-medium transition-colors',
                   isActive
@@ -54,17 +104,48 @@ const AuthPage = () => {
           })}
         </div>
 
-        <form className="mt-6 grid gap-4">
-          {!isSignIn ? <Input label="Nombre completo" placeholder="Juan Pérez" /> : null}
-          <Input label="Correo electrónico" type="email" placeholder="tu@ejemplo.com" />
-          <Input label="Contraseña" type="password" placeholder="••••••••" />
-          {isSignIn ? (
-            <a href="#forgot" className="text-right text-xs text-brand-300 hover:text-brand-200">
-              ¿Olvidaste tu contraseña?
-            </a>
-          ) : null}
-          <Button fullWidth size="lg">
-            {isSignIn ? 'Iniciar sesión' : 'Crear cuenta'}
+        {/* Error */}
+        {error && (
+          <div className="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">
+            {error}
+          </div>
+        )}
+
+        {/* Formulario */}
+        <form onSubmit={handleSubmit} className="mt-6 grid gap-4">
+          {!isSignIn && (
+            <Input
+              label="Nombre completo"
+              name="name"
+              placeholder="Juan Pérez"
+              value={form.name}
+              onChange={change}
+              required
+            />
+          )}
+          <Input
+            label="Correo electrónico"
+            name="email"
+            type="email"
+            placeholder="tu@ejemplo.com"
+            value={form.email}
+            onChange={change}
+            required
+          />
+          <Input
+            label="Contraseña"
+            name="password"
+            type="password"
+            placeholder="••••••••"
+            value={form.password}
+            onChange={change}
+            required
+          />
+
+          <Button fullWidth size="lg" disabled={loading}>
+            {loading
+              ? 'Cargando...'
+              : isSignIn ? 'Iniciar sesión' : 'Crear cuenta'}
           </Button>
         </form>
 

@@ -1,10 +1,59 @@
+import axios from 'axios';
 import { API } from '../constants/api';
-const h = () => ({ 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` });
+
+const API_URL = 'http://localhost:8080/api/bookings';
+
+const authHeader = () => {
+    const token = localStorage.getItem('token');
+    return token ? { Authorization: `Bearer ${token}` } : {};
+};
+
+export const BookingService = {
+    fetchBookings: async () => {
+        const { data } = await axios.get(API_URL);
+        return data;
+    },
+
+    createBooking: async (bookingData) => {
+        const { data } = await axios.post(API_URL, bookingData);
+        return data;
+    },
+
+    updateBooking: async (id, bookingData) => {
+        const { data } = await axios.put(`${API_URL}/${id}`, bookingData);
+        return data;
+    },
+
+    deleteBooking: async (id) => {
+        await axios.delete(`${API_URL}/${id}`);
+        return true;
+    }
+};
 
 export const bookingService = {
-  getAll:  async ()     => { const r = await fetch(`${API}/bookings`, { headers: h() }); if (!r.ok) throw new Error('Error reservas'); return r.json(); },
-  getById: async (id)   => { const r = await fetch(`${API}/bookings/${id}`, { headers: h() }); if (!r.ok) throw new Error('Reserva no encontrada'); return r.json(); },
-  quote:   async (data) => { const r = await fetch(`${API}/bookings/quote`, { method: 'POST', headers: h(), body: JSON.stringify(data) }); if (!r.ok) throw new Error('Error cotización'); return r.json(); },
-  confirm: async (data) => { const r = await fetch(`${API}/bookings`, { method: 'POST', headers: h(), body: JSON.stringify(data) }); if (!r.ok) throw new Error('Error confirmar reserva'); return r.json(); },
-  delete:  async (id)   => { const r = await fetch(`${API}/bookings/${id}`, { method: 'DELETE', headers: h() }); if (!r.ok) throw new Error('Error eliminar'); },
+    getAll: async () => {
+        const res = await fetch(`${API}/bookings`, {
+            headers: { ...authHeader() },
+        });
+        if (!res.ok) throw new Error('Error al cargar reservas');
+        return res.json();
+    },
+    quote: async (data) => {
+        const res = await fetch(`${API}/bookings/quote`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', ...authHeader() },
+            body: JSON.stringify(data),
+        });
+        if (!res.ok) throw new Error('Error al calcular cotización');
+        return res.json();
+    },
+    confirm: async (data) => {
+        const res = await fetch(`${API}/bookings`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', ...authHeader() },
+            body: JSON.stringify(data),
+        });
+        if (!res.ok) throw new Error('Error al confirmar reserva');
+        return res.json();
+    },
 };

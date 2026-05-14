@@ -1,115 +1,129 @@
-import { SlidersHorizontal } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
+import { SlidersHorizontal, MapPin } from 'lucide-react'
 import Button from '../components/ui/Button'
 import Card from '../components/ui/Card'
 import DestinationCard from '../components/common/DestinationCard'
 import PageHeader from '../components/ui/PageHeader'
-import { FEATURED_DESTINATIONS, BUSES } from '../constants/mockData'
+import { travelService } from '../services/TravelsService'
 
-const FILTERS = [
-  { label: 'Playa', count: 24 },
-  { label: 'Ciudad', count: 38 },
-  { label: 'Montaña', count: 17 },
-  { label: 'Aventura', count: 12 },
-  { label: 'Cultura', count: 21 },
-  { label: 'Familia', count: 30 },
-]
+const SearchResultsPage = () => {
+  const [searchParams]          = useSearchParams()
+  const [travels, setTravels]   = useState([])
+  const [loading, setLoading]   = useState(true)
+  const [error, setError]       = useState(null)
+  const [maxPrice, setMaxPrice] = useState(5000)
+  const [onlyOffers, setOnlyOffers] = useState(false)
+  const [search, setSearch]     = useState(searchParams.get('destiny') ?? '')
 
-const SearchResultsPage = () => (
-  <div className="container-page py-12">
-    <PageHeader
-      eyebrow="Búsqueda"
-      title="Viajes disponibles"
-      description={`${FEATURED_DESTINATIONS.length} destinos encontrados · ordenados por relevancia`}
-      actions={
-        <Button variant="secondary" size="md">
-          <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
-          Ordenar
-        </Button>
-      }
-    />
+  useEffect(() => {
+    travelService.getAvailable()
+      .then(data => setTravels(data))
+      .catch(e => setError(e.message))
+      .finally(() => setLoading(false))
+  }, [])
 
-    <div className="mt-8 grid gap-8 lg:grid-cols-[280px_1fr]">
-      <Card as="aside" aria-label="Filtros" className="h-fit p-6">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-muted">
-          Filtros
-        </h2>
-        
-        {/* Filtros de tipo de destino */}
-        <div className="mt-4">
-          <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-ink-muted">
-            Tipo de destino
-          </p>
-          <div className="flex flex-col gap-2">
-            {FILTERS.map((filter) => (
-              <label
-                key={filter.label}
-                className="flex items-center justify-between rounded-lg px-2 py-2 text-sm text-ink-soft hover:bg-surface-700"
-              >
-                <span className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    className="h-4 w-4 rounded border-surface-600 bg-surface-900 text-brand-500 focus:ring-brand-500"
-                  />
-                  {filter.label}
-                </span>
-                <span className="text-xs text-ink-muted">{filter.count}</span>
-              </label>
+  // Filtros en el frontend
+  const filtered = travels.filter(t => {
+    const matchDestiny = t.destiny?.toLowerCase().includes(search.toLowerCase())
+    const matchOffer   = onlyOffers ? t.sale === true : true
+    return matchDestiny && matchOffer
+  })
+
+  return (
+    <div className="container-page py-12">
+      <PageHeader
+        eyebrow="Búsqueda"
+        title="Viajes disponibles"
+        description={`${filtered.length} destinos encontrados`}
+        actions={
+          <Button variant="secondary" size="md">
+            <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
+            Ordenar
+          </Button>
+        }
+      />
+
+      {error && (
+        <div className="mt-4 rounded-lg bg-red-50 p-4 text-red-700">{error}</div>
+      )}
+
+      <div className="mt-8 grid gap-8 lg:grid-cols-[280px_1fr]">
+
+        {/* Filtros */}
+        <Card as="aside" aria-label="Filtros" className="h-fit p-6">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-muted">
+            Filtros
+          </h2>
+
+          {/* Buscador */}
+          <div className="mt-4">
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink-muted">
+              Destino
+            </p>
+            <div className="flex items-center gap-2 rounded-xl border border-surface-600 bg-surface-900 px-3">
+              <MapPin className="h-4 w-4 text-brand-400" aria-hidden="true" />
+              <input
+                type="text"
+                placeholder="Buscar destino..."
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                className="h-10 w-full bg-transparent text-sm text-ink placeholder:text-ink-muted focus:outline-none"
+              />
+            </div>
+          </div>
+
+          {/* Solo ofertas */}
+          <div className="mt-6 border-t border-surface-700 pt-6">
+            <label className="flex items-center gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={onlyOffers}
+                onChange={e => setOnlyOffers(e.target.checked)}
+                className="h-4 w-4 rounded"
+              />
+              <span className="text-sm text-ink-soft">Solo viajes en oferta</span>
+            </label>
+          </div>
+
+          {/* Limpiar filtros */}
+          <Button
+            variant="ghost"
+            size="sm"
+            fullWidth
+            className="mt-6"
+            onClick={() => { setSearch(''); setOnlyOffers(false); setMaxPrice(5000) }}
+          >
+            Limpiar filtros
+          </Button>
+        </Card>
+
+        {/* Resultados */}
+        {loading ? (
+          <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="h-64 animate-pulse rounded-2xl bg-surface-800" />
             ))}
           </div>
-        </div>
-
-        {/* Filtros de autobuses */}
-        <div className="mt-6 border-t border-surface-700 pt-6">
-          <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-ink-muted">
-            Autobús disponible
-          </p>
-          <div className="flex flex-col gap-2">
-            {BUSES.map((bus) => (
-              <label
-                key={bus.id}
-                className="flex flex-col rounded-lg px-2 py-2 text-sm text-ink-soft hover:bg-surface-700"
-              >
-                <span className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    className="h-4 w-4 rounded border-surface-600 bg-surface-900 text-brand-500 focus:ring-brand-500"
-                  />
-                  <span className="font-medium">{bus.name}</span>
-                </span>
-                <span className="ml-6 text-xs text-ink-muted">{bus.seats} asientos · {bus.amenities}</span>
-              </label>
+        ) : filtered.length === 0 ? (
+          <div className="flex flex-col items-center justify-center gap-3 py-20 text-center">
+            <MapPin className="h-10 w-10 text-brand-400" />
+            <p className="text-lg font-semibold text-white">Sin resultados</p>
+            <p className="text-sm text-ink-muted">
+              Prueba con otro destino o quita los filtros
+            </p>
+          </div>
+        ) : (
+          <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+            {filtered.map(travel => (
+              <DestinationCard key={travel.id} destination={travel} featured />
             ))}
           </div>
-        </div>
+        )}
 
-        {/* Rango de precio */}
-        <div className="mt-6 border-t border-surface-700 pt-6">
-          <p className="text-sm font-semibold uppercase tracking-wide text-ink-muted">
-            Rango de precio
-          </p>
-          <input
-            type="range"
-            min="500"
-            max="5000"
-            defaultValue="2500"
-            aria-label="Precio máximo"
-            className="mt-3 w-full accent-brand-500"
-          />
-          <p className="mt-1 text-xs text-ink-muted">Hasta €2.500</p>
-        </div>
-
-        <Button fullWidth className="mt-6">
-          Aplicar filtros
-        </Button>
-      </Card>
-
-      <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-        {FEATURED_DESTINATIONS.map((destination) => (
-          <DestinationCard key={destination.id} destination={destination} featured />
-        ))}
       </div>
     </div>
-  </div>
-)
+  )
+}
 
 export default SearchResultsPage
