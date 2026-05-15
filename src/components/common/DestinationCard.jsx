@@ -1,13 +1,15 @@
-import { Heart, Star } from 'lucide-react'
+import { Heart, ImageOff, Star } from 'lucide-react'
 import Badge from '../ui/Badge'
 import Button from '../ui/Button'
 import Card from '../ui/Card'
 import { classNames } from '../../utils/classNames'
 import { buildDestinationPath } from '../../constants/paths'
 import { formatCurrency } from '../../utils/formatters'
+import { getDestinationFallbackImage, getDestinationImage } from '../../utils/destinationImages'
 
 const DestinationCard = ({ destination, showOfferPrice = false, featured = false }) => {
-  const image   = destination.hotelImageUrl || destination.imageUrl || destination.image
+  const image   = getDestinationImage(destination)
+  const fallbackImage = getDestinationFallbackImage(destination)
   const name    = destination.destiny       || destination.name
   const country = destination.hotelCity     || destination.country
   const price   = destination.halfBoardPrice || destination.price || 0
@@ -23,12 +25,23 @@ const DestinationCard = ({ destination, showOfferPrice = false, featured = false
   return (
     <Card className="overflow-hidden transition-transform duration-200 hover:-translate-y-1">
       <div className="relative h-48 w-full overflow-hidden">
-        <img
-          src={image}
-          alt={`${name}, ${country}`}
-          className="h-full w-full object-cover"
-          loading="lazy"
-        />
+        {image ? (
+          <img
+            src={image}
+            alt={`${name}, ${country}`}
+            className="h-full w-full object-cover"
+            loading="lazy"
+            onError={(event) => {
+              if (fallbackImage && event.currentTarget.src !== fallbackImage) {
+                event.currentTarget.src = fallbackImage
+              }
+            }}
+          />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center bg-surface-900">
+            <ImageOff className="h-10 w-10 text-brand-400" aria-hidden="true" />
+          </div>
+        )}
         <div className="absolute left-4 top-4">
           <Badge
             tone="brand"
@@ -44,8 +57,9 @@ const DestinationCard = ({ destination, showOfferPrice = false, featured = false
           variant="ghost"
           size="icon"
           aria-label={`Guardar ${name} en favoritos`}
+          aria-pressed={false}
           className={classNames(
-            'absolute right-3 top-3 backdrop-blur',
+            'absolute right-3 top-3 backdrop-blur focus-visible:z-20 focus-visible:ring-2 focus-visible:ring-brand-500',
             featured
               ? 'border border-white/20 bg-white/15 text-white shadow-md transition-colors hover:bg-white/90 hover:text-rose-500'
               : 'bg-surface-950/60',

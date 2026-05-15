@@ -10,7 +10,8 @@
   }
 
   body {
-    @apply bg-surface-950 text-ink font-sans antialiased;
+    /* Fondo suave en degradado usando la paleta brand (azure) definida en tailwind.config.js */
+    @apply bg-gradient-to-b from-brand-100 via-brand-200 to-brand-500 text-ink font-sans antialiased;
   }
 
   :focus-visible {
@@ -21,5 +22,90 @@
 @layer components {
   .container-page {
     @apply mx-auto w-full max-w-page px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Componentes globales de diseño */
+  .card {
+    @apply rounded-card border border-surface-700/40 bg-gradient-to-b from-brand-100/60 to-surface-950/40 p-4 shadow-card backdrop-blur;
+  }
+
+  /* Hero card: variante más prominente para la sección principal */
+  .hero-card {
+    @apply rounded-card border border-surface-700/40 bg-gradient-to-b from-brand-100/60 to-surface-950/40 p-6 shadow-2xl backdrop-blur;
+    transition: transform 240ms ease, box-shadow 240ms ease;
+  }
+
+  .hero-card:hover {
+    box-shadow: 0 20px 40px rgba(0,0,0,0.45);
+  }
+
+  .hero-title {
+    @apply text-4xl md:text-6xl font-extrabold leading-tight text-white;
+  }
+
+  .hero-cta {
+    @apply flex flex-wrap gap-2 mt-4 items-center;
+  }
+
+  .form-field {
+    @apply flex items-center gap-2 rounded-xl border border-surface-600 bg-surface-900 px-4 h-11;
+  }
+
+  .form-input {
+    @apply w-full bg-transparent text-sm text-ink placeholder:text-ink-muted focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 focus:ring-offset-surface-900 rounded-md transition;
+  }
+
+  .btn-primary-lg {
+    @apply bg-brand-500 text-white px-6 py-3 rounded-lg text-base hover:bg-brand-400 shadow-lg;
+  }
+
+  .page-hero {
+    @apply py-12 sm:py-20 text-center;
+  }
+
+  .page-header {
+    @apply text-3xl sm:text-4xl font-bold text-ink mb-2;
+  }
+
+  .page-subheader {
+    @apply text-sm text-ink-muted mb-6;
+  }
+
+  /* Clase utilitaria para botones para facilitar uso fuera del componente React */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-card font-semibold transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  /* Hero illustration utilities */
+  .hero-illustration {
+    @apply pointer-events-none select-none absolute right-0 top-0 w-[48%] max-w-[520px] opacity-90 -translate-y-6;
+    animation: float-anim 8s ease-in-out infinite;
+  }
+
+  /* Thumbnail (LQIP) styles: blur-up and fade transition */
+  .hero-thumb {
+    filter: blur(6px);
+    transform-origin: right top;
+    transition: filter 600ms ease, opacity 600ms ease, transform 600ms ease;
+  }
+
+  /* Full illustration appearence */
+  .hero-full {
+    opacity: 0;
+    transform: translateY(-6px) scale(1.02);
+    transition: opacity 600ms ease, transform 600ms ease;
+  }
+
+  .hero-full-loaded {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  /* When full illustration loads we can remove blur by adding a class via JS if needed. Keep transition fallback. */
+
+  @keyframes float-anim {
+    0% { transform: translateY(-6px); opacity: 0.92 }
+    50% { transform: translateY(6px); opacity: 1 }
+    100% { transform: translateY(-6px); opacity: 0.92 }
   }
 }

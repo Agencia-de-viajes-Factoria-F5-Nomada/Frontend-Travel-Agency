@@ -5,7 +5,7 @@ import Button from '../components/ui/Button'
 import Card from '../components/ui/Card'
 import PageHeader from '../components/ui/PageHeader'
 import { travelService } from '../services/TravelsService'
-import { PUBLIC_PATHS } from '../constants/paths'
+import { getDestinationFallbackImage, getDestinationImage } from '../utils/destinationImages'
 
 const DestinationsPage = () => {
   const [travels, setTravels]   = useState([])
@@ -70,14 +70,19 @@ const DestinationsPage = () => {
               style={{ '--tw-ring-color': '#4A8FA8' }}
               onClick={() => navigate(`/destinations/${travel.id}`)}
             >
-              {/* Imagen o placeholder */}
               <div className="relative h-40 bg-surface-800">
-                {travel.imageUrl ? (
+                {getDestinationImage(travel) ? (
                   <img
-                    src={travel.imageUrl}
+                    src={getDestinationImage(travel)}
                     alt={travel.destiny}
                     className="h-full w-full object-cover"
                     loading="lazy"
+                    onError={(event) => {
+                      const fallbackImage = getDestinationFallbackImage(travel)
+                      if (fallbackImage && event.currentTarget.src !== fallbackImage) {
+                        event.currentTarget.src = fallbackImage
+                      }
+                    }}
                   />
                 ) : (
                   <div className="flex h-full items-center justify-center">

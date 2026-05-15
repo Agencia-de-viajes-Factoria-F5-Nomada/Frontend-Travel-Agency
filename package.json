@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "e2e:install": "npx playwright install",
+    "e2e:test": "npx playwright test",
     "lint": "eslint .",
     "preview": "vite preview"
   },

@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { ArrowLeft, MapPin, Calendar, Users, Building2, Bus } from 'lucide-react'
+import { ArrowLeft, Calendar, MapPin, Users, Building2 } from 'lucide-react'
 import Button from '../components/ui/Button'
 import Card from '../components/ui/Card'
 import { travelService } from '../services/TravelsService'
 import { hotelService } from '../services/HotelService'
 import { authService } from '../services/authService'
+import { getDestinationFallbackImage, getDestinationImage } from '../utils/destinationImages'
 
 const DestinationDetailPage = () => {
   const { id }                  = useParams()
@@ -64,6 +65,7 @@ const DestinationDetailPage = () => {
 
   const isPast = travel.startDate && new Date(travel.startDate) < new Date()
   const isFull = travel.availablePlaces === 0
+  const image = getDestinationImage(travel)
 
   return (
     <div className="container-page py-12">
@@ -84,9 +86,18 @@ const DestinationDetailPage = () => {
 
           {/* Imagen o banner */}
           <div className="relative h-64 overflow-hidden rounded-2xl bg-surface-800 lg:h-80">
-            {travel.imageUrl ? (
-              <img src={travel.imageUrl} alt={travel.destiny}
-                className="h-full w-full object-cover" />
+            {image ? (
+              <img
+                src={image}
+                alt={travel.destiny}
+                className="h-full w-full object-cover"
+                onError={(event) => {
+                  const fallbackImage = getDestinationFallbackImage(travel)
+                  if (fallbackImage && event.currentTarget.src !== fallbackImage) {
+                    event.currentTarget.src = fallbackImage
+                  }
+                }}
+              />
             ) : (
               <div className="flex h-full items-center justify-center">
                 <MapPin className="h-16 w-16 text-brand-400" />
