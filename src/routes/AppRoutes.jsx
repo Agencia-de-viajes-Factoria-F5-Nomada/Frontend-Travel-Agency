@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 
 // Layouts
 import PublicLayout   from '../components/layout/PublicLayout';
@@ -14,6 +14,7 @@ import SearchResultsPage    from '../pages/SearchResultsPage';
 import CheckoutPage         from '../pages/CheckoutPage';
 import AuthPage             from '../pages/AuthPage';
 import ProfilePage          from '../pages/ProfilePage';
+import LegalPage            from '../pages/LegalPage';
 import NotFoundPage         from '../pages/NotFoundPage';
 
 // Páginas admin
@@ -26,7 +27,6 @@ import Hoteles    from '../components/crud-hotel/Hoteles';
 import Buses      from '../components/crud-buses/Buses';
 import Drivers    from '../components/crud-drivers/Drivers';
 import Travels    from '../components/crud-travel/Travels';
-import Bookings   from '../components/bookings-crud/Bookings';
 
 export default function AppRoutes() {
   return (
@@ -40,6 +40,7 @@ export default function AppRoutes() {
         <Route path="/offers"              element={<OffersPage />} />
         <Route path="/search"              element={<SearchResultsPage />} />
         <Route path="/auth"                element={<AuthPage />} />
+        <Route path="/legal/:slug"         element={<LegalPage />} />
         <Route path="/profile"             element={
           <PrivateRoute><ProfilePage /></PrivateRoute>
         } />

@@ -7,6 +7,11 @@ export const PUBLIC_PATHS = {
   OFFERS:      '/offers',
   AUTH:        '/auth',
   DASHBOARD:   '/dashboard',
+  LEGAL:       '/legal/:slug',
+  PRIVACY:     '/legal/privacidad',
+  TERMS:       '/legal/terminos',
+  COOKIES:     '/legal/cookies',
+  COPYRIGHT:   '/legal/copyright',
 };
 
 export const ADMIN_PATHS = {
