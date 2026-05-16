@@ -15,9 +15,9 @@ const HomePage = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    travelService.getAvailable()
+    travelService.getFeatured()
       .then(data => {
-        console.log('✅ Viajes cargados en HomePage:', data.length);
+        console.log('✅ Viajes destacados cargados en HomePage:', data.length);
         setTravels(data);
       })
       .catch(error => {
@@ -150,7 +150,7 @@ const HomePage = () => {
           </div>
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {travels.slice(0, 6).map(travel => (
+            {travels.map(travel => (
               <DestinationCard key={travel.id} destination={travel} featured />
             ))}
           </div>

@@ -59,9 +59,9 @@ const DestinationDetailPage = () => {
     </div>
   )
 
-  const price = typeBoard === 'HALF_BOARD'
-    ? hotel?.halfBoardPrice
-    : hotel?.fullBoardPrice
+  const halfBoard = hotel?.halfBoardPrice ?? travel?.halfBoardPrice
+  const fullBoard = hotel?.fullBoardPrice ?? travel?.fullBoardPrice
+  const price = typeBoard === 'HALF_BOARD' ? halfBoard : fullBoard
 
   const isPast = travel.startDate && new Date(travel.startDate) < new Date()
   const isFull = travel.availablePlaces === 0
@@ -126,16 +126,26 @@ const DestinationDetailPage = () => {
             </div>
           </div>
 
+          {/* Descripción */}
+          {(travel.description || travel.notes) && (
+            <Card className="p-5">
+              <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-muted mb-3">Sobre este viaje</h2>
+              <p className="text-sm leading-7 text-ink-soft">{travel.description || travel.notes}</p>
+            </Card>
+          )}
+
           {/* Hotel */}
-          {hotel && (
+          {(hotel || travel.hotelName) && (
             <Card className="p-5">
               <div className="flex items-start gap-3">
                 <Building2 className="h-5 w-5 text-brand-400 mt-0.5" />
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-wide text-ink-muted">Hotel incluido</p>
-                  <h3 className="mt-1 font-semibold text-white">{hotel.name}</h3>
-                  <p className="text-sm text-ink-muted">{hotel.city}, {hotel.country}</p>
-                  <p className="mt-1 text-sm text-ink-muted">{'⭐'.repeat(hotel.stars)}</p>
+                  <h3 className="mt-1 font-semibold text-white">{hotel?.name ?? travel.hotelName}</h3>
+                  <p className="text-sm text-ink-muted">
+                    {hotel ? `${hotel.city}, ${hotel.country}` : `${travel.hotelCity}, ${travel.hotelCountry}`}
+                  </p>
+                  <p className="mt-1 text-sm text-ink-muted">{'⭐'.repeat(hotel?.stars ?? travel.hotelStars ?? 0)}</p>
                 </div>
               </div>
             </Card>
@@ -149,14 +159,14 @@ const DestinationDetailPage = () => {
             <h2 className="text-lg font-bold text-white">Reservar este viaje</h2>
 
             {/* Tipo de pensión */}
-            {hotel && (
+            {(hotel || travel.halfBoardPrice) && (
               <div className="mt-4 space-y-2">
                 <p className="text-xs font-semibold uppercase tracking-wide text-ink-muted">Tipo de pensión</p>
                 <label className="flex items-center justify-between rounded-xl border p-3 cursor-pointer transition-colors"
                   style={{ borderColor: typeBoard === 'HALF_BOARD' ? '#4A8FA8' : 'transparent',
                            background: typeBoard === 'HALF_BOARD' ? '#DAEEF7' : '' }}>
                   <span className="text-sm font-medium" style={{ color: '#1A3A5C' }}>Media pensión</span>
-                  <span className="font-bold" style={{ color: '#1A3A5C' }}>{hotel.halfBoardPrice}€/persona</span>
+                  <span className="font-bold" style={{ color: '#1A3A5C' }}>{halfBoard}€/persona</span>
                   <input type="radio" name="typeBoard" value="HALF_BOARD"
                     checked={typeBoard === 'HALF_BOARD'}
                     onChange={() => setTypeBoard('HALF_BOARD')}
@@ -166,7 +176,7 @@ const DestinationDetailPage = () => {
                   style={{ borderColor: typeBoard === 'FULL_BOARD' ? '#4A8FA8' : 'transparent',
                            background: typeBoard === 'FULL_BOARD' ? '#DAEEF7' : '' }}>
                   <span className="text-sm font-medium" style={{ color: '#1A3A5C' }}>Pensión completa</span>
-                  <span className="font-bold" style={{ color: '#1A3A5C' }}>{hotel.fullBoardPrice}€/persona</span>
+                  <span className="font-bold" style={{ color: '#1A3A5C' }}>{fullBoard}€/persona</span>
                   <input type="radio" name="typeBoard" value="FULL_BOARD"
                     checked={typeBoard === 'FULL_BOARD'}
                     onChange={() => setTypeBoard('FULL_BOARD')}

@@ -1,8 +1,13 @@
 import axios from 'axios';
 import { API } from '../constants/api';
+import { externalTravelService } from './externalTravelService';
 
 const API_URL = `${API}/travels`;
 const onlyActive = (travels) => travels.filter((travel) => travel.active !== false);
+const withExternalTravels = async (travels) => [
+    ...travels,
+    ...(await externalTravelService.getAvailable()),
+];
 
 export const TravelsService = {
     fetchTravels: async () => {
@@ -84,12 +89,12 @@ export const travelService = {
             if (!res.ok) throw new Error(`Error al cargar viajes: ${res.status}`);
             const travels = onlyActive(await res.json());
             const hotelMap = await fetchHotelMap();
-            const enriched = travels.map(t => enrichWithHotel(t, hotelMap));
+            const enriched = await withExternalTravels(travels.map(t => enrichWithHotel(t, hotelMap)));
             console.log('✅ Viajes cargados y enriquecidos:', enriched.length);
             return enriched;
         } catch (error) {
             console.error('❌ Error en getAll:', error);
-            throw error;
+            return externalTravelService.getAvailable();
         }
     },
     getAvailable: async () => {
@@ -98,16 +103,21 @@ export const travelService = {
             if (!res.ok) throw new Error(`Error al cargar viajes: ${res.status}`);
             const travels = onlyActive(await res.json());
             const hotelMap = await fetchHotelMap();
-            const enriched = travels.map(t => enrichWithHotel(t, hotelMap));
+            const enriched = await withExternalTravels(travels.map(t => enrichWithHotel(t, hotelMap)));
             console.log('✅ Viajes disponibles cargados:', enriched.length);
             return enriched;
         } catch (error) {
             console.error('❌ Error en getAvailable:', error);
-            throw error;
+            return externalTravelService.getAvailable();
         }
     },
     getById: async (id) => {
         try {
+            if (String(id).startsWith('external-')) {
+                const externalTravel = await externalTravelService.getById(id);
+                if (!externalTravel) throw new Error('Viaje no encontrado');
+                return externalTravel;
+            }
             const res = await fetch(`${API_URL}/${id}`);
             if (!res.ok) throw new Error('Viaje no encontrado');
             const travel = await res.json();
@@ -118,16 +128,32 @@ export const travelService = {
             throw error;
         }
     },
+    getFeatured: async () => {
+        try {
+            const res = await fetch(`${API_URL}`);
+            if (!res.ok) throw new Error('Error al cargar viajes');
+            const travels = onlyActive(await res.json()).filter(t => t.featured === true);
+            const hotelMap = await fetchHotelMap();
+            const externalFeatured = await externalTravelService.getFeatured();
+            return [...travels.map(t => enrichWithHotel(t, hotelMap)), ...externalFeatured];
+        } catch (error) {
+            console.error('❌ Error en getFeatured:', error);
+            return externalTravelService.getFeatured();
+        }
+    },
     getOnSale: async () => {
         try {
             const res = await fetch(`${API_URL}`);
             if (!res.ok) throw new Error('Error al cargar ofertas');
             const travels = onlyActive(await res.json()).filter(t => t.sale === true);
             const hotelMap = await fetchHotelMap();
-            return travels.map(t => enrichWithHotel(t, hotelMap));
+            return [
+                ...travels.map(t => enrichWithHotel(t, hotelMap)),
+                ...(await externalTravelService.getOnSale()),
+            ];
         } catch (error) {
             console.error('❌ Error en getOnSale:', error);
-            throw error;
+            return externalTravelService.getOnSale();
         }
     },
     create: async (travelData) => {
