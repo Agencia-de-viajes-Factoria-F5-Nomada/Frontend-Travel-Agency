@@ -1,0 +1,386 @@
+import express from 'express';
+import cors from 'cors';
+import jwt from 'jsonwebtoken';
+
+const app = express();
+
+// Middleware para logging
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
+  next();
+});
+
+app.use(express.json());
+app.use(cors());
+
+// Manejo de errores global
+app.use((err, req, res, next) => {
+  console.error('Error:', err);
+  res.status(500).json({ error: 'Error interno del servidor' });
+});
+
+const JWT_SECRET = 'tu_secreto_super_seguro_aqui';
+
+// Base de datos simulada
+const db = {
+  users: [
+    { id: 1, name: 'Admin User', email: 'admin@travel.io', password: 'admin123', role: 'ADMIN', active: true },
+    { id: 2, name: 'Marta Sánchez', email: 'marta@travel.io', password: 'user123', role: 'USER', dni: '12345678A', phone: '+34 654 321 987', active: true },
+  ],
+  hotels: [
+    { id: 1, name: 'Royal London Hotel', address: 'Cromwell Rd 123', city: 'Londres', country: 'Reino Unido', stars: 3, capacity: 120, availablePlaces: 120, fullBoardPrice: 150.00, halfBoardPrice: 110.00, imageUrl: 'https://picsum.photos/seed/london1/800/480', active: true },
+    { id: 2, name: 'St Giles London Hotel', address: 'Bedford Ave', city: 'Londres', country: 'Reino Unido', stars: 4, capacity: 250, availablePlaces: 250, fullBoardPrice: 185.00, halfBoardPrice: 140.00, imageUrl: 'https://picsum.photos/seed/london2/800/480', active: true },
+    { id: 3, name: 'President Hotel London', address: 'Russell Square', city: 'Londres', country: 'Reino Unido', stars: 4, capacity: 180, availablePlaces: 180, fullBoardPrice: 160.00, halfBoardPrice: 125.00, imageUrl: 'https://picsum.photos/seed/london3/800/480', active: true },
+    { id: 4, name: 'Hotel Roma Centro', address: 'Via Nazionale 22', city: 'Roma', country: 'Italia', stars: 4, capacity: 100, availablePlaces: 100, fullBoardPrice: 180.00, halfBoardPrice: 130.00, imageUrl: 'https://picsum.photos/seed/rome/800/480', active: true },
+    { id: 5, name: 'Hotel París Eiffel', address: 'Av. de la Bourdonnais 72', city: 'París', country: 'Francia', stars: 4, capacity: 150, availablePlaces: 150, fullBoardPrice: 200.00, halfBoardPrice: 155.00, imageUrl: 'https://picsum.photos/seed/paris/800/480', active: true },
+    { id: 6, name: 'Hotel Ámsterdam Canal', address: 'Keizersgracht 148', city: 'Ámsterdam', country: 'Países Bajos', stars: 3, capacity: 80, availablePlaces: 80, fullBoardPrice: 160.00, halfBoardPrice: 120.00, imageUrl: 'https://picsum.photos/seed/amsterdam/800/480', active: true },
+    { id: 7, name: 'Hotel Berlín Mitte', address: 'Unter den Linden 77', city: 'Berlín', country: 'Alemania', stars: 4, capacity: 120, availablePlaces: 120, fullBoardPrice: 170.00, halfBoardPrice: 125.00, imageUrl: 'https://picsum.photos/seed/berlin/800/480', active: true },
+    { id: 8, name: 'Hotel Lisboa Alfama', address: 'Rua Augusta 45', city: 'Lisboa', country: 'Portugal', stars: 3, capacity: 90, availablePlaces: 90, fullBoardPrice: 140.00, halfBoardPrice: 100.00, imageUrl: 'https://picsum.photos/seed/lisbon/800/480', active: true },
+    { id: 9, name: 'Hotel Praga Centro', address: 'Wenceslas Square 12', city: 'Praga', country: 'República Checa', stars: 4, capacity: 110, availablePlaces: 110, fullBoardPrice: 155.00, halfBoardPrice: 115.00, imageUrl: 'https://picsum.photos/seed/prague/800/480', active: true },
+    { id: 10, name: 'Hotel Viena Imperial', address: 'Kärntner Strasse 38', city: 'Viena', country: 'Austria', stars: 5, capacity: 130, availablePlaces: 130, fullBoardPrice: 220.00, halfBoardPrice: 170.00, imageUrl: 'https://picsum.photos/seed/vienna/800/480', active: true },
+    { id: 11, name: 'Hotel Dubrovnik Pearl', address: 'Stradun 24', city: 'Dubrovnik', country: 'Croacia', stars: 4, capacity: 70, availablePlaces: 70, fullBoardPrice: 190.00, halfBoardPrice: 145.00, imageUrl: 'https://picsum.photos/seed/dubrovnik/800/480', active: true },
+    { id: 12, name: 'Hotel Tokio Shinjuku', address: 'Shinjuku 3-chome', city: 'Tokio', country: 'Japón', stars: 4, capacity: 100, availablePlaces: 100, fullBoardPrice: 250.00, halfBoardPrice: 190.00, imageUrl: 'https://picsum.photos/seed/tokyo/800/480', active: true },
+    { id: 13, name: 'Hotel Bangkok Riverside', address: 'Charoen Krung Rd', city: 'Bangkok', country: 'Tailandia', stars: 4, capacity: 120, availablePlaces: 120, fullBoardPrice: 180.00, halfBoardPrice: 130.00, imageUrl: 'https://picsum.photos/seed/bangkok/800/480', active: true },
+    { id: 14, name: 'Hotel Bali Ubud', address: 'Jl. Monkey Forest', city: 'Bali', country: 'Indonesia', stars: 5, capacity: 80, availablePlaces: 80, fullBoardPrice: 200.00, halfBoardPrice: 150.00, imageUrl: 'https://picsum.photos/seed/bali/800/480', active: true },
+    { id: 15, name: 'Hotel Vuelta al Mundo', address: 'World Tour HQ', city: 'Nueva York · Sídney · Dubái', country: 'Mundial', stars: 5, capacity: 20, availablePlaces: 20, fullBoardPrice: 350.00, halfBoardPrice: 280.00, imageUrl: 'https://picsum.photos/seed/world/800/480', active: true },
+    { id: 16, name: 'Hotel Ciudad de México Centro', address: 'Av. Juárez 70', city: 'Ciudad de México', country: 'México', stars: 4, capacity: 100, availablePlaces: 100, fullBoardPrice: 185.00, halfBoardPrice: 145.00, imageUrl: 'https://picsum.photos/seed/mexico/800/480', active: true },
+    { id: 17, name: 'Hotel Nueva York Manhattan', address: '5th Avenue 350', city: 'Nueva York', country: 'Estados Unidos', stars: 5, capacity: 120, availablePlaces: 120, fullBoardPrice: 520.00, halfBoardPrice: 420.00, imageUrl: 'https://picsum.photos/seed/newyork/800/480', active: true },
+    { id: 18, name: 'Hotel Alaska Wilderness', address: 'Denali Rd 12', city: 'Anchorage', country: 'Alaska', stars: 4, capacity: 60, availablePlaces: 60, fullBoardPrice: 380.00, halfBoardPrice: 310.00, imageUrl: 'https://picsum.photos/seed/alaska/800/480', active: true },
+    { id: 19, name: 'Hotel Canadá Rockies', address: 'Banff Ave 200', city: 'Banff', country: 'Canadá', stars: 4, capacity: 80, availablePlaces: 80, fullBoardPrice: 340.00, halfBoardPrice: 270.00, imageUrl: 'https://picsum.photos/seed/canada/800/480', active: true },
+    { id: 20, name: 'Hotel Vietnam Hanoi', address: 'Hoan Kiem 45', city: 'Hanói', country: 'Vietnam', stars: 3, capacity: 90, availablePlaces: 90, fullBoardPrice: 160.00, halfBoardPrice: 120.00, imageUrl: 'https://picsum.photos/seed/vietnam/800/480', active: true },
+  ],
+  buses: [
+    { id: 1, busNumber: 'B001', capacity: 50, model: 'Scania', available: true },
+    { id: 2, busNumber: 'B002', capacity: 45, model: 'Volvo', available: true },
+  ],
+  drivers: [
+    { id: 1, name: 'Juan García', license: 'D12345678', active: true, experience: 15 },
+    { id: 2, name: 'María López', license: 'D87654321', active: true, experience: 10 },
+  ],
+  travels: [
+    { id: 1, origin: 'Madrid', destination: 'Barcelona', destiny: 'Barcelona', date: '2026-05-20', startDate: '2026-05-20', endDate: '2026-05-27', price: 450, hotelId: 7, active: true, sale: false },
+    { id: 2, origin: 'Madrid', destination: 'Valencia', destiny: 'Valencia', date: '2026-05-22', startDate: '2026-05-22', endDate: '2026-05-29', price: 380, hotelId: 8, active: true, sale: false },
+    { id: 3, origin: 'España', destination: 'Londres', destiny: 'Londres', date: '2026-06-01', startDate: '2026-06-01', endDate: '2026-06-08', price: 750, hotelId: 1, active: true, sale: true },
+    { id: 4, origin: 'España', destination: 'París', destiny: 'París', date: '2026-06-10', startDate: '2026-06-10', endDate: '2026-06-17', price: 820, hotelId: 5, active: true, sale: true },
+    { id: 5, origin: 'España', destination: 'Roma', destiny: 'Roma', date: '2026-07-01', startDate: '2026-07-01', endDate: '2026-07-08', price: 680, hotelId: 4, active: true, sale: false },
+    { id: 6, origin: 'España', destination: 'Ámsterdam', destiny: 'Ámsterdam', date: '2026-07-15', startDate: '2026-07-15', endDate: '2026-07-22', price: 620, hotelId: 6, active: true, sale: false },
+    { id: 7, origin: 'España', destination: 'Berlín', destiny: 'Berlín', date: '2026-08-01', startDate: '2026-08-01', endDate: '2026-08-08', price: 550, hotelId: 7, active: true, sale: false },
+    { id: 8, origin: 'España', destination: 'Viena', destiny: 'Viena', date: '2026-08-10', startDate: '2026-08-10', endDate: '2026-08-17', price: 750, hotelId: 10, active: true, sale: false },
+    { id: 9, origin: 'España', destination: 'Tokio', destiny: 'Tokio', date: '2026-09-01', startDate: '2026-09-01', endDate: '2026-09-15', price: 1850, hotelId: 12, active: true, sale: true },
+    { id: 10, origin: 'España', destination: 'Bangkok', destiny: 'Bangkok', date: '2026-09-15', startDate: '2026-09-15', endDate: '2026-09-29', price: 950, hotelId: 13, active: true, sale: false },
+    { id: 11, origin: 'España', destination: 'Bali', destiny: 'Bali', date: '2026-10-01', startDate: '2026-10-01', endDate: '2026-10-15', price: 1200, hotelId: 14, active: true, sale: false },
+    { id: 12, origin: 'España', destination: 'Nueva York', destiny: 'Nueva York', date: '2026-10-15', startDate: '2026-10-15', endDate: '2026-10-29', price: 2100, hotelId: 17, active: true, sale: true },
+  ],
+  bookings: [
+    { id: 'TR-1042', destination: 'Bali, Indonesia', dates: '12 jun - 22 jun', travelers: 2, total: 2560, status: 'confirmed', userId: 2 },
+    { id: 'TR-1043', destination: 'Kioto, Japón', dates: '03 jul - 13 jul', travelers: 1, total: 1640, status: 'pending', userId: 2 },
+  ],
+  offers: [
+    { id: 1, title: 'Verano en Bali', description: 'Descuento especial', discount: 20, validUntil: '2026-06-30' },
+    { id: 2, title: 'Otoño en Japón', description: 'Oferta limitada', discount: 15, validUntil: '2026-08-31' },
+  ],
+};
+
+// Middleware para verificar token
+const verifyToken = (req, res, next) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  if (!token) return res.status(401).json({ error: 'No autorizado' });
+  
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch (error) {
+    res.status(401).json({ error: 'Token inválido' });
+  }
+};
+
+// ============ AUTENTICACIÓN ============
+app.post('/api/auth/login', (req, res) => {
+  const { email, password } = req.body;
+  const user = db.users.find(u => u.email === email && u.password === password);
+  
+  if (!user) return res.status(401).json({ error: 'Credenciales inválidas' });
+  
+  const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, JWT_SECRET);
+  res.json({ token, user: { id: user.id, name: user.name, email: user.email, role: user.role } });
+});
+
+app.post('/api/auth/register', (req, res) => {
+  const { name, email, password } = req.body;
+  const newUser = { id: db.users.length + 1, name, email, password, role: 'USER', active: true };
+  db.users.push(newUser);
+  const token = jwt.sign({ id: newUser.id, email: newUser.email, role: newUser.role }, JWT_SECRET);
+  res.json({ token, user: newUser });
+});
+
+// ============ USUARIOS ============
+app.get('/api/users', verifyToken, (req, res) => {
+  res.json(db.users);
+});
+
+app.get('/api/users/:id', verifyToken, (req, res) => {
+  const user = db.users.find(u => u.id === parseInt(req.params.id));
+  if (!user) return res.status(404).json({ error: 'Usuario no encontrado' });
+  res.json(user);
+});
+
+app.get('/api/users/activos', verifyToken, (req, res) => {
+  res.json(db.users.filter(u => u.active));
+});
+
+app.post('/api/users', verifyToken, (req, res) => {
+  const newUser = { id: db.users.length + 1, ...req.body, active: true };
+  db.users.push(newUser);
+  res.status(201).json(newUser);
+});
+
+app.put('/api/users/:id', verifyToken, (req, res) => {
+  const user = db.users.find(u => u.id === parseInt(req.params.id));
+  if (!user) return res.status(404).json({ error: 'Usuario no encontrado' });
+  Object.assign(user, req.body);
+  res.json(user);
+});
+
+app.delete('/api/users/:id', verifyToken, (req, res) => {
+  const index = db.users.findIndex(u => u.id === parseInt(req.params.id));
+  if (index === -1) return res.status(404).json({ error: 'Usuario no encontrado' });
+  db.users.splice(index, 1);
+  res.json({ message: 'Usuario eliminado' });
+});
+
+// ============ HOTELES ============
+app.get('/api/hotels', (req, res) => {
+  res.json(db.hotels);
+});
+
+app.get('/api/hotels/:id', (req, res) => {
+  const hotel = db.hotels.find(h => h.id === parseInt(req.params.id));
+  if (!hotel) return res.status(404).json({ error: 'Hotel no encontrado' });
+  res.json(hotel);
+});
+
+app.post('/api/hotels', verifyToken, (req, res) => {
+  const newHotel = { id: db.hotels.length + 1, ...req.body };
+  db.hotels.push(newHotel);
+  res.status(201).json(newHotel);
+});
+
+app.put('/api/hotels/:id', verifyToken, (req, res) => {
+  const hotel = db.hotels.find(h => h.id === parseInt(req.params.id));
+  if (!hotel) return res.status(404).json({ error: 'Hotel no encontrado' });
+  Object.assign(hotel, req.body);
+  res.json(hotel);
+});
+
+app.delete('/api/hotels/:id', verifyToken, (req, res) => {
+  const index = db.hotels.findIndex(h => h.id === parseInt(req.params.id));
+  if (index === -1) return res.status(404).json({ error: 'Hotel no encontrado' });
+  db.hotels.splice(index, 1);
+  res.json({ message: 'Hotel eliminado' });
+});
+
+// ============ BUSES ============
+app.get('/api/buses', (req, res) => {
+  res.json(db.buses);
+});
+
+app.get('/api/buses/:id', (req, res) => {
+  const bus = db.buses.find(b => b.id === parseInt(req.params.id));
+  if (!bus) return res.status(404).json({ error: 'Bus no encontrado' });
+  res.json(bus);
+});
+
+app.post('/api/buses', verifyToken, (req, res) => {
+  const newBus = { id: db.buses.length + 1, ...req.body };
+  db.buses.push(newBus);
+  res.status(201).json(newBus);
+});
+
+app.put('/api/buses/:id', verifyToken, (req, res) => {
+  const bus = db.buses.find(b => b.id === parseInt(req.params.id));
+  if (!bus) return res.status(404).json({ error: 'Bus no encontrado' });
+  Object.assign(bus, req.body);
+  res.json(bus);
+});
+
+app.delete('/api/buses/:id', verifyToken, (req, res) => {
+  const index = db.buses.findIndex(b => b.id === parseInt(req.params.id));
+  if (index === -1) return res.status(404).json({ error: 'Bus no encontrado' });
+  db.buses.splice(index, 1);
+  res.json({ message: 'Bus eliminado' });
+});
+
+// ============ CONDUCTORES ============
+app.get('/api/drivers', (req, res) => {
+  res.json(db.drivers);
+});
+
+app.get('/api/drivers/:id', (req, res) => {
+  const driver = db.drivers.find(d => d.id === parseInt(req.params.id));
+  if (!driver) return res.status(404).json({ error: 'Conductor no encontrado' });
+  res.json(driver);
+});
+
+app.post('/api/drivers', verifyToken, (req, res) => {
+  const newDriver = { id: db.drivers.length + 1, ...req.body };
+  db.drivers.push(newDriver);
+  res.status(201).json(newDriver);
+});
+
+app.put('/api/drivers/:id', verifyToken, (req, res) => {
+  const driver = db.drivers.find(d => d.id === parseInt(req.params.id));
+  if (!driver) return res.status(404).json({ error: 'Conductor no encontrado' });
+  Object.assign(driver, req.body);
+  res.json(driver);
+});
+
+app.delete('/api/drivers/:id', verifyToken, (req, res) => {
+  const index = db.drivers.findIndex(d => d.id === parseInt(req.params.id));
+  if (index === -1) return res.status(404).json({ error: 'Conductor no encontrado' });
+  db.drivers.splice(index, 1);
+  res.json({ message: 'Conductor eliminado' });
+});
+
+// ============ VIAJES ============
+app.get('/api/travels', (req, res) => {
+  res.json(db.travels);
+});
+
+app.get('/api/travels/:id', (req, res) => {
+  const travel = db.travels.find(t => t.id === parseInt(req.params.id));
+  if (!travel) return res.status(404).json({ error: 'Viaje no encontrado' });
+  res.json(travel);
+});
+
+app.post('/api/travels', verifyToken, (req, res) => {
+  const newTravel = { id: db.travels.length + 1, ...req.body };
+  db.travels.push(newTravel);
+  res.status(201).json(newTravel);
+});
+
+app.put('/api/travels/:id', verifyToken, (req, res) => {
+  const travel = db.travels.find(t => t.id === parseInt(req.params.id));
+  if (!travel) return res.status(404).json({ error: 'Viaje no encontrado' });
+  Object.assign(travel, req.body);
+  res.json(travel);
+});
+
+app.delete('/api/travels/:id', verifyToken, (req, res) => {
+  const index = db.travels.findIndex(t => t.id === parseInt(req.params.id));
+  if (index === -1) return res.status(404).json({ error: 'Viaje no encontrado' });
+  db.travels.splice(index, 1);
+  res.json({ message: 'Viaje eliminado' });
+});
+
+// ============ RESERVAS ============
+app.get('/api/bookings', verifyToken, (req, res) => {
+  res.json(db.bookings);
+});
+
+app.get('/api/bookings/:id', verifyToken, (req, res) => {
+  const booking = db.bookings.find(b => b.id === req.params.id);
+  if (!booking) return res.status(404).json({ error: 'Reserva no encontrada' });
+  res.json(booking);
+});
+
+app.post('/api/bookings', verifyToken, (req, res) => {
+  const newBooking = { id: `TR-${Date.now()}`, ...req.body, userId: req.user.id };
+  db.bookings.push(newBooking);
+  res.status(201).json(newBooking);
+});
+
+app.put('/api/bookings/:id', verifyToken, (req, res) => {
+  const booking = db.bookings.find(b => b.id === req.params.id);
+  if (!booking) return res.status(404).json({ error: 'Reserva no encontrada' });
+  Object.assign(booking, req.body);
+  res.json(booking);
+});
+
+app.delete('/api/bookings/:id', verifyToken, (req, res) => {
+  const index = db.bookings.findIndex(b => b.id === req.params.id);
+  if (index === -1) return res.status(404).json({ error: 'Reserva no encontrada' });
+  db.bookings.splice(index, 1);
+  res.json({ message: 'Reserva eliminada' });
+});
+
+// ============ OFERTAS ============
+app.get('/api/offers', (req, res) => {
+  res.json(db.offers);
+});
+
+app.get('/api/offers/:id', (req, res) => {
+  const offer = db.offers.find(o => o.id === parseInt(req.params.id));
+  if (!offer) return res.status(404).json({ error: 'Oferta no encontrada' });
+  res.json(offer);
+});
+
+app.post('/api/offers', verifyToken, (req, res) => {
+  const newOffer = { id: db.offers.length + 1, ...req.body };
+  db.offers.push(newOffer);
+  res.status(201).json(newOffer);
+});
+
+app.put('/api/offers/:id', verifyToken, (req, res) => {
+  const offer = db.offers.find(o => o.id === parseInt(req.params.id));
+  if (!offer) return res.status(404).json({ error: 'Oferta no encontrada' });
+  Object.assign(offer, req.body);
+  res.json(offer);
+});
+
+app.delete('/api/offers/:id', verifyToken, (req, res) => {
+  const index = db.offers.findIndex(o => o.id === parseInt(req.params.id));
+  if (index === -1) return res.status(404).json({ error: 'Oferta no encontrada' });
+  db.offers.splice(index, 1);
+  res.json({ message: 'Oferta eliminada' });
+});
+
+// ============ HEALTH CHECK ============
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'OK', message: 'Servidor funcionando' });
+});
+
+// ============ TRIP SEGMENTS (para rutas multi-etapa) ============
+app.get('/api/trip-segments', (req, res) => {
+  res.json([]);
+});
+
+app.post('/api/trip-segments', verifyToken, (req, res) => {
+  const newSegment = { id: 1, ...req.body };
+  res.status(201).json(newSegment);
+});
+
+const PORT = process.env.PORT || 8080;
+const server = app.listen(PORT, () => {
+  console.log(`
+╔═══════════════════════════════════════════════════════════════╗
+║                                                               ║
+║  ✅ SERVIDOR DE VIAJES INICIADO CORRECTAMENTE                ║
+║                                                               ║
+║  🌐 URL: http://localhost:${PORT}                              ║
+║  📡 API: http://localhost:${PORT}/api                          ║
+║  💚 Health: http://localhost:${PORT}/api/health                ║
+║                                                               ║
+║  🔑 CREDENCIALES DE PRUEBA:                                  ║
+║     Email: admin@travel.io                                   ║
+║     Contraseña: admin123                                     ║
+║                                                               ║
+║  📊 DATOS DISPONIBLES:                                        ║
+║     ✓ 20 hoteles en todo el mundo                            ║
+║     ✓ 12 viajes disponibles                                  ║
+║     ✓ 2 usuarios de prueba                                   ║
+║     ✓ Sistema de autenticación JWT                           ║
+║                                                               ║
+╚═══════════════════════════════════════════════════════════════╝
+  `);
+});
+
+// Manejo de errores del servidor
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.error(`❌ El puerto ${PORT} ya está en uso. Intenta: npm run kill:port`);
+  } else {
+    console.error('❌ Error del servidor:', err);
+  }
+  process.exit(1);
+});

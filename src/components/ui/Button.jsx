@@ -20,8 +20,9 @@ const SIZE_STYLES = {
   icon: 'h-10 w-10 p-0',
 }
 
-const BASE_STYLES =
-  'inline-flex items-center justify-center gap-2 rounded-full font-semibold transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed'
+// Usar la utilidad global .btn definida en src/index.css para mantener consistencia
+// Añadir micro-animaciones: ligero escalado en hover y foco visible definido por utilidades Tailwind
+const BASE_STYLES = 'btn transform-gpu hover:scale-[1.03] focus-visible:scale-[1.01]'
 
 const Button = forwardRef(function Button(
   {

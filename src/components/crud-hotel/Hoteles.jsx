@@ -22,7 +22,6 @@ export default function Hoteles() {
   const [showForm, setShowForm] = useState(false)
   const [editing, setEditing]   = useState(null)
   const [form, setForm]         = useState(EMPTY_FORM)
-  const [uploading, setUploading] = useState(false)
 
   const load = async () => {
     try {
@@ -36,7 +35,10 @@ export default function Hoteles() {
     }
   }
 
-  useEffect(() => { load() }, [])
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    load()
+  }, [])
 
   const openCreate = () => {
     setEditing(null)
@@ -60,13 +62,6 @@ export default function Hoteles() {
       active:          hotel.active          ?? true,
     })
     setShowForm(true)
-  }
-
-  const handleImage = (e) => {
-    const file = e.target.files[0]
-    if (!file) return
-    const url = URL.createObjectURL(file)
-    setForm(f => ({ ...f, imageUrl: url }))
   }
 
   const handleSubmit = async (e) => {
@@ -247,11 +242,17 @@ export default function Hoteles() {
                 </div>
               </div>
 
-              {/* Cloudinary */}
               <div>
-                <label className="text-xs font-medium text-gray-600">Imagen</label>
-                <input type="file" accept="image/*" onChange={handleImage}
-                  className="mt-1 w-full text-sm text-gray-500" />
+                <label className="text-xs font-medium text-gray-600">URL de imagen</label>
+                <input
+                  name="imageUrl"
+                  type="url"
+                  value={form.imageUrl}
+                  onChange={change}
+                  placeholder="https://..."
+                  className="mt-1 w-full rounded-lg border px-3 py-2 text-sm"
+                  style={{ borderColor: '#7AAFC0' }}
+                />
 
                 {form.imageUrl && (
                   <img src={form.imageUrl} alt="preview"

@@ -1,13 +1,24 @@
-import { Heart, Star } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { Heart, ImageOff, Star } from 'lucide-react'
 import Badge from '../ui/Badge'
 import Button from '../ui/Button'
 import Card from '../ui/Card'
 import { classNames } from '../../utils/classNames'
 import { buildDestinationPath } from '../../constants/paths'
 import { formatCurrency } from '../../utils/formatters'
+import { getDestinationFallbackImage, getDestinationImage } from '../../utils/destinationImages'
+
+const GRADIENTS = [
+  'from-brand-700 to-surface-950',
+  'from-brand-600 to-brand-900',
+  'from-surface-700 to-brand-800',
+  'from-brand-800 to-surface-900',
+]
+
+const cardGradient = (id = 0) => GRADIENTS[id % GRADIENTS.length]
 
 const DestinationCard = ({ destination, showOfferPrice = false, featured = false }) => {
-  const image   = destination.hotelImageUrl || destination.imageUrl || destination.image
+  const image = getDestinationImage(destination) || getDestinationFallbackImage(destination)
   const name    = destination.destiny       || destination.name
   const country = destination.hotelCity     || destination.country
   const price   = destination.halfBoardPrice || destination.price || 0
@@ -22,13 +33,27 @@ const DestinationCard = ({ destination, showOfferPrice = false, featured = false
 
   return (
     <Card className="overflow-hidden transition-transform duration-200 hover:-translate-y-1">
-      <div className="relative h-48 w-full overflow-hidden">
-        <img
-          src={image}
-          alt={`${name}, ${country}`}
-          className="h-full w-full object-cover"
-          loading="lazy"
-        />
+      <Link to={buildDestinationPath(destination.id)} className="relative block h-48 w-full overflow-hidden group">
+        {image ? (
+          <img
+            src={image}
+            alt={`${name}, ${country}`}
+            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            loading="lazy"
+            onError={(e) => {
+              e.currentTarget.style.display = 'none'
+              e.currentTarget.nextElementSibling?.classList.remove('hidden')
+            }}
+          />
+        ) : null}
+        <div className={classNames(
+          'absolute inset-0 flex flex-col items-center justify-center gap-2 bg-gradient-to-br',
+          cardGradient(destination.id),
+          image ? 'hidden' : '',
+        )}>
+          <ImageOff className="h-8 w-8 text-brand-300/60" aria-hidden="true" />
+          <span className="px-4 text-center text-sm font-medium text-white/70">{name}</span>
+        </div>
         <div className="absolute left-4 top-4">
           <Badge
             tone="brand"
@@ -40,20 +65,20 @@ const DestinationCard = ({ destination, showOfferPrice = false, featured = false
             {tag}
           </Badge>
         </div>
-        <Button
-          variant="ghost"
-          size="icon"
+        <button
+          onClick={e => e.preventDefault()}
           aria-label={`Guardar ${name} en favoritos`}
+          aria-pressed={false}
           className={classNames(
-            'absolute right-3 top-3 backdrop-blur',
+            'absolute right-3 top-3 flex items-center justify-center h-10 w-10 rounded-full backdrop-blur transition-colors focus-visible:ring-2 focus-visible:ring-brand-500',
             featured
-              ? 'border border-white/20 bg-white/15 text-white shadow-md transition-colors hover:bg-white/90 hover:text-rose-500'
-              : 'bg-surface-950/60',
+              ? 'border border-white/20 bg-white/15 text-white shadow-md hover:bg-white/90 hover:text-rose-500'
+              : 'bg-surface-950/60 text-white',
           )}
         >
           <Heart className="h-4 w-4" aria-hidden="true" />
-        </Button>
-      </div>
+        </button>
+      </Link>
       <div className="flex flex-col gap-4 p-5">
         <div className="flex items-start justify-between gap-3">
           <div>

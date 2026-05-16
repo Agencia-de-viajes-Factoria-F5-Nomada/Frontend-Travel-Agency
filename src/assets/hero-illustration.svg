@@ -1,0 +1,14 @@
+<!-- Simple decorative SVG illustration for hero (abstract waves) -->
+<svg width="800" height="600" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs>
+    <linearGradient id="g1" x1="0" x2="1">
+      <stop offset="0%" stop-color="#4C91B5" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#064E6A" stop-opacity="0.06" />
+    </linearGradient>
+  </defs>
+  <g opacity="0.95">
+    <path d="M0 420 C150 300, 300 300, 450 380 C600 460, 700 400, 800 360 L800 600 L0 600 Z" fill="url(#g1)" />
+    <circle cx="640" cy="140" r="80" fill="#6FAECC" opacity="0.12" />
+    <circle cx="720" cy="200" r="40" fill="#2A4F68" opacity="0.06" />
+  </g>
+</svg>
