@@ -132,10 +132,14 @@ export const travelService = {
         try {
             const res = await fetch(`${API_URL}`);
             if (!res.ok) throw new Error('Error al cargar viajes');
-            const travels = onlyActive(await res.json()).filter(t => t.featured === true);
+            const allActive = onlyActive(await res.json());
+            // Si el backend tiene viajes con featured=true los priorizamos,
+            // si no tiene ninguno los mostramos todos (campo opcional)
+            const featured = allActive.filter(t => t.featured === true);
+            const backendTravels = featured.length > 0 ? featured : allActive;
             const hotelMap = await fetchHotelMap();
             const externalFeatured = await externalTravelService.getFeatured();
-            return [...travels.map(t => enrichWithHotel(t, hotelMap)), ...externalFeatured];
+            return [...backendTravels.map(t => enrichWithHotel(t, hotelMap)), ...externalFeatured];
         } catch (error) {
             console.error('❌ Error en getFeatured:', error);
             return externalTravelService.getFeatured();
