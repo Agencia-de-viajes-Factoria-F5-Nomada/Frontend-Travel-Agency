@@ -3,7 +3,11 @@ import { API } from '../constants/api';
 import { externalTravelService } from './externalTravelService';
 
 const API_URL = `${API}/travels`;
-const onlyActive = (travels) => travels.filter((travel) => travel.active !== false);
+
+const authHeaders = () => {
+    const token = localStorage.getItem('token');
+    return token ? { Authorization: `Bearer ${token}` } : {};
+};
 
 export const TravelsService = {
     fetchTravels: async () => {
@@ -50,17 +54,14 @@ const fixImageUrl = (url) => {
         return `${base}?auto=format&fit=crop&w=800&q=80`;
     }
     if (url.includes('picsum.photos')) {
-        return url; // Ya tiene el tamaño correcto
+        return url;
     }
     return url;
 };
 
 const enrichWithHotel = (travel, hotelMap) => {
     if (!travel) return travel;
-    
-    const hotel = hotelMap[travel.hotelId];
-    
-    // Siempre devolver el viaje enriquecido con datos del hotel si existe
+    const hotel = hotelMap[travel.hotelId ?? travel.hotel_id];
     if (hotel) {
         const rawUrl = hotel.imageUrl || hotel.image_url || '';
         return {
@@ -73,17 +74,15 @@ const enrichWithHotel = (travel, hotelMap) => {
             halfBoardPrice: hotel.halfBoardPrice || hotel.half_board_price || travel.price || 0,
         };
     }
-    
-    // Si no hay hotel, devolver el viaje tal cual
     return travel;
 };
 
 export const travelService = {
     getAll: async () => {
         try {
-            const res = await fetch(`${API_URL}`);
+            const res = await fetch(`${API_URL}`, { headers: authHeaders() });
             if (!res.ok) throw new Error(`Error al cargar viajes: ${res.status}`);
-            const travels = onlyActive(await res.json());
+            const travels = await res.json();
             const hotelMap = await fetchHotelMap();
             const enriched = travels.map(t => enrichWithHotel(t, hotelMap));
             console.log('✅ Viajes cargados y enriquecidos:', enriched.length);
@@ -95,9 +94,9 @@ export const travelService = {
     },
     getAvailable: async () => {
         try {
-            const res = await fetch(`${API_URL}`);
+            const res = await fetch(`${API_URL}`, { headers: authHeaders() });
             if (!res.ok) throw new Error(`Error al cargar viajes: ${res.status}`);
-            const travels = onlyActive(await res.json());
+            const travels = await res.json();
             const hotelMap = await fetchHotelMap();
             const enriched = travels.map(t => enrichWithHotel(t, hotelMap));
             return [...enriched, ...(await externalTravelService.getAvailable())];
@@ -108,11 +107,11 @@ export const travelService = {
     },
     getFeatured: async () => {
         try {
-            const res = await fetch(`${API_URL}`);
+            const res = await fetch(`${API_URL}`, { headers: authHeaders() });
             if (!res.ok) throw new Error('Error al cargar viajes');
-            const allActive = onlyActive(await res.json());
-            const featured = allActive.filter(t => t.featured === true);
-            const backendTravels = featured.length > 0 ? featured : allActive;
+            const travels = await res.json();
+            const featured = travels.filter(t => t.featured === true);
+            const backendTravels = featured.length > 0 ? featured : travels;
             const hotelMap = await fetchHotelMap();
             return [...backendTravels.map(t => enrichWithHotel(t, hotelMap)), ...(await externalTravelService.getFeatured())];
         } catch (error) {
@@ -127,7 +126,7 @@ export const travelService = {
                 if (!ext) throw new Error('Viaje no encontrado');
                 return ext;
             }
-            const res = await fetch(`${API_URL}/${id}`);
+            const res = await fetch(`${API_URL}/${id}`, { headers: authHeaders() });
             if (!res.ok) throw new Error('Viaje no encontrado');
             const travel = await res.json();
             const hotelMap = await fetchHotelMap();
@@ -139,9 +138,9 @@ export const travelService = {
     },
     getOnSale: async () => {
         try {
-            const res = await fetch(`${API_URL}`);
+            const res = await fetch(`${API_URL}`, { headers: authHeaders() });
             if (!res.ok) throw new Error('Error al cargar ofertas');
-            const travels = onlyActive(await res.json()).filter(t => t.sale === true);
+            const travels = (await res.json()).filter(t => t.sale === true);
             const hotelMap = await fetchHotelMap();
             return [...travels.map(t => enrichWithHotel(t, hotelMap)), ...(await externalTravelService.getOnSale())];
         } catch (error) {
