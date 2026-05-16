@@ -51,11 +51,7 @@ const AuthPage = () => {
       }
 
       // Redirigir según rol
-      if (authService.isAdmin()) {
-        navigate('/admin')
-      } else {
-        navigate('/')
-      }
+      navigate('/profile')
     } catch (e) {
       setError(e.message)
     } finally {
