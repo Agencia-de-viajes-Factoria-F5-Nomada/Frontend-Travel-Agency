@@ -1,9 +1,11 @@
 import { useState } from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router-dom'
 import { Menu, X } from 'lucide-react'
 import BrandMark from './BrandMark'
 import Button from '../ui/Button'
 import { PUBLIC_NAV } from '../../constants/navigation'
+import { PUBLIC_PATHS } from '../../constants/paths'
+import { authService } from '../../services/authService'
 import { classNames } from '../../utils/classNames'
 
 const linkBase =
@@ -27,8 +29,16 @@ const buildAuthLinkClass = ({ isActive }) =>
 
 const PublicTopbar = () => {
   const [open, setOpen] = useState(false)
-  const primaryNav = PUBLIC_NAV.slice(0, -1)
-  const authNav = PUBLIC_NAV[PUBLIC_NAV.length - 1]
+  useLocation()
+
+  const isAuthenticated = authService.isAuthenticated()
+  const showProfilePreview = true
+  const primaryNav = PUBLIC_NAV.filter(
+    (item) => item.to !== PUBLIC_PATHS.PROFILE && item.to !== PUBLIC_PATHS.AUTH,
+  )
+  const sessionNav = PUBLIC_NAV.find((item) =>
+    item.to === (isAuthenticated || showProfilePreview ? PUBLIC_PATHS.PROFILE : PUBLIC_PATHS.AUTH)
+  )
 
   return (
     <header className="sticky top-0 z-30 border-b border-surface-700/40 bg-gradient-to-b from-brand-100/60 to-surface-950/40 shadow-[0_10px_30px_-22px_rgba(255,255,255,0.35)] backdrop-blur">
@@ -48,10 +58,12 @@ const PublicTopbar = () => {
             ))}
           </div>
 
-          <NavLink to={authNav.to} end className={buildAuthLinkClass}>
-            <authNav.icon className="h-4 w-4" aria-hidden="true" />
-            <span>{authNav.label}</span>
-          </NavLink>
+          {sessionNav ? (
+            <NavLink to={sessionNav.to} end className={buildAuthLinkClass}>
+              <sessionNav.icon className="h-4 w-4" aria-hidden="true" />
+              <span>{sessionNav.label}</span>
+            </NavLink>
+          ) : null}
         </nav>
 
         <Button
@@ -90,15 +102,17 @@ const PublicTopbar = () => {
               </NavLink>
             ))}
 
-            <NavLink
-              to={authNav.to}
-              end
-              className={buildAuthLinkClass}
-              onClick={() => setOpen(false)}
-            >
-              <authNav.icon className="h-4 w-4" aria-hidden="true" />
-              {authNav.label}
-            </NavLink>
+            {sessionNav ? (
+              <NavLink
+                to={sessionNav.to}
+                end
+                className={buildAuthLinkClass}
+                onClick={() => setOpen(false)}
+              >
+                <sessionNav.icon className="h-4 w-4" aria-hidden="true" />
+                {sessionNav.label}
+              </NavLink>
+            ) : null}
           </nav>
         </div>
       ) : null}
