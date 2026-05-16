@@ -16,8 +16,14 @@ const HomePage = () => {
 
   useEffect(() => {
     travelService.getAvailable()
-      .then(data => setTravels(data))
-      .catch(console.error)
+      .then(data => {
+        console.log('✅ Viajes cargados en HomePage:', data.length);
+        setTravels(data);
+      })
+      .catch(error => {
+        console.error('❌ Error cargando viajes en HomePage:', error);
+        setTravels([]);
+      })
       .finally(() => setLoading(false))
   }, [])
 

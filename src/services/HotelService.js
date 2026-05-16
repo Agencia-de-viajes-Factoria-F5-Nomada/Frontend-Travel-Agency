@@ -9,9 +9,10 @@ export const HotelService = {
     fetchHoteles: async () => {
         try {
             const { data } = await axios.get(API_URL);
+            console.log('✅ Hoteles cargados (axios):', data.length);
             return data;
         } catch (error) {
-            console.error("Error en fetchHoteles:", error);
+            console.error("❌ Error en fetchHoteles:", error);
             throw error;
         }
     },
@@ -22,7 +23,7 @@ export const HotelService = {
             const { data } = await axios.post(API_URL, hotelData);
             return data;
         } catch (error) {
-            console.error("Error en createHotel:", error);
+            console.error("❌ Error en createHotel:", error);
             throw error;
         }
     },
@@ -33,7 +34,7 @@ export const HotelService = {
             const { data } = await axios.put(`${API_URL}/${id}`, hotelData);
             return data;
         } catch (error) {
-            console.error("Error en updateHotel:", error);
+            console.error("❌ Error en updateHotel:", error);
             throw error;
         }
     },
@@ -44,7 +45,7 @@ export const HotelService = {
             await axios.delete(`${API_URL}/${id}`);
             return true;
         } catch (error) {
-            console.error("Error en deleteHotel:", error);
+            console.error("❌ Error en deleteHotel:", error);
             throw error;
         }
     }
@@ -52,39 +53,66 @@ export const HotelService = {
 
 export const hotelService = {
     getAll: async () => {
-        const res = await fetch(`${API}/hotels`);
-        if (!res.ok) throw new Error('Error al cargar hoteles');
-        return res.json();
+        try {
+            const res = await fetch(`${API_URL}`);
+            if (!res.ok) throw new Error(`Error ${res.status} al cargar hoteles`);
+            const data = await res.json();
+            console.log('✅ Hoteles cargados (fetch):', data.length);
+            return data;
+        } catch (error) {
+            console.error('❌ Error en getAll:', error);
+            throw error;
+        }
     },
     getById: async (id) => {
-        const res = await fetch(`${API}/hotels/${id}`);
-        if (!res.ok) throw new Error('Hotel no encontrado');
-        return res.json();
+        try {
+            const res = await fetch(`${API_URL}/${id}`);
+            if (!res.ok) throw new Error('Hotel no encontrado');
+            return res.json();
+        } catch (error) {
+            console.error('❌ Error en getById:', error);
+            throw error;
+        }
     },
     create: async (hotelData) => {
-        const res = await fetch(`${API}/hotels`, {
-            method: 'POST',
-            headers: h(),
-            body: JSON.stringify(hotelData),
-        });
-        if (!res.ok) throw new Error('Error al crear hotel');
-        return res.json();
+        try {
+            const res = await fetch(`${API_URL}`, {
+                method: 'POST',
+                headers: h(),
+                body: JSON.stringify(hotelData),
+            });
+            if (!res.ok) throw new Error('Error al crear hotel');
+            return res.json();
+        } catch (error) {
+            console.error('❌ Error en create:', error);
+            throw error;
+        }
     },
     update: async (id, hotelData) => {
-        const res = await fetch(`${API}/hotels/${id}`, {
-            method: 'PUT',
-            headers: h(),
-            body: JSON.stringify(hotelData),
-        });
-        if (!res.ok) throw new Error('Error al actualizar hotel');
-        return res.json();
+        try {
+            const res = await fetch(`${API_URL}/${id}`, {
+                method: 'PUT',
+                headers: h(),
+                body: JSON.stringify(hotelData),
+            });
+            if (!res.ok) throw new Error('Error al actualizar hotel');
+            return res.json();
+        } catch (error) {
+            console.error('❌ Error en update:', error);
+            throw error;
+        }
     },
     delete: async (id) => {
-        const res = await fetch(`${API}/hotels/${id}`, {
-            method: 'DELETE',
-            headers: h(),
-        });
-        if (!res.ok) throw new Error('Error al eliminar hotel');
-        return true;
+        try {
+            const res = await fetch(`${API_URL}/${id}`, {
+                method: 'DELETE',
+                headers: h(),
+            });
+            if (!res.ok) throw new Error('Error al eliminar hotel');
+            return true;
+        } catch (error) {
+            console.error('❌ Error en delete:', error);
+            throw error;
+        }
     },
 };

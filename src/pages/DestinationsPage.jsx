@@ -16,8 +16,14 @@ const DestinationsPage = () => {
 
   useEffect(() => {
     travelService.getAvailable()
-      .then(data => setTravels(data))
-      .catch(e => setError(e.message))
+      .then(data => {
+        console.log('✅ Viajes cargados en DestinationsPage:', data.length);
+        setTravels(data);
+      })
+      .catch(e => {
+        console.error('❌ Error en DestinationsPage:', e);
+        setError(e.message || 'Error al cargar los viajes');
+      })
       .finally(() => setLoading(false))
   }, [])
 
