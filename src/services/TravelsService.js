@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { API } from '../constants/api';
+import { externalTravelService } from './externalTravelService';
 
 const API_URL = `${API}/travels`;
 const onlyActive = (travels) => travels.filter((travel) => travel.active !== false);
@@ -99,15 +100,33 @@ export const travelService = {
             const travels = onlyActive(await res.json());
             const hotelMap = await fetchHotelMap();
             const enriched = travels.map(t => enrichWithHotel(t, hotelMap));
-            console.log('✅ Viajes disponibles cargados:', enriched.length);
-            return enriched;
+            return [...enriched, ...(await externalTravelService.getAvailable())];
         } catch (error) {
             console.error('❌ Error en getAvailable:', error);
-            throw error;
+            return externalTravelService.getAvailable();
+        }
+    },
+    getFeatured: async () => {
+        try {
+            const res = await fetch(`${API_URL}`);
+            if (!res.ok) throw new Error('Error al cargar viajes');
+            const allActive = onlyActive(await res.json());
+            const featured = allActive.filter(t => t.featured === true);
+            const backendTravels = featured.length > 0 ? featured : allActive;
+            const hotelMap = await fetchHotelMap();
+            return [...backendTravels.map(t => enrichWithHotel(t, hotelMap)), ...(await externalTravelService.getFeatured())];
+        } catch (error) {
+            console.error('❌ Error en getFeatured:', error);
+            return externalTravelService.getFeatured();
         }
     },
     getById: async (id) => {
         try {
+            if (String(id).startsWith('external-')) {
+                const ext = await externalTravelService.getById(id);
+                if (!ext) throw new Error('Viaje no encontrado');
+                return ext;
+            }
             const res = await fetch(`${API_URL}/${id}`);
             if (!res.ok) throw new Error('Viaje no encontrado');
             const travel = await res.json();
@@ -124,10 +143,10 @@ export const travelService = {
             if (!res.ok) throw new Error('Error al cargar ofertas');
             const travels = onlyActive(await res.json()).filter(t => t.sale === true);
             const hotelMap = await fetchHotelMap();
-            return travels.map(t => enrichWithHotel(t, hotelMap));
+            return [...travels.map(t => enrichWithHotel(t, hotelMap)), ...(await externalTravelService.getOnSale())];
         } catch (error) {
             console.error('❌ Error en getOnSale:', error);
-            throw error;
+            return externalTravelService.getOnSale();
         }
     },
     create: async (travelData) => {

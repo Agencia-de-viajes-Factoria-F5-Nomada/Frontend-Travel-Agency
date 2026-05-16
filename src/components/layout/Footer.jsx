@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
-import { Mail, MapPin } from 'lucide-react'
+import { Mail } from 'lucide-react'
 import BrandMark from './BrandMark'
+import { PUBLIC_PATHS } from '../../constants/paths'
 
 const IconInstagram = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -23,9 +24,9 @@ const SOCIAL_LINKS = [
 ]
 
 const LEGAL_LINKS = [
-  { label: 'Política de privacidad', href: '/privacidad' },
-  { label: 'Términos y condiciones', href: '/terminos'   },
-  { label: 'Cookies',                href: '/cookies'    },
+  { label: 'Política de privacidad', href: PUBLIC_PATHS.PRIVACY },
+  { label: 'Términos y condiciones', href: PUBLIC_PATHS.TERMS },
+  { label: 'Cookies',                href: PUBLIC_PATHS.COOKIES },
 ]
 
 const Footer = () => (
@@ -74,9 +75,12 @@ const Footer = () => (
               {label}
             </Link>
           ))}
-          <span className="text-xs text-ink-muted">
+          <Link
+            to={PUBLIC_PATHS.COPYRIGHT}
+            className="text-xs text-ink-muted hover:text-brand-400 transition-colors"
+          >
             &copy; {new Date().getFullYear()} Nomada
-          </span>
+          </Link>
         </div>
       </div>
     </div>
