@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react'
-import { ArrowRight, MapPin, Search, Users } from 'lucide-react'
+import { ArrowRight, MapPin, Search, Users, Calendar } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import Button from '../components/ui/Button'
-import Card from '../components/ui/Card'
 import DestinationCard from '../components/common/DestinationCard'
-import Hero from '../components/layout/Hero'
 import { travelService } from '../services/TravelsService'
 import { PUBLIC_PATHS } from '../constants/paths'
+
+const POPULAR = ['Londres', 'París', 'Roma', 'Tokio']
 
 const HomePage = () => {
   const [travels, setTravels] = useState([])
@@ -16,14 +16,8 @@ const HomePage = () => {
 
   useEffect(() => {
     travelService.getFeatured()
-      .then(data => {
-        console.log('✅ Viajes destacados cargados en HomePage:', data.length);
-        setTravels(data);
-      })
-      .catch(error => {
-        console.error('❌ Error cargando viajes en HomePage:', error);
-        setTravels([]);
-      })
+      .then(data => setTravels(data))
+      .catch(() => setTravels([]))
       .finally(() => setLoading(false))
   }, [])
 
@@ -39,97 +33,139 @@ const HomePage = () => {
 
   return (
     <>
-      <Hero
-        left={(
-          <div className="container-page grid min-h-[calc(100svh-4rem)] w-full items-center gap-6 py-8 sm:py-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(360px,0.9fr)] lg:gap-8">
-            <Card className="hero-card flex min-h-[360px] flex-col justify-center p-7 sm:p-8 lg:min-h-[520px] lg:p-10">
-              <span className="inline-flex w-fit items-center gap-2 rounded-full border border-brand-200/40 bg-brand-100/10 px-4 py-1.5 text-xs font-medium uppercase tracking-[0.2em] text-brand-300">
-                Viajes seleccionados · 2026
-              </span>
-              <h1 className="hero-title mt-4">Siempre en el lugar exacto</h1>
-              <p className="mt-4 max-w-xl text-base leading-7 text-ink-muted sm:text-lg">Explora los mejores destinos seleccionados por nuestros viajeros.</p>
-              <div className="hero-cta mt-6">
-                <Button to={PUBLIC_PATHS.SEARCH} size="lg" className="btn-primary-lg">
-                  Explorar destinos
-                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
-                </Button>
-              </div>
-            </Card>
+      {/* ── HERO ── */}
+      <section
+        style={{ background: '#1A3A5C' }}
+        className="flex min-h-[calc(100svh-4rem)] flex-col items-center justify-center px-6 py-16 text-center"
+      >
+        {/* Eyebrow */}
+        <div className="mb-6 flex items-center gap-3">
+          <span style={{ width: 20, height: 1, background: '#4A8FA8', display: 'inline-block' }} />
+          <span style={{ fontSize: 11, color: '#7AAFC0', letterSpacing: '0.12em' }} className="uppercase">
+            Viajes seleccionados · 2026
+          </span>
+          <span style={{ width: 20, height: 1, background: '#4A8FA8', display: 'inline-block' }} />
+        </div>
 
-            <Card className="p-6 sm:p-8 lg:p-10">
-              <div className="mx-auto w-full max-w-2xl">
-                <h2 className="mb-2 text-xl font-semibold text-white">¿A dónde vas?</h2>
-                <p className="mb-6 text-sm text-ink-muted">Busca tu próximo viaje por destino, fechas y número de viajeros.</p>
-                <form onSubmit={handleSearch} className="grid gap-5">
-                <label className="flex flex-col gap-2">
-                  <span className="text-xs font-medium uppercase tracking-widest text-brand-400">Destino</span>
-                  <span className="form-field">
-                    <MapPin className="h-4 w-4 text-brand-400 shrink-0" aria-hidden="true" />
-                    <input
-                      type="text"
-                      placeholder="¿A dónde?"
-                      value={search.destiny}
-                      onChange={e => setSearch(s => ({ ...s, destiny: e.target.value }))}
-                      className="form-input"
-                    />
-                  </span>
-                </label>
+        {/* Title */}
+        <h1 style={{ color: '#DAEEF7', letterSpacing: '-0.02em' }} className="text-5xl font-medium leading-tight mb-4">
+          Siempre en el lugar exacto
+        </h1>
+        <p style={{ color: '#7AAFC0' }} className="text-base leading-7 mb-10 max-w-lg">
+          Explora los mejores destinos seleccionados por nuestros viajeros.
+        </p>
 
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <label className="flex flex-col gap-2">
-                    <span className="text-xs font-medium uppercase tracking-widest text-brand-400">Salida</span>
-                    <span className="flex items-center rounded-xl border border-surface-600 bg-surface-900 px-3 h-11">
-                      <input
-                        type="date"
-                        value={search.startDate}
-                        onChange={e => setSearch(s => ({ ...s, startDate: e.target.value }))}
-                        style={{ colorScheme: 'dark', border: 'none', outline: 'none', background: 'transparent', color: 'inherit', width: '100%', fontSize: '12px' }}
-                      />
-                    </span>
-                  </label>
-                  <label className="flex flex-col gap-2">
-                    <span className="text-xs font-medium uppercase tracking-widest text-brand-400">Vuelta</span>
-                    <span className="flex items-center rounded-xl border border-surface-600 bg-surface-900 px-3 h-11">
-                      <input
-                        type="date"
-                        value={search.endDate}
-                        onChange={e => setSearch(s => ({ ...s, endDate: e.target.value }))}
-                        style={{ colorScheme: 'dark', border: 'none', outline: 'none', background: 'transparent', color: 'inherit', width: '100%', fontSize: '12px' }}
-                      />
-                    </span>
-                  </label>
-                </div>
-
-                <label className="flex flex-col gap-2">
-                  <span className="text-xs font-medium uppercase tracking-widest text-brand-400">Viajeros</span>
-                  <span className="flex items-center justify-between rounded-xl border border-surface-600 bg-surface-900 px-3 h-11">
-                    <Users className="h-4 w-4 text-brand-400" aria-hidden="true" />
-                    <button
-                      type="button"
-                      onClick={() => setSearch(s => ({ ...s, passengers: Math.max(1, s.passengers - 1) }))}
-                      className="text-[#4A8FA8] font-bold text-xl px-2"
-                    >−</button>
-                    <span className="text-center text-ink text-sm flex-1">{search.passengers}</span>
-                    <button
-                      type="button"
-                      onClick={() => setSearch(s => ({ ...s, passengers: Math.min(20, s.passengers + 1) }))}
-                      className="text-[#4A8FA8] font-bold text-xl px-2"
-                    >+</button>
-                  </span>
-                </label>
-
-                <Button type="submit" size="md" fullWidth>
-                  <Search className="h-4 w-4" aria-hidden="true" />
-                  Buscar
-                </Button>
-                </form>
-              </div>
-            </Card>
+        {/* Search bar */}
+        <form
+          onSubmit={handleSearch}
+          style={{
+            background: 'rgba(218,238,247,0.04)',
+            border: '0.5px solid rgba(218,238,247,0.12)',
+            borderRadius: 16,
+            padding: '1.25rem',
+            width: '100%',
+            maxWidth: 860,
+          }}
+          className="flex flex-col lg:flex-row items-center gap-0"
+        >
+          {/* Destino */}
+          <div className="flex flex-col flex-[2] w-full px-3 py-1 lg:border-r" style={{ borderColor: 'rgba(218,238,247,0.1)' }}>
+            <span style={{ fontSize: 10, color: '#7AAFC0', letterSpacing: '0.1em' }} className="uppercase mb-1">Destino</span>
+            <div className="flex items-center gap-2">
+              <MapPin size={15} style={{ color: '#4A8FA8', flexShrink: 0 }} />
+              <input
+                type="text"
+                placeholder="¿A dónde?"
+                value={search.destiny}
+                onChange={e => setSearch(s => ({ ...s, destiny: e.target.value }))}
+                style={{ background: 'transparent', border: 'none', outline: 'none', color: '#DAEEF7', fontSize: 14, width: '100%' }}
+                className="placeholder:text-white/20"
+              />
+            </div>
           </div>
-        )}
-        illustrationProps={{ gradientFrom: '#6faecc', gradientTo: '#2a4f68' }}
-      />
 
+          {/* Salida */}
+          <div className="flex flex-col flex-1 w-full px-3 py-1 lg:border-r" style={{ borderColor: 'rgba(218,238,247,0.1)' }}>
+            <span style={{ fontSize: 10, color: '#7AAFC0', letterSpacing: '0.1em' }} className="uppercase mb-1">Salida</span>
+            <div className="flex items-center gap-2">
+              <Calendar size={15} style={{ color: '#4A8FA8', flexShrink: 0 }} />
+              <input
+                type="date"
+                value={search.startDate}
+                onChange={e => setSearch(s => ({ ...s, startDate: e.target.value }))}
+                style={{ colorScheme: 'dark', background: 'transparent', border: 'none', outline: 'none', color: search.startDate ? '#DAEEF7' : 'rgba(218,238,247,0.25)', fontSize: 13, width: '100%' }}
+              />
+            </div>
+          </div>
+
+          {/* Vuelta */}
+          <div className="flex flex-col flex-1 w-full px-3 py-1 lg:border-r" style={{ borderColor: 'rgba(218,238,247,0.1)' }}>
+            <span style={{ fontSize: 10, color: '#7AAFC0', letterSpacing: '0.1em' }} className="uppercase mb-1">Vuelta</span>
+            <div className="flex items-center gap-2">
+              <Calendar size={15} style={{ color: '#4A8FA8', flexShrink: 0 }} />
+              <input
+                type="date"
+                value={search.endDate}
+                onChange={e => setSearch(s => ({ ...s, endDate: e.target.value }))}
+                style={{ colorScheme: 'dark', background: 'transparent', border: 'none', outline: 'none', color: search.endDate ? '#DAEEF7' : 'rgba(218,238,247,0.25)', fontSize: 13, width: '100%' }}
+              />
+            </div>
+          </div>
+
+          {/* Viajeros */}
+          <div className="flex flex-col flex-1 w-full px-3 py-1 lg:border-r" style={{ borderColor: 'rgba(218,238,247,0.1)' }}>
+            <span style={{ fontSize: 10, color: '#7AAFC0', letterSpacing: '0.1em' }} className="uppercase mb-1">Viajeros</span>
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <Users size={15} style={{ color: '#4A8FA8' }} />
+                <span style={{ fontSize: 13, color: 'rgba(218,238,247,0.7)' }}>{search.passengers}</span>
+              </div>
+              <div className="flex gap-2">
+                <button type="button" onClick={() => setSearch(s => ({ ...s, passengers: Math.max(1, s.passengers - 1) }))}
+                  style={{ width: 20, height: 20, borderRadius: '50%', border: '0.5px solid rgba(218,238,247,0.15)', background: 'transparent', color: '#7AAFC0', fontSize: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>−</button>
+                <button type="button" onClick={() => setSearch(s => ({ ...s, passengers: Math.min(20, s.passengers + 1) }))}
+                  style={{ width: 20, height: 20, borderRadius: '50%', border: '0.5px solid rgba(218,238,247,0.15)', background: 'transparent', color: '#7AAFC0', fontSize: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+</button>
+              </div>
+            </div>
+          </div>
+
+          {/* Botón */}
+          <div className="pl-3 w-full lg:w-auto mt-3 lg:mt-0">
+            <button type="submit"
+              style={{ background: '#4A8FA8', color: '#DAEEF7', border: 'none', borderRadius: 10, padding: '10px 22px', fontSize: 14, fontWeight: 500, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8, whiteSpace: 'nowrap', width: '100%', justifyContent: 'center' }}>
+              <Search size={15} />
+              Buscar
+            </button>
+          </div>
+        </form>
+
+        {/* Populares */}
+        <div className="flex items-center gap-2 mt-5 flex-wrap justify-center">
+          <span style={{ fontSize: 11, color: '#7AAFC0' }}>Populares:</span>
+          {POPULAR.map(p => (
+            <button key={p} type="button"
+              onClick={() => setSearch(s => ({ ...s, destiny: p }))}
+              style={{ fontSize: 11, color: '#7AAFC0', border: '0.5px solid rgba(218,238,247,0.1)', borderRadius: 20, padding: '2px 12px', background: 'transparent', cursor: 'pointer' }}>
+              {p}
+            </button>
+          ))}
+        </div>
+
+        {/* Stats */}
+        <div className="flex items-center gap-10 mt-12 pt-8" style={{ borderTop: '0.5px solid rgba(218,238,247,0.06)' }}>
+          {[{ n: '+150', l: 'Destinos' }, { n: '12k+', l: 'Viajeros' }, { n: '98%', l: 'Satisfacción' }].map((s, i, arr) => (
+            <div key={s.l} className="flex items-center gap-10">
+              <div className="text-center">
+                <p style={{ fontSize: 20, fontWeight: 500, color: '#DAEEF7', margin: 0 }}>{s.n}</p>
+                <p style={{ fontSize: 11, color: '#7AAFC0', margin: 0 }}>{s.l}</p>
+              </div>
+              {i < arr.length - 1 && <span style={{ width: 1, height: 32, background: 'rgba(218,238,247,0.08)', display: 'inline-block' }} />}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── DESTACADOS ── */}
       <section className="container-page py-16">
         <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
           <div>
