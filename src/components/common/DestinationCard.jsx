@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Heart, ImageOff, Star } from 'lucide-react'
 import Badge from '../ui/Badge'
@@ -18,6 +19,7 @@ const GRADIENTS = [
 const cardGradient = (id = 0) => GRADIENTS[id % GRADIENTS.length]
 
 const DestinationCard = ({ destination, showOfferPrice = false, featured = false }) => {
+  const [isFavorite, setIsFavorite] = useState(false)
   const image = getDestinationImage(destination) || getDestinationFallbackImage(destination)
   const name    = destination.destiny       || destination.name
   const country = destination.hotelCity     || destination.country
@@ -66,17 +68,25 @@ const DestinationCard = ({ destination, showOfferPrice = false, featured = false
           </Badge>
         </div>
         <button
-          onClick={e => e.preventDefault()}
-          aria-label={`Guardar ${name} en favoritos`}
-          aria-pressed={false}
+          onClick={(e) => {
+            e.preventDefault()
+            setIsFavorite((current) => !current)
+          }}
+          aria-label={isFavorite ? `Quitar ${name} de favoritos` : `Guardar ${name} en favoritos`}
+          aria-pressed={isFavorite}
           className={classNames(
             'absolute right-3 top-3 flex items-center justify-center h-10 w-10 rounded-full backdrop-blur transition-colors focus-visible:ring-2 focus-visible:ring-brand-500',
-            featured
-              ? 'border border-white/20 bg-white/15 text-white shadow-md hover:bg-white/90 hover:text-rose-500'
-              : 'bg-surface-950/60 text-white',
+            isFavorite
+              ? 'border border-white/80 bg-white text-surface-950 shadow-md hover:bg-white/90'
+              : featured
+                ? 'border border-white/20 bg-white/15 text-white shadow-md hover:bg-white/90 hover:text-surface-950'
+                : 'bg-surface-950/60 text-white hover:bg-white/90 hover:text-surface-950',
           )}
         >
-          <Heart className="h-4 w-4" aria-hidden="true" />
+          <Heart
+            className={classNames('h-4 w-4', isFavorite && 'fill-current')}
+            aria-hidden="true"
+          />
         </button>
       </Link>
       <div className="flex flex-col gap-4 p-5">
