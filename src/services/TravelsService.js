@@ -1,5 +1,4 @@
 import { API } from '../constants/api';
-import { externalTravelService } from './externalTravelService';
 
 const API_URL = `${API}/travels`;
 
@@ -10,7 +9,7 @@ const authHeaders = () => {
 
 const fetchHotelMap = async () => {
   try {
-    const res = await fetch(`${API}/hotels`);
+    const res = await fetch(`${API}/hotels?size=100`);
     if (!res.ok) return {};
     const data = await res.json();
     const hotels = Array.isArray(data) ? data : (data.content || []);
@@ -28,105 +27,98 @@ const fixImageUrl = (url) => {
   return url;
 };
 
+const onlyActive = (data) => {
+  const arr = Array.isArray(data) ? data : (data.content || []);
+  return arr.filter(t => t.active !== false);
+};
+
 const enrichWithHotel = (travel, hotelMap) => {
   if (!travel) return travel;
   const hotel = hotelMap[travel.hotelId];
-  if (hotel) {
-    const rawUrl = hotel.imageUrl || hotel.image_url || '';
-    return {
-      ...travel,
-      hotelImageUrl: fixImageUrl(rawUrl),
-      hotelName: hotel.name || '',
-      hotelCity: hotel.city || '',
-      hotelCountry: hotel.country || '',
-      hotelStars: hotel.stars || 0,
-      halfBoardPrice: hotel.halfBoardPrice || hotel.half_board_price || travel.price || 0,
-    };
-  }
-  return travel;
+  if (!hotel) return travel;
+  return {
+    ...travel,
+    hotelImageUrl: fixImageUrl(hotel.imageUrl || hotel.image_url || ''),
+    hotelName:     hotel.name    || '',
+    hotelCity:     hotel.city    || '',
+    hotelCountry:  hotel.country || '',
+    hotelStars:    hotel.stars   || 0,
+    halfBoardPrice: hotel.halfBoardPrice || hotel.half_board_price || 0,
+  };
 };
 
-const onlyActive = (travels) => {
-  return travels.filter(t => t.active !== false);
-};
-
-const withExternalTravels = async (backendTravels) => {
-  try {
-    const external = await externalTravelService.getAvailable();
-    return [...backendTravels, ...external];
-  } catch {
-    return backendTravels;
-  }
+const fetchTravels = async () => {
+  const res = await fetch(`${API_URL}?size=100`);
+  if (!res.ok) throw new Error(`Error al cargar viajes: ${res.status}`);
+  const data = await res.json();
+  return Array.isArray(data) ? data : (data.content || []);
 };
 
 export const travelService = {
+
   getAll: async () => {
     try {
-      const res = await fetch(API_URL);
-      if (!res.ok) throw new Error(`Error al cargar viajes: ${res.status}`);
-      const travels = await res.json();
+      const travels = await fetchTravels();
       const hotelMap = await fetchHotelMap();
-      const enriched = travels.map(t => enrichWithHotel(t, hotelMap));
-      return withExternalTravels(enriched);
-    } catch {
-      return externalTravelService.getAvailable();
+      return travels.map(t => enrichWithHotel(t, hotelMap));
+    } catch (error) {
+      console.error('❌ Error en getAll:', error);
+      return [];
     }
   },
 
   getAvailable: async () => {
     try {
-      const res = await fetch(API_URL);
-      if (!res.ok) throw new Error('Error al cargar viajes');
+      const res = await fetch(`${API_URL}?size=100`);
+      if (!res.ok) throw new Error(`Error al cargar viajes: ${res.status}`);
       const travels = onlyActive(await res.json());
       const hotelMap = await fetchHotelMap();
-      const enriched = travels.map(t => enrichWithHotel(t, hotelMap));
-      return withExternalTravels(enriched);
-    } catch {
-      return externalTravelService.getAvailable();
+      return travels.map(t => enrichWithHotel(t, hotelMap));
+    } catch (error) {
+      console.error('❌ Error en getAvailable:', error);
+      return [];
+    }
+  },
+
+  getById: async (id) => {
+    try {
+      const res = await fetch(`${API_URL}/${id}`);
+      if (!res.ok) throw new Error('Viaje no encontrado');
+      const travel = await res.json();
+      const hotelMap = await fetchHotelMap();
+      return enrichWithHotel(travel, hotelMap);
+    } catch (error) {
+      console.error('❌ Error en getById:', error);
+      throw error;
     }
   },
 
   getFeatured: async () => {
     try {
-      const res = await fetch(API_URL);
+      const res = await fetch(`${API_URL}?size=100`);
       if (!res.ok) throw new Error('Error al cargar viajes');
       const allActive = onlyActive(await res.json());
       const featured = allActive.filter(t => t.featured === true);
-      const backendTravels = featured.length > 0 ? featured : allActive;
+      const source = featured.length > 0 ? featured : allActive.slice(0, 6);
       const hotelMap = await fetchHotelMap();
-      const externalFeatured = await externalTravelService.getFeatured();
-      return [...backendTravels.map(t => enrichWithHotel(t, hotelMap)), ...externalFeatured];
-    } catch {
-      return externalTravelService.getFeatured();
+      return source.map(t => enrichWithHotel(t, hotelMap));
+    } catch (error) {
+      console.error('❌ Error en getFeatured:', error);
+      return [];
     }
   },
 
   getOnSale: async () => {
     try {
-      const res = await fetch(API_URL);
+      const res = await fetch(`${API_URL}?size=100`);
       if (!res.ok) throw new Error('Error al cargar ofertas');
       const travels = onlyActive(await res.json()).filter(t => t.sale === true);
       const hotelMap = await fetchHotelMap();
-      return [
-        ...travels.map(t => enrichWithHotel(t, hotelMap)),
-        ...(await externalTravelService.getOnSale()),
-      ];
-    } catch {
-      return externalTravelService.getOnSale();
+      return travels.map(t => enrichWithHotel(t, hotelMap));
+    } catch (error) {
+      console.error('❌ Error en getOnSale:', error);
+      return [];
     }
-  },
-
-  getById: async (id) => {
-    if (String(id).startsWith('external-')) {
-      const externalTravel = await externalTravelService.getById(id);
-      if (!externalTravel) throw new Error('Viaje no encontrado');
-      return externalTravel;
-    }
-    const res = await fetch(`${API_URL}/${id}`);
-    if (!res.ok) throw new Error('Viaje no encontrado');
-    const travel = await res.json();
-    const hotelMap = await fetchHotelMap();
-    return enrichWithHotel(travel, hotelMap);
   },
 
   getPage: async (page = 0, size = 10) => {
