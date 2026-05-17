@@ -28,9 +28,11 @@ const DestinationCard = ({ destination, showOfferPrice = false, featured = false
   const rating  = destination.hotelStars    || destination.rating || 0
   const tag     = destination.tag           || (destination.sale ? 'Oferta' : 'Disponible')
 
+  const discountPct = destination.discountPercentage || 0
+
   const originalPrice =
-    showOfferPrice && destination.discountPercentage && destination.discountPercentage > 0
-      ? Math.round(price / (1 - destination.discountPercentage / 100))
+    showOfferPrice && discountPct > 0
+      ? Math.round(price / (1 - discountPct / 100))
       : null
 
   return (
@@ -109,7 +111,15 @@ const DestinationCard = ({ destination, showOfferPrice = false, featured = false
                   {formatCurrency(originalPrice)}
                 </span>
               ) : null}
-              <span className="text-xl font-semibold text-white">
+              {originalPrice && discountPct > 0 ? (
+                <span className="rounded-full bg-red-500/20 px-2 py-0.5 text-xs font-bold text-red-400">
+                  -{discountPct}%
+                </span>
+              ) : null}
+              <span className={classNames(
+                'text-xl font-semibold',
+                originalPrice ? 'text-brand-400' : 'text-white',
+              )}>
                 {formatCurrency(price)}
               </span>
             </div>

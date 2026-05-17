@@ -35,7 +35,8 @@ const fetchHotelMap = async () => {
             console.warn('⚠️ No se pudieron cargar los hoteles');
             return {};
         }
-        const hotels = await res.json();
+        const data = await res.json();
+        const hotels = Array.isArray(data) ? data : (data.content || []);
         console.log('✅ Hoteles cargados:', hotels.length);
         return Object.fromEntries(hotels.map(h => [h.id, h]));
     } catch (error) {
@@ -72,14 +73,18 @@ const enrichWithHotel = (travel, hotelMap) => {
     return travel;
 };
 
+const fetchTravels = async () => {
+    const res = await fetch(`${API_URL}`);
+    if (!res.ok) throw new Error(`Error al cargar viajes: ${res.status}`);
+    const data = await res.json();
+    return Array.isArray(data) ? data : (data.content || []);
+};
+
 export const travelService = {
 
-    // Portada — primeros 6 viajes de la BD
     getFeatured: async () => {
         try {
-            const res = await fetch(`${API_URL}`);
-            if (!res.ok) throw new Error('Error al cargar viajes');
-            const travels = await res.json();
+            const travels = await fetchTravels();
             const hotelMap = await fetchHotelMap();
             const featured = travels.slice(0, 6).map(t => enrichWithHotel(t, hotelMap));
             console.log('✅ Viajes destacados (BD):', featured.length);
@@ -90,12 +95,9 @@ export const travelService = {
         }
     },
 
-    // Búsqueda — todos: BD + externos
     getAvailable: async () => {
         try {
-            const res = await fetch(`${API_URL}`);
-            if (!res.ok) throw new Error('Error al cargar viajes');
-            const travels = await res.json();
+            const travels = await fetchTravels();
             const hotelMap = await fetchHotelMap();
             const backend = travels.map(t => enrichWithHotel(t, hotelMap));
             const external = await externalTravelService.getAvailable();
@@ -106,14 +108,12 @@ export const travelService = {
         }
     },
 
-    // Ofertas — BD con sale:true + externos con sale:true
     getOnSale: async () => {
         try {
-            const res = await fetch(`${API_URL}`);
-            if (!res.ok) throw new Error('Error al cargar ofertas');
-            const travels = (await res.json()).filter(t => t.sale === true);
+            const travels = await fetchTravels();
+            const onSale = travels.filter(t => t.sale === true);
             const hotelMap = await fetchHotelMap();
-            const backendSale = travels.map(t => enrichWithHotel(t, hotelMap));
+            const backendSale = onSale.map(t => enrichWithHotel(t, hotelMap));
             const externalSale = await externalTravelService.getOnSale();
             return [...backendSale, ...externalSale];
         } catch (error) {
@@ -122,12 +122,9 @@ export const travelService = {
         }
     },
 
-    // Todos los viajes de la BD
     getAll: async () => {
         try {
-            const res = await fetch(`${API_URL}`);
-            if (!res.ok) throw new Error(`Error al cargar viajes: ${res.status}`);
-            const travels = await res.json();
+            const travels = await fetchTravels();
             const hotelMap = await fetchHotelMap();
             const enriched = travels.map(t => enrichWithHotel(t, hotelMap));
             console.log('✅ Viajes cargados y enriquecidos:', enriched.length);

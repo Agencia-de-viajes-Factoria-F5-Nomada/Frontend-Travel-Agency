@@ -1,38 +1,28 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { MapPin } from 'lucide-react'
-import Button from '../components/ui/Button'
-import Card from '../components/ui/Card'
+import DestinationCard from '../components/common/DestinationCard'
 import PageHeader from '../components/ui/PageHeader'
 import { travelService } from '../services/TravelsService'
-import { getDestinationFallbackImage, getDestinationImage } from '../utils/destinationImages'
 
 const DestinationsPage = () => {
   const [travels, setTravels]   = useState([])
   const [loading, setLoading]   = useState(true)
   const [error, setError]       = useState(null)
   const [search, setSearch]     = useState('')
-  const navigate                = useNavigate()
 
   useEffect(() => {
     travelService.getAvailable()
-      .then(data => {
-        console.log('✅ Viajes cargados en DestinationsPage:', data.length);
-        setTravels(data);
-      })
-      .catch(e => {
-        console.error('❌ Error en DestinationsPage:', e);
-        setError(e.message || 'Error al cargar los viajes');
-      })
+      .then(data => setTravels(data))
+      .catch(e => setError(e.message || 'Error al cargar los viajes'))
       .finally(() => setLoading(false))
   }, [])
 
   const filtered = travels.filter(t =>
-    t.destiny?.toLowerCase().includes(search.toLowerCase())
+    (t.destiny || t.name || '').toLowerCase().includes(search.toLowerCase())
   )
 
   return (
-    <>
+    <div className="container-page py-12">
       <PageHeader
         eyebrow="Catálogo"
         title="Destinos disponibles"
@@ -56,7 +46,7 @@ const DestinationsPage = () => {
       )}
 
       {loading ? (
-        <div className="mt-8 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {[...Array(6)].map((_, i) => (
             <div key={i} className="h-64 animate-pulse rounded-2xl bg-surface-800" />
           ))}
@@ -68,66 +58,17 @@ const DestinationsPage = () => {
           <p className="text-sm text-ink-muted">Prueba con otro término de búsqueda</p>
         </div>
       ) : (
-        <section className="mt-8 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map(travel => (
-            <Card
+            <DestinationCard
               key={travel.id}
-              className="overflow-hidden cursor-pointer hover:ring-2 transition-all"
-              style={{ '--tw-ring-color': '#4A8FA8' }}
-              onClick={() => navigate(`/destinations/${travel.id}`)}
-            >
-              <div className="relative h-40 bg-surface-800">
-                {getDestinationImage(travel) ? (
-                  <img
-                    src={getDestinationImage(travel)}
-                    alt={travel.destiny}
-                    className="h-full w-full object-cover"
-                    loading="lazy"
-                    onError={(event) => {
-                      const fallbackImage = getDestinationFallbackImage(travel)
-                      if (fallbackImage && event.currentTarget.src !== fallbackImage) {
-                        event.currentTarget.src = fallbackImage
-                      }
-                    }}
-                  />
-                ) : (
-                  <div className="flex h-full items-center justify-center">
-                    <MapPin className="h-10 w-10 text-brand-400" />
-                  </div>
-                )}
-                {travel.sale && (
-                  <span className="absolute left-3 top-3 rounded-full px-2 py-1 text-xs font-bold text-white"
-                    style={{ background: '#4A8FA8' }}>
-                    OFERTA
-                  </span>
-                )}
-              </div>
-
-              <div className="flex flex-col gap-3 p-5">
-                <div>
-                  <h3 className="text-lg font-semibold text-white">{travel.destiny}</h3>
-                  <p className="text-sm text-ink-muted">
-                    {travel.startDate} → {travel.endDate}
-                  </p>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-ink-soft">
-                    {travel.availablePlaces} plazas disponibles
-                  </span>
-                </div>
-                <Button
-                  size="sm"
-                  fullWidth
-                  onClick={e => { e.stopPropagation(); navigate(`/destinations/${travel.id}`) }}
-                >
-                  Ver detalles
-                </Button>
-              </div>
-            </Card>
+              destination={travel}
+              showOfferPrice={travel.sale === true}
+            />
           ))}
-        </section>
+        </div>
       )}
-    </>
+    </div>
   )
 }
 
