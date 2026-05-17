@@ -57,8 +57,9 @@ export const hotelService = {
             const res = await fetch(`${API_URL}`);
             if (!res.ok) throw new Error(`Error ${res.status} al cargar hoteles`);
             const data = await res.json();
-            console.log('✅ Hoteles cargados (fetch):', data.length);
-            return data;
+            const hotels = Array.isArray(data) ? data : (data.content || []);
+            console.log('✅ Hoteles cargados (fetch):', hotels.length);
+            return hotels;
         } catch (error) {
             console.error('❌ Error en getAll:', error);
             throw error;

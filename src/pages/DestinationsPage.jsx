@@ -3,6 +3,7 @@ import { MapPin } from 'lucide-react'
 import Button from '../components/atoms/Button'
 import Card from '../components/atoms/Card'
 import PageHeader from '../components/atoms/PageHeader'
+import DestinationCard from '../components/organisms/DestinationCard'
 import { travelService } from '../services/TravelsService'
 
 const DestinationsPage = () => {
