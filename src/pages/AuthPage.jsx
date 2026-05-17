@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { LogIn, UserPlus } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
-import Button from '../components/ui/Button'
-import Card from '../components/ui/Card'
-import Input from '../components/ui/Input'
+import Button from '../components/atoms/Button'
+import Card from '../components/atoms/Card'
+import Input from '../components/atoms/Input'
 import { classNames } from '../utils/classNames'
 import { authService } from '../services/authService'
 

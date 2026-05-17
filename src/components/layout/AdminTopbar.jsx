@@ -1,5 +1,5 @@
 import { Bell, Menu, Search } from 'lucide-react'
-import Button from '../ui/Button'
+import Button from '../atoms/Button'
 
 const AdminTopbar = ({ onMenuClick }) => (
   <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-surface-700 bg-surface-900/90 px-4 backdrop-blur lg:px-8">

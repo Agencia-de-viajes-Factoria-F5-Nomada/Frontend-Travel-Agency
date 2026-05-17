@@ -20,14 +20,14 @@ import NotFoundPage         from '../pages/NotFoundPage';
 
 // Páginas admin
 import DashboardPage        from '../pages/DashboardPage';
-import BookingsPage         from '../pages/BookingsPage';
 import UsersPage            from '../pages/UsersPage';
 
-// CRUDs admin (componentes existentes)
-import Hoteles    from '../components/crud-hotel/Hoteles';
-import Buses      from '../components/crud-buses/Buses';
-import Drivers    from '../components/crud-drivers/Drivers';
-import Travels    from '../components/crud-travel/Travels';
+// CRUDs admin (nuevos componentes Atomic Design)
+import HotelsCRUD   from '../components/organisms/HotelsCRUD';
+import BusesCRUD    from '../components/organisms/BusesCRUD';
+import DriversCRUD  from '../components/organisms/DriversCRUD';
+import TravelsCRUD  from '../components/organisms/TravelsCRUD';
+import BookingsCRUD from '../components/organisms/BookingsCRUD';
 
 export default function AppRoutes() {
   return (
@@ -56,12 +56,12 @@ export default function AppRoutes() {
         </PrivateRoute>
       }>
         <Route index                       element={<DashboardPage />} />
-        <Route path="bookings"             element={<BookingsPage />} />
+        <Route path="bookings"             element={<BookingsCRUD />} />
         <Route path="users"                element={<UsersPage />} />
-        <Route path="hotels"               element={<Hoteles />} />
-        <Route path="buses"                element={<Buses />} />
-        <Route path="drivers"              element={<Drivers />} />
-        <Route path="travels"              element={<Travels />} />
+        <Route path="hotels"               element={<HotelsCRUD />} />
+        <Route path="buses"                element={<BusesCRUD />} />
+        <Route path="drivers"              element={<DriversCRUD />} />
+        <Route path="travels"              element={<TravelsCRUD />} />
       </Route>
 
       {/* ── 404 ── */}

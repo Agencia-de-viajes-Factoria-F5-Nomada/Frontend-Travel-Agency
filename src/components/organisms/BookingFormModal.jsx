@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { X } from 'lucide-react'
-import Button from '../ui/Button'
-import Input from '../ui/Input'
+import Button from '../atoms/Button'
+import Input from '../atoms/Input'
 import { FEATURED_DESTINATIONS } from '../../constants/mockData'
 
 const INITIAL_FORM = {

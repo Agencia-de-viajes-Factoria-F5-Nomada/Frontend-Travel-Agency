@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { SlidersHorizontal, MapPin } from 'lucide-react'
-import Button from '../components/ui/Button'
-import Card from '../components/ui/Card'
-import DestinationCard from '../components/common/DestinationCard'
-import PageHeader from '../components/ui/PageHeader'
+import Button from '../components/atoms/Button'
+import Card from '../components/atoms/Card'
+import DestinationCard from '../components/organisms/DestinationCard'
+import PageHeader from '../components/atoms/PageHeader'
 import { travelService } from '../services/TravelsService'
 
 const SearchResultsPage = () => {

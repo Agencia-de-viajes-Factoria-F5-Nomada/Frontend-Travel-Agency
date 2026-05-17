@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import { LogOut } from 'lucide-react'
 import BrandMark from './BrandMark'
-import Button from '../ui/Button'
+import Button from '../atoms/Button'
 import { ADMIN_NAV } from '../../constants/navigation'
 import { PUBLIC_PATHS } from '../../constants/paths'
 import { classNames } from '../../utils/classNames'

@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 import { BriefcaseBusiness, Eye, LogOut, Plane, ShieldCheck } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
-import Button from '../components/ui/Button'
-import Card from '../components/ui/Card'
-import PageHeader from '../components/ui/PageHeader'
+import Button from '../components/atoms/Button'
+import Card from '../components/atoms/Card'
+import PageHeader from '../components/atoms/PageHeader'
 import { authService } from '../services/authService'
 import { bookingService } from '../services/BookingService'
 

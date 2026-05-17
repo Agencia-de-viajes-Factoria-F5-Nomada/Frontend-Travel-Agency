@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Tag } from 'lucide-react'
-import Button from '../components/ui/Button'
-import DestinationCard from '../components/common/DestinationCard'
-import PageHeader from '../components/ui/PageHeader'
+import Button from '../components/atoms/Button'
+import DestinationCard from '../components/organisms/DestinationCard'
+import PageHeader from '../components/atoms/PageHeader'
 import { travelService } from '../services/TravelsService'
 import { PUBLIC_PATHS } from '../constants/paths'
 

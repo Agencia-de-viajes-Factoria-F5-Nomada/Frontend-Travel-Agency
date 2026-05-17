@@ -1,4 +1,4 @@
-import Badge from '../ui/Badge'
+import Badge from '../atoms/Badge'
 
 const STATUS_LABELS = {
   confirmed: 'Confirmada',

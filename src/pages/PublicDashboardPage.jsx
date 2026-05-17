@@ -1,7 +1,7 @@
 import { CalendarRange, MapPinned, Ticket, Users } from 'lucide-react'
-import Badge from '../components/ui/Badge'
-import Card from '../components/ui/Card'
-import StatusPill from '../components/common/StatusPill'
+import Badge from '../components/atoms/Badge'
+import Card from '../components/atoms/Card'
+import StatusPill from '../components/organisms/StatusPill'
 import { BOOKINGS } from '../constants/mockData'
 import { formatCurrency } from '../utils/formatters'
 

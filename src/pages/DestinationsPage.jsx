@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { MapPin } from 'lucide-react'
-import Button from '../components/ui/Button'
-import Card from '../components/ui/Card'
-import PageHeader from '../components/ui/PageHeader'
+import Button from '../components/atoms/Button'
+import Card from '../components/atoms/Card'
+import PageHeader from '../components/atoms/PageHeader'
 import { travelService } from '../services/TravelsService'
 import { getDestinationFallbackImage, getDestinationImage } from '../utils/destinationImages'
 
