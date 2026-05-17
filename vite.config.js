@@ -7,4 +7,10 @@ export default defineConfig({
     react(),
     babel({ presets: [reactCompilerPreset()] })
   ],
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: './src/test/setup.js',
+    exclude: ['**/node_modules/**', '**/e2e/**'],
+  },
 })
