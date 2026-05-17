@@ -102,14 +102,23 @@ describe('authService', () => {
   })
 
   describe('isAuthenticated', () => {
-    it('retorna true cuando hay token', () => {
-      mockLocalStorage.getItem.mockReturnValue('token123')
+    const validToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxOTM3MTQ0NDAwfQ.test'
+
+    it('retorna true cuando hay token válido', () => {
+      mockLocalStorage.getItem.mockReturnValue(validToken)
 
       expect(authService.isAuthenticated()).toBe(true)
     })
 
     it('retorna false cuando no hay token', () => {
       mockLocalStorage.getItem.mockReturnValue(null)
+
+      expect(authService.isAuthenticated()).toBe(false)
+    })
+
+    it('retorna false cuando el token está expirado', () => {
+      const expiredToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxMDAwfQ.test'
+      mockLocalStorage.getItem.mockReturnValue(expiredToken)
 
       expect(authService.isAuthenticated()).toBe(false)
     })
