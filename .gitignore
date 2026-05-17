@@ -22,3 +22,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Documentación y auditorías
+*.md
+!README.md
+!AGENTS.md
+docs/AUDIT.md
+*.pdf
