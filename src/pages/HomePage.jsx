@@ -36,10 +36,10 @@ const HomePage = () => {
       {/* ── HERO ── */}
       <section
         style={{ background: '#1A3A5C' }}
-        className="flex min-h-[calc(100svh-4rem)] flex-col items-center justify-center px-6 py-16 text-center"
+        className="flex min-h-[calc(100svh-4rem)] flex-col items-center justify-center px-6 py-10 text-center"
       >
         {/* Eyebrow */}
-        <div className="mb-6 flex items-center gap-3">
+        <div className="mb-5 flex items-center gap-3">
           <span style={{ width: 20, height: 1, background: '#4A8FA8', display: 'inline-block' }} />
           <span style={{ fontSize: 11, color: '#7AAFC0', letterSpacing: '0.12em' }} className="uppercase">
             Viajes seleccionados · 2026
@@ -48,29 +48,29 @@ const HomePage = () => {
         </div>
 
         {/* Title */}
-        <h1 style={{ color: '#DAEEF7', letterSpacing: '-0.02em' }} className="text-5xl font-medium leading-tight mb-4">
+        <h1 style={{ color: '#DAEEF7', letterSpacing: '-0.02em' }} className="text-5xl font-medium leading-tight mb-3">
           Siempre en el lugar exacto
         </h1>
-        <p style={{ color: '#7AAFC0' }} className="text-base leading-7 mb-10 max-w-lg">
+        <p style={{ color: '#7AAFC0' }} className="text-base leading-7 mb-8 max-w-lg">
           Explora los mejores destinos seleccionados por nuestros viajeros.
         </p>
 
-        {/* Search bar */}
+        {/* Search bar — borde más visible */}
         <form
           onSubmit={handleSearch}
           style={{
-            background: 'rgba(218,238,247,0.04)',
-            border: '0.5px solid rgba(218,238,247,0.12)',
+            background: 'rgba(218,238,247,0.06)',
+            border: '1.5px solid #4A8FA8',
             borderRadius: 16,
-            padding: '1.25rem',
+            padding: '1rem',
             width: '100%',
             maxWidth: 860,
           }}
           className="flex flex-col lg:flex-row items-center gap-0"
         >
           {/* Destino */}
-          <div className="flex flex-col flex-[2] w-full px-3 py-1 lg:border-r" style={{ borderColor: 'rgba(218,238,247,0.1)' }}>
-            <span style={{ fontSize: 10, color: '#7AAFC0', letterSpacing: '0.1em' }} className="uppercase mb-1">Destino</span>
+          <div className="flex flex-col flex-[2] w-full px-3 py-1 lg:border-r" style={{ borderColor: 'rgba(74,143,168,0.3)' }}>
+            <span style={{ fontSize: 10, color: '#4A8FA8', letterSpacing: '0.1em' }} className="uppercase mb-1">Destino</span>
             <div className="flex items-center gap-2">
               <MapPin size={15} style={{ color: '#4A8FA8', flexShrink: 0 }} />
               <input
@@ -79,14 +79,14 @@ const HomePage = () => {
                 value={search.destiny}
                 onChange={e => setSearch(s => ({ ...s, destiny: e.target.value }))}
                 style={{ background: 'transparent', border: 'none', outline: 'none', color: '#DAEEF7', fontSize: 14, width: '100%' }}
-                className="placeholder:text-white/20"
+                className="placeholder:text-white/25"
               />
             </div>
           </div>
 
           {/* Salida */}
-          <div className="flex flex-col flex-1 w-full px-3 py-1 lg:border-r" style={{ borderColor: 'rgba(218,238,247,0.1)' }}>
-            <span style={{ fontSize: 10, color: '#7AAFC0', letterSpacing: '0.1em' }} className="uppercase mb-1">Salida</span>
+          <div className="flex flex-col flex-1 w-full px-3 py-1 lg:border-r" style={{ borderColor: 'rgba(74,143,168,0.3)' }}>
+            <span style={{ fontSize: 10, color: '#4A8FA8', letterSpacing: '0.1em' }} className="uppercase mb-1">Salida</span>
             <div className="flex items-center gap-2">
               <Calendar size={15} style={{ color: '#4A8FA8', flexShrink: 0 }} />
               <input
@@ -99,8 +99,8 @@ const HomePage = () => {
           </div>
 
           {/* Vuelta */}
-          <div className="flex flex-col flex-1 w-full px-3 py-1 lg:border-r" style={{ borderColor: 'rgba(218,238,247,0.1)' }}>
-            <span style={{ fontSize: 10, color: '#7AAFC0', letterSpacing: '0.1em' }} className="uppercase mb-1">Vuelta</span>
+          <div className="flex flex-col flex-1 w-full px-3 py-1 lg:border-r" style={{ borderColor: 'rgba(74,143,168,0.3)' }}>
+            <span style={{ fontSize: 10, color: '#4A8FA8', letterSpacing: '0.1em' }} className="uppercase mb-1">Vuelta</span>
             <div className="flex items-center gap-2">
               <Calendar size={15} style={{ color: '#4A8FA8', flexShrink: 0 }} />
               <input
@@ -113,8 +113,8 @@ const HomePage = () => {
           </div>
 
           {/* Viajeros */}
-          <div className="flex flex-col flex-1 w-full px-3 py-1 lg:border-r" style={{ borderColor: 'rgba(218,238,247,0.1)' }}>
-            <span style={{ fontSize: 10, color: '#7AAFC0', letterSpacing: '0.1em' }} className="uppercase mb-1">Viajeros</span>
+          <div className="flex flex-col flex-1 w-full px-3 py-1 lg:border-r" style={{ borderColor: 'rgba(74,143,168,0.3)' }}>
+            <span style={{ fontSize: 10, color: '#4A8FA8', letterSpacing: '0.1em' }} className="uppercase mb-1">Viajeros</span>
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center gap-2">
                 <Users size={15} style={{ color: '#4A8FA8' }} />
@@ -122,9 +122,9 @@ const HomePage = () => {
               </div>
               <div className="flex gap-2">
                 <button type="button" onClick={() => setSearch(s => ({ ...s, passengers: Math.max(1, s.passengers - 1) }))}
-                  style={{ width: 20, height: 20, borderRadius: '50%', border: '0.5px solid rgba(218,238,247,0.15)', background: 'transparent', color: '#7AAFC0', fontSize: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>−</button>
+                  style={{ width: 20, height: 20, borderRadius: '50%', border: '0.5px solid rgba(74,143,168,0.4)', background: 'transparent', color: '#7AAFC0', fontSize: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>−</button>
                 <button type="button" onClick={() => setSearch(s => ({ ...s, passengers: Math.min(20, s.passengers + 1) }))}
-                  style={{ width: 20, height: 20, borderRadius: '50%', border: '0.5px solid rgba(218,238,247,0.15)', background: 'transparent', color: '#7AAFC0', fontSize: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+</button>
+                  style={{ width: 20, height: 20, borderRadius: '50%', border: '0.5px solid rgba(74,143,168,0.4)', background: 'transparent', color: '#7AAFC0', fontSize: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+</button>
               </div>
             </div>
           </div>
@@ -140,34 +140,34 @@ const HomePage = () => {
         </form>
 
         {/* Populares */}
-        <div className="flex items-center gap-2 mt-5 flex-wrap justify-center">
+        <div className="flex items-center gap-2 mt-4 flex-wrap justify-center">
           <span style={{ fontSize: 11, color: '#7AAFC0' }}>Populares:</span>
           {POPULAR.map(p => (
             <button key={p} type="button"
               onClick={() => setSearch(s => ({ ...s, destiny: p }))}
-              style={{ fontSize: 11, color: '#7AAFC0', border: '0.5px solid rgba(218,238,247,0.1)', borderRadius: 20, padding: '2px 12px', background: 'transparent', cursor: 'pointer' }}>
+              style={{ fontSize: 11, color: '#7AAFC0', border: '0.5px solid rgba(74,143,168,0.3)', borderRadius: 20, padding: '2px 12px', background: 'transparent', cursor: 'pointer' }}>
               {p}
             </button>
           ))}
         </div>
 
         {/* Stats */}
-        <div className="flex items-center gap-10 mt-12 pt-8" style={{ borderTop: '0.5px solid rgba(218,238,247,0.06)' }}>
+        <div className="flex items-center gap-10 mt-8 pt-6" style={{ borderTop: '0.5px solid rgba(218,238,247,0.08)' }}>
           {[{ n: '+150', l: 'Destinos' }, { n: '12k+', l: 'Viajeros' }, { n: '98%', l: 'Satisfacción' }].map((s, i, arr) => (
             <div key={s.l} className="flex items-center gap-10">
               <div className="text-center">
                 <p style={{ fontSize: 20, fontWeight: 500, color: '#DAEEF7', margin: 0 }}>{s.n}</p>
                 <p style={{ fontSize: 11, color: '#7AAFC0', margin: 0 }}>{s.l}</p>
               </div>
-              {i < arr.length - 1 && <span style={{ width: 1, height: 32, background: 'rgba(218,238,247,0.08)', display: 'inline-block' }} />}
+              {i < arr.length - 1 && <span style={{ width: 1, height: 32, background: 'rgba(218,238,247,0.1)', display: 'inline-block' }} />}
             </div>
           ))}
         </div>
       </section>
 
       {/* ── DESTACADOS ── */}
-      <section className="container-page py-16">
-        <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
+      <section className="container-page py-12">
+        <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
           <div>
             <h2 className="text-3xl font-semibold text-white">Destinos destacados</h2>
             <p className="mt-2 text-ink-muted">Viajes disponibles, los favoritos de nuestros viajeros</p>
