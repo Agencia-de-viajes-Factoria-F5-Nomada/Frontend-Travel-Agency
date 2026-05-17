@@ -74,6 +74,16 @@ export const hotelService = {
             throw error;
         }
     },
+    getPage: async (page = 0, size = 10) => {
+        try {
+            const res = await fetch(`${API_URL}?page=${page}&size=${size}`);
+            if (!res.ok) throw new Error(`Error ${res.status} al cargar hoteles`);
+            return res.json();
+        } catch (error) {
+            console.error('❌ Error en getPage:', error);
+            throw error;
+        }
+    },
     create: async (hotelData) => {
         try {
             const res = await fetch(`${API_URL}`, {

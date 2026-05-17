@@ -3,9 +3,11 @@ import Table from '../molecules/Table'
 import Modal from '../molecules/Modal'
 import Alert from '../molecules/Alert'
 import ConfirmDialog from '../molecules/ConfirmDialog'
+import Pagination from '../molecules/Pagination'
 import Button from '../atoms/Button'
 import HotelForm from './HotelForm'
 import { hotelService } from '../../services/HotelService'
+import usePagination from '../../hooks/usePagination'
 
 const EMPTY_FORM = {
   name: '',
@@ -22,27 +24,19 @@ const EMPTY_FORM = {
 }
 
 export default function HotelsCRUD() {
-  const [hotels, setHotels] = useState([])
-  const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [showForm, setShowForm] = useState(false)
   const [editing, setEditing] = useState(null)
   const [deleting, setDeleting] = useState(null)
   const [form, setForm] = useState(EMPTY_FORM)
 
-  const load = async () => {
-    try {
-      setLoading(true)
-      const data = await hotelService.getAll()
-      setHotels(data)
-    } catch (e) {
-      setError(e.message)
-    } finally {
-      setLoading(false)
-    }
-  }
+  const { data: hotels, page, totalPages, loading, load } = usePagination(
+    (pageNum, size) => hotelService.getPage(pageNum, size),
+    0,
+    10
+  )
 
-  useEffect(() => { load() }, [])
+  useEffect(() => { load() }, [load])
 
   const change = (e) => {
     const { name, value, type, checked } = e.target
@@ -168,6 +162,14 @@ export default function HotelsCRUD() {
       )}
 
       <Table columns={columns} data={hotels} loading={loading} emptyMessage="No hay hoteles" />
+
+      <div className="flex justify-center pt-4">
+        <Pagination
+          currentPage={page + 1}
+          totalPages={totalPages}
+          onPageChange={(p) => load(p - 1)}
+        />
+      </div>
 
       <Modal
         isOpen={showForm}
