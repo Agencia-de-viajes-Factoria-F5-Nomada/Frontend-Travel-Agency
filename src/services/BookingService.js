@@ -38,6 +38,13 @@ export const bookingService = {
         if (!res.ok) throw new Error('Error al cargar reservas');
         return res.json();
     },
+    getPage: async (page = 0, size = 10) => {
+        const res = await fetch(`${API}/bookings?page=${page}&size=${size}`, {
+            headers: { ...authHeader() },
+        });
+        if (!res.ok) throw new Error('Error al cargar reservas');
+        return res.json();
+    },
     quote: async (data) => {
         const res = await fetch(`${API}/bookings/quote`, {
             method: 'POST',

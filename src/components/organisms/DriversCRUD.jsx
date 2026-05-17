@@ -3,9 +3,11 @@ import Table from '../molecules/Table'
 import Modal from '../molecules/Modal'
 import Alert from '../molecules/Alert'
 import ConfirmDialog from '../molecules/ConfirmDialog'
+import Pagination from '../molecules/Pagination'
 import Button from '../atoms/Button'
 import DriverForm from './DriverForm'
 import { driverService } from '../../services/DriverService'
+import usePagination from '../../hooks/usePagination'
 
 const EMPTY_FORM = {
   name: '',
@@ -16,27 +18,19 @@ const EMPTY_FORM = {
 }
 
 export default function DriversCRUD() {
-  const [drivers, setDrivers] = useState([])
-  const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [showForm, setShowForm] = useState(false)
   const [editing, setEditing] = useState(null)
   const [deleting, setDeleting] = useState(null)
   const [form, setForm] = useState(EMPTY_FORM)
 
-  const load = async () => {
-    try {
-      setLoading(true)
-      const data = await driverService.getAll()
-      setDrivers(data)
-    } catch (e) {
-      setError(e.message)
-    } finally {
-      setLoading(false)
-    }
-  }
+  const { data: drivers, page, totalPages, loading, load } = usePagination(
+    (pageNum, size) => driverService.getPage(pageNum, size),
+    0,
+    10
+  )
 
-  useEffect(() => { load() }, [])
+  useEffect(() => { load() }, [load])
 
   const change = (e) => {
     const { name, value, type, checked } = e.target
@@ -117,6 +111,14 @@ export default function DriversCRUD() {
       )}
 
       <Table columns={columns} data={drivers} loading={loading} emptyMessage="No hay conductores" />
+
+      <div className="flex justify-center pt-4">
+        <Pagination
+          currentPage={page + 1}
+          totalPages={totalPages}
+          onPageChange={(p) => load(p - 1)}
+        />
+      </div>
 
       <Modal
         isOpen={showForm}

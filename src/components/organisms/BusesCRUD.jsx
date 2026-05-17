@@ -3,9 +3,11 @@ import Table from '../molecules/Table'
 import Modal from '../molecules/Modal'
 import Alert from '../molecules/Alert'
 import ConfirmDialog from '../molecules/ConfirmDialog'
+import Pagination from '../molecules/Pagination'
 import Button from '../atoms/Button'
 import BusForm from './BusForm'
 import { busService } from '../../services/BusService'
+import usePagination from '../../hooks/usePagination'
 
 const EMPTY_FORM = {
   licensePlate: '',
@@ -19,25 +21,19 @@ const EMPTY_FORM = {
 }
 
 export default function BusesCRUD() {
-  const [buses, setBuses] = useState([])
-  const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [showForm, setShowForm] = useState(false)
   const [editing, setEditing] = useState(null)
   const [deleting, setDeleting] = useState(null)
   const [form, setForm] = useState(EMPTY_FORM)
 
-  const load = async () => {
-    try {
-      setLoading(true)
-      const data = await busService.getAll()
-      setBuses(data)
-    } catch (e) {
-      setError(e.message)
-    } finally {
-      setLoading(false)
-    }
-  }
+  const { data: buses, page, totalPages, loading, load } = usePagination(
+    (pageNum, size) => busService.getPage(pageNum, size),
+    0,
+    10
+  )
+
+  useEffect(() => { load() }, [load])
 
   useEffect(() => { load() }, [])
 
@@ -133,6 +129,14 @@ export default function BusesCRUD() {
       )}
 
       <Table columns={columns} data={buses} loading={loading} emptyMessage="No hay autobuses" />
+
+      <div className="flex justify-center pt-4">
+        <Pagination
+          currentPage={page + 1}
+          totalPages={totalPages}
+          onPageChange={(p) => load(p - 1)}
+        />
+      </div>
 
       <Modal
         isOpen={showForm}

@@ -23,11 +23,14 @@ import DashboardPage        from '../pages/DashboardPage';
 import UsersPage            from '../pages/UsersPage';
 
 // CRUDs admin (nuevos componentes Atomic Design)
-import HotelsCRUD   from '../components/organisms/HotelsCRUD';
-import BusesCRUD    from '../components/organisms/BusesCRUD';
-import DriversCRUD  from '../components/organisms/DriversCRUD';
-import TravelsCRUD  from '../components/organisms/TravelsCRUD';
-import BookingsCRUD from '../components/organisms/BookingsCRUD';
+import HotelsCRUD        from '../components/organisms/HotelsCRUD';
+import BusesCRUD         from '../components/organisms/BusesCRUD';
+import DriversCRUD       from '../components/organisms/DriversCRUD';
+import TravelsCRUD       from '../components/organisms/TravelsCRUD';
+import BookingsCRUD      from '../components/organisms/BookingsCRUD';
+import EmployeesCRUD     from '../components/organisms/EmployeesCRUD';
+import OffersCRUD        from '../components/organisms/OffersCRUD';
+import TripSegmentsCRUD  from '../components/organisms/TripSegmentsCRUD';
 
 export default function AppRoutes() {
   return (
@@ -62,6 +65,9 @@ export default function AppRoutes() {
         <Route path="buses"                element={<BusesCRUD />} />
         <Route path="drivers"              element={<DriversCRUD />} />
         <Route path="travels"              element={<TravelsCRUD />} />
+        <Route path="employees"            element={<EmployeesCRUD />} />
+        <Route path="offers"               element={<OffersCRUD />} />
+        <Route path="trip-segments"        element={<TripSegmentsCRUD />} />
       </Route>
 
       {/* ── 404 ── */}

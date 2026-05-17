@@ -3,11 +3,13 @@ import Table from '../molecules/Table'
 import Modal from '../molecules/Modal'
 import Alert from '../molecules/Alert'
 import ConfirmDialog from '../molecules/ConfirmDialog'
+import Pagination from '../molecules/Pagination'
 import Button from '../atoms/Button'
 import TravelForm from './TravelForm'
 import { travelService } from '../../services/TravelsService'
 import { hotelService } from '../../services/HotelService'
 import { busService } from '../../services/BusService'
+import usePagination from '../../hooks/usePagination'
 
 const EMPTY_FORM = {
   destiny: '',
@@ -20,35 +22,32 @@ const EMPTY_FORM = {
 }
 
 export default function TravelsCRUD() {
-  const [travels, setTravels] = useState([])
   const [hotels, setHotels] = useState([])
   const [buses, setBuses] = useState([])
-  const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [showForm, setShowForm] = useState(false)
   const [editing, setEditing] = useState(null)
   const [deleting, setDeleting] = useState(null)
   const [form, setForm] = useState(EMPTY_FORM)
 
-  const load = async () => {
-    try {
-      setLoading(true)
-      const [travelsData, hotelsData, busesData] = await Promise.all([
-        travelService.getAll(),
-        hotelService.getAll(),
-        busService.getAll(),
-      ])
-      setTravels(travelsData)
-      setHotels(hotelsData)
-      setBuses(busesData)
-    } catch (e) {
-      setError(e.message)
-    } finally {
-      setLoading(false)
-    }
+  const loadWithOptions = async (pageNum, size) => {
+    const [travelsData, hotelsData, busesData] = await Promise.all([
+      travelService.getPage(pageNum, size),
+      hotelService.getAll(),
+      busService.getAll(),
+    ])
+    setHotels(hotelsData.content || hotelsData)
+    setBuses(busesData.content || busesData)
+    return travelsData
   }
 
-  useEffect(() => { load() }, [])
+  const { data: travels, page, totalPages, loading, load } = usePagination(
+    loadWithOptions,
+    0,
+    10
+  )
+
+  useEffect(() => { load() }, [load])
 
   const change = (e) => {
     const { name, value, type, checked } = e.target
@@ -145,6 +144,14 @@ export default function TravelsCRUD() {
       )}
 
       <Table columns={columns} data={travels} loading={loading} emptyMessage="No hay viajes" />
+
+      <div className="flex justify-center pt-4">
+        <Pagination
+          currentPage={page + 1}
+          totalPages={totalPages}
+          onPageChange={(p) => load(p - 1)}
+        />
+      </div>
 
       <Modal
         isOpen={showForm}
