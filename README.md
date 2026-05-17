@@ -21,11 +21,16 @@ qui<div align="center">
 - [Flow Diagram](#flow-diagram)
 - [Tech Stack](#tech-stack)
 - [Architecture](#architecture)
+- [Data Model & Entity Relationships](#data-model--entity-relationships)
 - [Getting Started](#getting-started)
 - [Environment Variables](#environment-variables)
 - [API Reference](#api-reference)
 - [Available Scripts](#available-scripts)
 - [Project Structure](#project-structure)
+- [Testing](#testing)
+- [Deployment](#deployment)
+- [Roadmap](#roadmap)
+- [Contributing](#contributing)
 - [Developers](#developers)
 
 ---
@@ -398,6 +403,144 @@ npm run kill:port    # Kill process on port 8080 (Windows)
 
 ---
 
+## Testing
+
+NOMADA uses [Playwright](https://playwright.dev/) for end-to-end testing.
+
+### Setup
+
+```bash
+# Install Playwright browsers (first time only)
+npm run e2e:install
+```
+
+### Running tests
+
+```bash
+# Make sure both servers are running first
+npm run dev:full
+
+# In a separate terminal, run the test suite
+npm run e2e:test
+```
+
+### What is covered
+
+| Test area | Description |
+|-----------|-------------|
+| Authentication | Login flow for `ADMIN` and `USER` roles |
+| Navigation | Public routes accessible without login |
+| Booking flow | Select travel → confirm reservation |
+| Admin CRUD | Create, edit and delete entities from the dashboard |
+| Route guards | Unauthenticated access redirects to login |
+
+> Tests run against `http://localhost:5173` with the backend on `http://localhost:8080`.
+
+---
+
+## Deployment
+
+### Frontend — Vercel (recommended)
+
+```bash
+# 1. Build the production bundle
+npm run build
+
+# 2. Deploy with Vercel CLI
+npx vercel --prod
+```
+
+Or connect your GitHub repository directly in [vercel.com](https://vercel.com) and set the build command to `npm run build` with output directory `dist`.
+
+**Required environment variable in Vercel dashboard:**
+
+```
+VITE_API_URL=https://your-backend-url.com
+```
+
+### Backend — Railway / Render
+
+The Express server in `server.js` can be deployed to any Node.js platform:
+
+| Platform | Steps |
+|----------|-------|
+| [Railway](https://railway.app) | Connect repo → set `PORT` env var → deploy |
+| [Render](https://render.com) | New Web Service → `npm run server` as start command |
+| [Fly.io](https://fly.io) | `fly launch` → `fly deploy` |
+
+**Important:** The current backend uses an in-memory database. Data resets on every restart. For persistent storage, connect a PostgreSQL instance and migrate the seed data from `seed_data.sql`.
+
+---
+
+## Roadmap
+
+Features planned for future iterations:
+
+- [ ] **Real payments** — Stripe integration for booking checkout
+- [ ] **Email notifications** — Booking confirmation sent via SendGrid / Resend
+- [ ] **Interactive map** — Destination map with Leaflet or Google Maps
+- [ ] **Persistent database** — Migrate from in-memory store to PostgreSQL
+- [ ] **Search & filters** — Filter travels by date range, price, and destination
+- [ ] **User profile page** — Edit personal details, view booking history
+- [ ] **Multi-language support** — i18n with English and Spanish
+- [ ] **Dark mode** — System-preference aware theme toggle
+- [ ] **Mobile app** — React Native companion app
+
+---
+
+## Contributing
+
+Contributions are welcome. Please follow the steps below to keep the codebase consistent.
+
+### Branch naming
+
+```
+feat/<short-description>     # New feature
+fix/<short-description>      # Bug fix
+chore/<short-description>    # Maintenance, deps, config
+docs/<short-description>     # Documentation only
+```
+
+### Workflow
+
+```bash
+# 1. Fork the repository and clone your fork
+git clone https://github.com/<your-user>/Frontend-Travel-Agency.git
+
+# 2. Create a branch from dev
+git checkout dev
+git checkout -b feat/your-feature
+
+# 3. Make your changes and commit
+git add .
+git commit -m "feat: describe your change"
+
+# 4. Push and open a Pull Request against dev
+git push origin feat/your-feature
+```
+
+### Commit convention
+
+This project follows [Conventional Commits](https://www.conventionalcommits.org/):
+
+| Prefix | When to use |
+|--------|-------------|
+| `feat:` | New feature |
+| `fix:` | Bug fix |
+| `docs:` | Documentation changes |
+| `style:` | Formatting, no logic change |
+| `refactor:` | Code restructuring |
+| `test:` | Adding or fixing tests |
+| `chore:` | Build, deps, config |
+
+### Code style
+
+- Run `npm run lint` before pushing — PRs with lint errors will not be merged.
+- Use Tailwind utility classes; avoid inline styles.
+- Follow the Atomic Design structure for new components.
+
+---
+
 ## Developers
 
 Built with dedication by:
@@ -413,6 +556,6 @@ Project developed as part of the **Factoría F5** bootcamp program.
 
 <div align="center">
 
-Made with ❤️ by **NOMADA Team** · Factoría F5 · 2025
+Made with ❤️ by **NOMADA Team** · Factoría F5 · 2026que mas 
 
 </div>
