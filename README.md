@@ -1,4 +1,4 @@
-<div align="center">
+qui<div align="center">
 
 # ✈️ NOMADA — Travel Agency
 
@@ -107,6 +107,160 @@ Atoms → Molecules → Organisms → Pages
 - **Pages** — full views assembled from organisms
 
 State is managed locally with React hooks (`useState`, `useEffect`). The backend is an Express server with an in-memory data store, serving a REST API on port `8080`.
+
+---
+
+## Data Model & Entity Relationships
+
+### Entities
+
+#### User
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | number | Primary key |
+| `name` | string | Full name |
+| `email` | string | Unique email (login) |
+| `password` | string | Plain text (dev only) |
+| `role` | `ADMIN` \| `USER` | Access level |
+| `dni` | string | National ID (users only) |
+| `phone` | string | Contact phone |
+| `active` | boolean | Account status |
+
+#### Travel
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | number | Primary key |
+| `destiny` | string | Destination name |
+| `startDate` | date | Departure date |
+| `endDate` | date | Return date |
+| `hotelId` | number | **FK → Hotel** |
+| `availablePlaces` | number | Seats remaining |
+| `sale` | boolean | On sale flag |
+| `discountPercentage` | number | Discount % if on sale |
+| `active` | boolean | Listing status |
+
+#### Hotel
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | number | Primary key |
+| `name` | string | Hotel name |
+| `city` | string | City |
+| `country` | string | Country |
+| `stars` | number | Star rating (1–5) |
+| `capacity` | number | Total rooms |
+| `availablePlaces` | number | Available rooms |
+| `fullBoardPrice` | number | Price per night (full board) |
+| `halfBoardPrice` | number | Price per night (half board) |
+| `active` | boolean | Active status |
+
+#### Booking
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | string | Primary key (`TR-XXXX`) |
+| `destination` | string | Destination label |
+| `dates` | string | Date range |
+| `travelers` | number | Number of travelers |
+| `total` | number | Total price (€) |
+| `status` | `confirmed` \| `pending` | Booking state |
+| `userId` | number | **FK → User** |
+
+#### Bus
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | number | Primary key |
+| `busNumber` | string | Fleet identifier |
+| `model` | string | Manufacturer model |
+| `capacity` | number | Passenger capacity |
+| `available` | boolean | Availability |
+
+#### Driver
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | number | Primary key |
+| `name` | string | Full name |
+| `license` | string | Driver license number |
+| `experience` | number | Years of experience |
+| `active` | boolean | Active status |
+
+#### Offer
+| Field | Type | Description |
+|-------|------|-------------|
+| `id` | number | Primary key |
+| `title` | string | Offer title |
+| `description` | string | Short description |
+| `discount` | number | Discount percentage |
+| `validUntil` | date | Expiry date |
+
+---
+
+### Entity Relationship Diagram
+
+```
+┌─────────────┐         ┌─────────────────┐         ┌─────────────┐
+│    USER     │         │     BOOKING     │         │   TRAVEL    │
+│─────────────│         │─────────────────│         │─────────────│
+│ id          │◄────────│ userId (FK)     │         │ id          │
+│ name        │  1    N │ id              │         │ destiny     │
+│ email       │         │ destination     │         │ startDate   │
+│ role        │         │ dates           │         │ endDate     │
+│ active      │         │ travelers       │         │ hotelId(FK) │──────►┐
+└─────────────┘         │ total           │         │ availPlaces │       │
+                        │ status          │         │ sale        │       │
+                        └─────────────────┘         │ discount    │       │
+                                                    └─────────────┘       │
+                                                                          │ N
+┌─────────────┐         ┌─────────────┐         ┌─────────────┐          │ 1
+│    BUS      │         │   DRIVER    │         │    HOTEL    │◄──────────┘
+│─────────────│         │─────────────│         │─────────────│
+│ id          │         │ id          │         │ id          │
+│ busNumber   │         │ name        │         │ name        │
+│ model       │         │ license     │         │ city        │
+│ capacity    │         │ experience  │         │ country     │
+│ available   │         │ active      │         │ stars       │
+└─────────────┘         └─────────────┘         │ capacity    │
+                                                │ prices      │
+                                                └─────────────┘
+
+                        ┌─────────────┐
+                        │    OFFER    │
+                        │─────────────│
+                        │ id          │
+                        │ title       │
+                        │ discount    │
+                        │ validUntil  │
+                        └─────────────┘
+```
+
+**Key relationships:**
+- `Travel` belongs to one `Hotel` (N:1 via `hotelId`)
+- `Booking` belongs to one `User` (N:1 via `userId`)
+- One `User` can have many `Bookings` (1:N)
+- One `Hotel` can be linked to many `Travels` (1:N)
+- `Bus` and `Driver` are managed independently (assigned to travels at the operational level)
+- `Offer` is standalone — applies promotional discounts displayed on the storefront
+
+---
+
+### Roles & Permissions
+
+| Action | `USER` | `ADMIN` |
+|--------|:------:|:-------:|
+| Browse travels & hotels | ✅ | ✅ |
+| View offers | ✅ | ✅ |
+| Register / Login | ✅ | ✅ |
+| Create a booking | ✅ | ✅ |
+| View own bookings | ✅ | ✅ |
+| View all bookings | ❌ | ✅ |
+| View all users | ❌ | ✅ |
+| Create / edit / delete Travel | ❌ | ✅ |
+| Create / edit / delete Hotel | ❌ | ✅ |
+| Create / edit / delete Bus | ❌ | ✅ |
+| Create / edit / delete Driver | ❌ | ✅ |
+| Create / edit / delete Offer | ❌ | ✅ |
+| Manage users | ❌ | ✅ |
+| Access admin dashboard | ❌ | ✅ |
+
+> Protected routes on both frontend (React Router guards) and backend (JWT middleware `verifyToken`) enforce these permissions.
 
 ---
 
