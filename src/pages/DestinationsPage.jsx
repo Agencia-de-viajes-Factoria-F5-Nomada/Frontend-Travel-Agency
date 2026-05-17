@@ -1,13 +1,8 @@
 import { useState, useEffect } from 'react'
 import { MapPin } from 'lucide-react'
-<<<<<<< HEAD
 import Button from '../components/atoms/Button'
 import Card from '../components/atoms/Card'
 import PageHeader from '../components/atoms/PageHeader'
-=======
-import DestinationCard from '../components/common/DestinationCard'
-import PageHeader from '../components/ui/PageHeader'
->>>>>>> 31a1be88142683e26881654981361345b2b3666d
 import { travelService } from '../services/TravelsService'
 
 const DestinationsPage = () => {

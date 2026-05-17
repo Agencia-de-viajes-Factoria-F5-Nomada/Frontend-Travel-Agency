@@ -1,13 +1,7 @@
 import { Navigate, useParams } from 'react-router-dom'
-<<<<<<< HEAD
 import Button from '../components/atoms/Button'
 import Card from '../components/atoms/Card'
 import PageHeader from '../components/atoms/PageHeader'
-=======
-import Button from '../components/ui/Button'
-import Card from '../components/ui/Card'
-import PageHeader from '../components/ui/PageHeader'
->>>>>>> 31a1be88142683e26881654981361345b2b3666d
 
 const PERSONAL_SECTIONS = {
   incidencias: {

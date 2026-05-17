@@ -3,19 +3,11 @@ import { API } from '../constants/api';
 import { externalTravelService } from './externalTravelService';
 
 const API_URL = `${API}/travels`;
-<<<<<<< HEAD
-const onlyActive = (travels) => travels.filter((travel) => travel.active !== false);
-const withExternalTravels = async (travels) => [
-    ...travels,
-    ...(await externalTravelService.getAvailable()),
-];
-=======
 
 const authHeaders = () => {
     const token = localStorage.getItem('token');
     return token ? { Authorization: `Bearer ${token}` } : {};
 };
->>>>>>> 31a1be88142683e26881654981361345b2b3666d
 
 export const TravelsService = {
     fetchTravels: async () => {
@@ -142,7 +134,6 @@ export const travelService = {
             return externalTravelService.getAvailable();
         }
     },
-<<<<<<< HEAD
     getAvailable: async () => {
         try {
             const res = await fetch(`${API_URL}`);
@@ -163,15 +154,6 @@ export const travelService = {
                 const externalTravel = await externalTravelService.getById(id);
                 if (!externalTravel) throw new Error('Viaje no encontrado');
                 return externalTravel;
-=======
-
-    getById: async (id) => {
-        try {
-            if (String(id).startsWith('external-')) {
-                const ext = await externalTravelService.getById(id);
-                if (!ext) throw new Error('Viaje no encontrado');
-                return ext;
->>>>>>> 31a1be88142683e26881654981361345b2b3666d
             }
             const res = await fetch(`${API_URL}/${id}`);
             if (!res.ok) throw new Error('Viaje no encontrado');
@@ -183,7 +165,6 @@ export const travelService = {
             throw error;
         }
     },
-<<<<<<< HEAD
     getFeatured: async () => {
         try {
             const res = await fetch(`${API_URL}`);
@@ -216,9 +197,6 @@ export const travelService = {
             return externalTravelService.getOnSale();
         }
     },
-=======
-
->>>>>>> 31a1be88142683e26881654981361345b2b3666d
     create: async (travelData) => {
         const res = await fetch(`${API_URL}`, {
             method: 'POST',

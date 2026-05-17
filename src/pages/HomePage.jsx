@@ -1,15 +1,10 @@
 import { useState, useEffect } from 'react'
 import { ArrowRight, MapPin, Search, Users, Calendar } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
-<<<<<<< HEAD
 import Button from '../components/atoms/Button'
 import Card from '../components/atoms/Card'
 import DestinationCard from '../components/organisms/DestinationCard'
 import Hero from '../components/layout/Hero'
-=======
-import Button from '../components/ui/Button'
-import DestinationCard from '../components/common/DestinationCard'
->>>>>>> 31a1be88142683e26881654981361345b2b3666d
 import { travelService } from '../services/TravelsService'
 import { PUBLIC_PATHS } from '../constants/paths'
 
@@ -23,7 +18,6 @@ const HomePage = () => {
 
   useEffect(() => {
     travelService.getFeatured()
-<<<<<<< HEAD
       .then(data => {
         console.log('✅ Viajes destacados cargados en HomePage:', data.length);
         setTravels(data);
@@ -32,10 +26,6 @@ const HomePage = () => {
         console.error('❌ Error cargando viajes en HomePage:', error);
         setTravels([]);
       })
-=======
-      .then(data => setTravels(data))
-      .catch(() => setTravels([]))
->>>>>>> 31a1be88142683e26881654981361345b2b3666d
       .finally(() => setLoading(false))
   }, [])
 
