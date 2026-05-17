@@ -32,12 +32,11 @@ const PublicTopbar = () => {
   useLocation()
 
   const isAuthenticated = authService.isAuthenticated()
-  const showProfilePreview = true
   const primaryNav = PUBLIC_NAV.filter(
     (item) => item.to !== PUBLIC_PATHS.PROFILE && item.to !== PUBLIC_PATHS.AUTH,
   )
   const sessionNav = PUBLIC_NAV.find((item) =>
-    item.to === (isAuthenticated || showProfilePreview ? PUBLIC_PATHS.PROFILE : PUBLIC_PATHS.AUTH)
+    item.to === (isAuthenticated ? PUBLIC_PATHS.PROFILE : PUBLIC_PATHS.AUTH)
   )
 
   return (

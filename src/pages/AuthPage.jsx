@@ -51,7 +51,9 @@ const AuthPage = () => {
       }
 
       // Redirigir según rol
-      navigate('/profile')
+      // Redirigir según rol
+      const user = authService.getUser()
+      navigate(user?.role === 'ADMIN' || user?.rol === 'ADMIN' ? '/admin' : '/profile')
     } catch (e) {
       setError(e.message)
     } finally {
@@ -138,7 +140,7 @@ const AuthPage = () => {
             required
           />
 
-          <Button fullWidth size="lg" disabled={loading}>
+          <Button type="submit" fullWidth size="lg" disabled={loading}>
             {loading
               ? 'Cargando...'
               : isSignIn ? 'Iniciar sesión' : 'Crear cuenta'}
