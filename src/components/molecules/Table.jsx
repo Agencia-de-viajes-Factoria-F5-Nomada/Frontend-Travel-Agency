@@ -7,7 +7,7 @@ const Table = ({
   onRowClick,
   emptyMessage = 'No hay datos',
   loading = false,
-  striped = true,
+  striped = false,
   hoverable = true,
 }) => {
   if (loading) {
@@ -30,12 +30,12 @@ const Table = ({
     <div className="overflow-x-auto rounded-xl border border-surface-700/40">
       <table className="w-full">
         <thead>
-          <tr className="bg-brand-100/60">
+          <tr className="bg-brand-200/50">
             {columns.map((col) => (
               <th
                 key={col.key}
                 className={classNames(
-                  'px-4 py-3 text-left text-sm font-semibold text-ink',
+                  'px-4 py-3 text-left text-sm font-semibold text-white',
                   col.align === 'center' && 'text-center',
                   col.align === 'right' && 'text-right',
                 )}
@@ -50,7 +50,7 @@ const Table = ({
             <tr
               key={row.id || idx}
               className={classNames(
-                striped && idx % 2 === 0 ? 'bg-white' : 'bg-surface-950/20',
+                striped ? (idx % 2 === 0 ? 'bg-white' : 'bg-surface-950/20') : undefined,
                 hoverable && 'hover:bg-brand-100/40 transition-colors',
                 onRowClick && 'cursor-pointer',
               )}

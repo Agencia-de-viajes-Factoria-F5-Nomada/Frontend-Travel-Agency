@@ -4,6 +4,7 @@ export const PUBLIC_PATHS = {
   DESTINATION: '/destinations/:id',
   CHECKOUT:    '/checkout',
   PROFILE:     '/profile',
+  ENTITIES:    '/profile',
   OFFERS:      '/offers',
   AUTH:        '/auth',
   DASHBOARD:   '/dashboard',
