@@ -3,11 +3,19 @@ import { API } from '../constants/api';
 import { externalTravelService } from './externalTravelService';
 
 const API_URL = `${API}/travels`;
+<<<<<<< HEAD
 const onlyActive = (travels) => travels.filter((travel) => travel.active !== false);
 const withExternalTravels = async (travels) => [
     ...travels,
     ...(await externalTravelService.getAvailable()),
 ];
+=======
+
+const authHeaders = () => {
+    const token = localStorage.getItem('token');
+    return token ? { Authorization: `Bearer ${token}` } : {};
+};
+>>>>>>> 31a1be88142683e26881654981361345b2b3666d
 
 export const TravelsService = {
     fetchTravels: async () => {
@@ -30,14 +38,13 @@ export const TravelsService = {
 
 const fetchHotelMap = async () => {
     try {
-        const token = localStorage.getItem('token');
-        const headers = token ? { Authorization: `Bearer ${token}` } : {};
-        const res = await fetch(`${API}/hotels`, { headers });
+        const res = await fetch(`${API}/hotels`);
         if (!res.ok) {
-            console.warn('⚠️ No se pudieron cargar los hoteles, usando valores por defecto');
+            console.warn('⚠️ No se pudieron cargar los hoteles');
             return {};
         }
-        const hotels = await res.json();
+        const data = await res.json();
+        const hotels = Array.isArray(data) ? data : (data.content || []);
         console.log('✅ Hoteles cargados:', hotels.length);
         return Object.fromEntries(hotels.map(h => [h.id, h]));
     } catch (error) {
@@ -53,18 +60,12 @@ const fixImageUrl = (url) => {
         const base = url.split('?')[0];
         return `${base}?auto=format&fit=crop&w=800&q=80`;
     }
-    if (url.includes('picsum.photos')) {
-        return url; // Ya tiene el tamaño correcto
-    }
     return url;
 };
 
 const enrichWithHotel = (travel, hotelMap) => {
     if (!travel) return travel;
-    
     const hotel = hotelMap[travel.hotelId];
-    
-    // Siempre devolver el viaje enriquecido con datos del hotel si existe
     if (hotel) {
         const rawUrl = hotel.imageUrl || hotel.image_url || '';
         return {
@@ -77,17 +78,61 @@ const enrichWithHotel = (travel, hotelMap) => {
             halfBoardPrice: hotel.halfBoardPrice || hotel.half_board_price || travel.price || 0,
         };
     }
-    
-    // Si no hay hotel, devolver el viaje tal cual
     return travel;
 };
 
+const fetchTravels = async () => {
+    const res = await fetch(`${API_URL}`);
+    if (!res.ok) throw new Error(`Error al cargar viajes: ${res.status}`);
+    const data = await res.json();
+    return Array.isArray(data) ? data : (data.content || []);
+};
+
 export const travelService = {
+
+    getFeatured: async () => {
+        try {
+            const travels = await fetchTravels();
+            const hotelMap = await fetchHotelMap();
+            const featured = travels.slice(0, 6).map(t => enrichWithHotel(t, hotelMap));
+            console.log('✅ Viajes destacados (BD):', featured.length);
+            return featured;
+        } catch (error) {
+            console.error('❌ Error en getFeatured:', error);
+            return externalTravelService.getFeatured();
+        }
+    },
+
+    getAvailable: async () => {
+        try {
+            const travels = await fetchTravels();
+            const hotelMap = await fetchHotelMap();
+            const backend = travels.map(t => enrichWithHotel(t, hotelMap));
+            const external = await externalTravelService.getAvailable();
+            return [...backend, ...external];
+        } catch (error) {
+            console.error('❌ Error en getAvailable:', error);
+            return externalTravelService.getAvailable();
+        }
+    },
+
+    getOnSale: async () => {
+        try {
+            const travels = await fetchTravels();
+            const onSale = travels.filter(t => t.sale === true);
+            const hotelMap = await fetchHotelMap();
+            const backendSale = onSale.map(t => enrichWithHotel(t, hotelMap));
+            const externalSale = await externalTravelService.getOnSale();
+            return [...backendSale, ...externalSale];
+        } catch (error) {
+            console.error('❌ Error en getOnSale:', error);
+            return externalTravelService.getOnSale();
+        }
+    },
+
     getAll: async () => {
         try {
-            const res = await fetch(`${API_URL}`);
-            if (!res.ok) throw new Error(`Error al cargar viajes: ${res.status}`);
-            const travels = onlyActive(await res.json());
+            const travels = await fetchTravels();
             const hotelMap = await fetchHotelMap();
             const enriched = await withExternalTravels(travels.map(t => enrichWithHotel(t, hotelMap)));
             console.log('✅ Viajes cargados y enriquecidos:', enriched.length);
@@ -97,6 +142,7 @@ export const travelService = {
             return externalTravelService.getAvailable();
         }
     },
+<<<<<<< HEAD
     getAvailable: async () => {
         try {
             const res = await fetch(`${API_URL}`);
@@ -117,6 +163,15 @@ export const travelService = {
                 const externalTravel = await externalTravelService.getById(id);
                 if (!externalTravel) throw new Error('Viaje no encontrado');
                 return externalTravel;
+=======
+
+    getById: async (id) => {
+        try {
+            if (String(id).startsWith('external-')) {
+                const ext = await externalTravelService.getById(id);
+                if (!ext) throw new Error('Viaje no encontrado');
+                return ext;
+>>>>>>> 31a1be88142683e26881654981361345b2b3666d
             }
             const res = await fetch(`${API_URL}/${id}`);
             if (!res.ok) throw new Error('Viaje no encontrado');
@@ -128,6 +183,7 @@ export const travelService = {
             throw error;
         }
     },
+<<<<<<< HEAD
     getFeatured: async () => {
         try {
             const res = await fetch(`${API_URL}`);
@@ -160,6 +216,9 @@ export const travelService = {
             return externalTravelService.getOnSale();
         }
     },
+=======
+
+>>>>>>> 31a1be88142683e26881654981361345b2b3666d
     create: async (travelData) => {
         const res = await fetch(`${API_URL}`, {
             method: 'POST',
@@ -169,6 +228,7 @@ export const travelService = {
         if (!res.ok) throw new Error('Error al crear viaje');
         return res.json();
     },
+
     update: async (id, travelData) => {
         const res = await fetch(`${API_URL}/${id}`, {
             method: 'PUT',
@@ -178,6 +238,7 @@ export const travelService = {
         if (!res.ok) throw new Error('Error al actualizar viaje');
         return res.json();
     },
+
     delete: async (id) => {
         const res = await fetch(`${API_URL}/${id}`, {
             method: 'DELETE',
