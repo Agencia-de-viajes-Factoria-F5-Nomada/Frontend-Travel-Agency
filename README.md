@@ -1,6 +1,6 @@
-qui<div align="center">
+<div align="center">
 
-# ✈️ NOMADA — Travel Agency
+# NOMADA — Travel Agency
 
 **Full-stack web application for travel package booking and agency management**
 
