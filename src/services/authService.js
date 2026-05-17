@@ -4,14 +4,29 @@ const headers = { 'Content-Type': 'application/json' };
 
 export const authService = {
   login: async (email, password) => {
+    console.log(`[AUTH] Intentando login con email: ${email}`);
     const res = await fetch(`${API}/auth/login`, {
       method: 'POST', headers,
       body: JSON.stringify({ email, password }),
     });
-    if (!res.ok) throw new Error('Credenciales incorrectas');
+    console.log(`[AUTH] Respuesta del servidor:`, res.status);
+    
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      console.error(`[AUTH] ❌ Error de login:`, errorData);
+      throw new Error(errorData.error || 'Credenciales incorrectas');
+    }
+    
     const data = await res.json();
+    console.log(`[AUTH] ✅ Login exitoso para ${email}`);
+    console.log(`[AUTH] Token recibido:`, data.token ? `${data.token.substring(0, 30)}...` : 'SIN TOKEN');
+    
     localStorage.setItem('token', data.token);
+    console.log(`[AUTH] ✅ Token guardado en localStorage`);
+    
     localStorage.setItem('user', JSON.stringify(data.user ?? data));
+    console.log(`[AUTH] ✅ Usuario guardado:`, (data.user ?? data).email);
+    
     return data;
   },
   logout: () => {
@@ -25,6 +40,8 @@ export const authService = {
   },
   isAdmin: () => {
     const u = authService.getUser();
-    return u?.rol === 'ADMIN' || u?.role === 'ADMIN';
+    const isAdmin = u?.role === 'ADMIN' || u?.rol === 'ADMIN';
+    console.log(`[AUTH] isAdmin() check:`, { user: u?.email, role: u?.role, rol: u?.rol, result: isAdmin });
+    return isAdmin;
   },
 };

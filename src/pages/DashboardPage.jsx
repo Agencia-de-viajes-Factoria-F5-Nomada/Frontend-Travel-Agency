@@ -18,14 +18,30 @@ const DashboardPage = () => {
   useEffect(() => {
     const fetchDashboard = async () => {
       try {
-        const token = localStorage.getItem('token') // ajusta si usas otro sistema de auth
-        const res = await fetch(`${API_BASE}/dashboard`, {
-          headers: token ? { Authorization: `Bearer ${token}` } : {},
-        })
-        if (!res.ok) throw new Error(`Error ${res.status}`)
+        const token = localStorage.getItem('token')
+        console.log(`[DASHBOARD] Token obtenido:`, token ? `${token.substring(0, 20)}...` : 'SIN TOKEN')
+        
+        const headers = { 'Content-Type': 'application/json' }
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`
+          console.log(`[DASHBOARD] Header Authorization:`, headers['Authorization'].substring(0, 30) + '...')
+        }
+        
+        console.log(`[DASHBOARD] Llamando a ${API_BASE}/dashboard`)
+        const res = await fetch(`${API_BASE}/dashboard`, { headers })
+        console.log(`[DASHBOARD] Respuesta:`, res.status, res.statusText)
+        
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({}))
+          console.error(`[DASHBOARD] Error response:`, errorData)
+          throw new Error(`Error ${res.status}: ${errorData.error || 'Error desconocido'}`)
+        }
+        
         const json = await res.json()
+        console.log(`[DASHBOARD] ✅ Datos cargados correctamente`)
         setDashData(json)
       } catch (err) {
+        console.error(`[DASHBOARD] ❌ Error:`, err.message)
         setError(err.message)
       } finally {
         setLoading(false)

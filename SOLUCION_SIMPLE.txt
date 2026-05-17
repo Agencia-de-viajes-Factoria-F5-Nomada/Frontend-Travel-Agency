@@ -1,0 +1,44 @@
+════════════════════════════════════════════════════════════════════════════
+
+                    ⚠️ IMPORTANTE ⚠️
+                    
+         El código está actualizado pero el SERVIDOR NO ESTÁ REINICIADO
+         
+════════════════════════════════════════════════════════════════════════════
+
+
+SOLUCIÓN EN 3 PASOS:
+─────────────────────────────────────────────────────────────────────────────
+
+PASO 1: Cierra TODO
+   • Cierra todas las terminales
+   • Cierra el navegador
+   • Presiona Ctrl+Alt+Delete → Task Manager → Busca "node" y cierralo
+
+
+PASO 2: Abre CMD y ejecuta esto:
+
+   cd c:\Users\mpo19\OneDrive\Documentos\Escritorio\NOMADA\front && npm run server
+
+   (Copia y pega EXACTAMENTE eso)
+
+
+PASO 3: En OTRA terminal ejecuta esto:
+
+   cd c:\Users\mpo19\OneDrive\Documentos\Escritorio\NOMADA\front && npm run dev
+
+
+LISTO. Abre el navegador en http://localhost:5173 e intenta login.
+
+
+════════════════════════════════════════════════════════════════════════════
+
+Si sigue sin funcionar:
+
+1. Presiona F12 (abre DevTools)
+2. Ve a Console
+3. Intenta login
+4. Busca mensajes que digan [LOGIN] o [AUTH]
+5. Pégame EXACTAMENTE lo que ves
+
+════════════════════════════════════════════════════════════════════════════

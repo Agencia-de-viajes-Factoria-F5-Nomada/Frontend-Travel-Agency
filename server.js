@@ -26,6 +26,11 @@ const db = {
   users: [
     { id: 1, name: 'Admin User', email: 'admin@travel.io', password: 'admin123', role: 'ADMIN', active: true },
     { id: 2, name: 'Marta Sánchez', email: 'marta@travel.io', password: 'user123', role: 'USER', dni: '12345678A', phone: '+34 654 321 987', active: true },
+    // Empleados del sistema NOMADA
+    { id: 3, name: 'Carlos', surname: 'Pérez', email: 'carlos.perez@travelagency.com', password: '1234', role: 'ADMIN', active: true },
+    { id: 4, name: 'Ana', surname: 'Sánchez', email: 'ana.sanchez@travelagency.com', password: '1234', role: 'EDITOR', active: true },
+    { id: 5, name: 'Sofía', surname: 'Oliveira', email: 'sofia.oliveira@travelagency.com', password: '1234', role: 'EDITOR', active: true },
+    { id: 6, name: 'David', surname: 'Thimotheo', email: 'david.thimotheo@travelagency.com', password: '1234', role: 'VIEWER', active: true },
   ],
   hotels: [
     { id: 1,  name: 'Royal London Hotel',           address: 'Cromwell Rd 123',          city: 'Londres',               country: 'Reino Unido',      stars: 3, capacity: 120, availablePlaces: 120, fullBoardPrice: 150.00, halfBoardPrice: 110.00, imageUrl: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=800&h=480&fit=crop', active: true },
@@ -91,26 +96,42 @@ const db = {
 
 // Middleware para verificar token
 const verifyToken = (req, res, next) => {
-  const token = req.headers.authorization?.split(' ')[1];
-  if (!token) return res.status(401).json({ error: 'No autorizado' });
+  const authHeader = req.headers.authorization;
+  console.log(`[TOKEN] Authorization header: ${authHeader}`);
+  const token = authHeader?.split(' ')[1];
+  
+  if (!token) {
+    console.log(`[TOKEN] ❌ No hay token en el header`);
+    return res.status(401).json({ error: 'No autorizado - token faltante' });
+  }
   
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
+    console.log(`[TOKEN] ✅ Token válido para usuario: ${decoded.email}`);
     req.user = decoded;
     next();
   } catch (error) {
-    res.status(401).json({ error: 'Token inválido' });
+    console.log(`[TOKEN] ❌ Token inválido:`, error.message);
+    res.status(401).json({ error: 'Token inválido o expirado' });
   }
 };
 
 // ============ AUTENTICACIÓN ============
 app.post('/api/auth/login', (req, res) => {
   const { email, password } = req.body;
+  console.log(`[LOGIN] Intentando login con email: ${email}, password: ${password}`);
+  console.log(`[LOGIN] Usuarios disponibles:`, db.users.map(u => ({ email: u.email, pass: u.password })));
+  
   const user = db.users.find(u => u.email === email && u.password === password);
   
-  if (!user) return res.status(401).json({ error: 'Credenciales inválidas' });
+  if (!user) {
+    console.log(`[LOGIN] ❌ Usuario no encontrado o contraseña incorrecta`);
+    return res.status(401).json({ error: 'Credenciales inválidas' });
+  }
   
+  console.log(`[LOGIN] ✅ Login exitoso para ${email}`);
   const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, JWT_SECRET);
+  console.log(`[LOGIN] Token generado:`, token.substring(0, 50) + '...');
   res.json({ token, user: { id: user.id, name: user.name, email: user.email, role: user.role } });
 });
 
@@ -343,6 +364,20 @@ app.delete('/api/offers/:id', verifyToken, (req, res) => {
   res.json({ message: 'Oferta eliminada' });
 });
 
+// ============ DASHBOARD ============
+app.get('/api/dashboard', verifyToken, (req, res) => {
+  console.log(`[DASHBOARD] Usuario ${req.user.email} consultó dashboard`);
+  res.json({
+    currentYearEarnings: 156000,
+    travelsPerYear: { 2024: 15, 2025: 22, 2026: 8 },
+    topTravels: [
+      { destiny: 'Londres Clásico y Real' },
+      { destiny: 'París Ciudad de la Luz' },
+      { destiny: 'Bali Paraíso Tropical' }
+    ]
+  });
+});
+
 // ============ HEALTH CHECK ============
 app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'Servidor funcionando' });
@@ -369,14 +404,25 @@ const server = app.listen(PORT, () => {
 ║  📡 API: http://localhost:${PORT}/api                          ║
 ║  💚 Health: http://localhost:${PORT}/api/health                ║
 ║                                                               ║
-║  🔑 CREDENCIALES DE PRUEBA:                                  ║
+║  🔑 CREDENCIALES DISPONIBLES:                                ║
+║                                                               ║
+║  👨‍💼 ADMIN:                                                     ║
 ║     Email: admin@travel.io                                   ║
 ║     Contraseña: admin123                                     ║
+║                                                               ║
+║  👨‍💼 EMPLEADOS (NOMADA):                                        ║
+║     Email: carlos.perez@travelagency.com / Contraseña: 1234  ║
+║     Email: ana.sanchez@travelagency.com / Contraseña: 1234   ║
+║     Email: sofia.oliveira@travelagency.com / Contraseña: 1234║
+║     Email: david.thimotheo@travelagency.com / Contraseña: 1234║
+║                                                               ║
+║  👤 USUARIO:                                                  ║
+║     Email: marta@travel.io / Contraseña: user123             ║
 ║                                                               ║
 ║  📊 DATOS DISPONIBLES:                                        ║
 ║     ✓ 20 hoteles en todo el mundo                            ║
 ║     ✓ 12 viajes disponibles                                  ║
-║     ✓ 2 usuarios de prueba                                   ║
+║     ✓ 6 usuarios + empleados                                 ║
 ║     ✓ Sistema de autenticación JWT                           ║
 ║                                                               ║
 ╚═══════════════════════════════════════════════════════════════╝

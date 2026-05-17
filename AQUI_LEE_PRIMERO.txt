@@ -1,0 +1,83 @@
+════════════════════════════════════════════════════════════════
+  🚀 SOLUCIÓN RÁPIDA - CREDENCIALES INCORRECTAS
+════════════════════════════════════════════════════════════════
+
+📌 EL PROBLEMA:
+   ❌ carlos.perez@travelagency.com / 1234 no funcionaba
+
+📌 LO QUE HICE:
+   ✅ Agregué los empleados al servidor Node.js
+   ✅ Agregué logging para debugging
+   ✅ Actualicé el mensaje de inicio
+
+📌 AHORA FUNCIONA CON:
+   ✅ carlos.perez@travelagency.com / 1234 ← ESTE
+   ✅ ana.sanchez@travelagency.com / 1234
+   ✅ sofia.oliveira@travelagency.com / 1234
+   ✅ david.thimotheo@travelagency.com / 1234
+
+════════════════════════════════════════════════════════════════
+  ⚠️ PASOS REQUERIDOS (MUY IMPORTANTE)
+════════════════════════════════════════════════════════════════
+
+1️⃣ REINICIA EL SERVIDOR:
+
+   Opción A (Automática): 
+   💾 Ejecuta: REINICIAR_SERVIDOR.bat
+   
+   Opción B (Manual):
+   💾 Abre CMD
+   💾 Escribe: npm run server
+
+2️⃣ VERIFICA QUE VEAS:
+
+   ✅ SERVIDOR DE VIAJES INICIADO CORRECTAMENTE
+   ✅ EMPLEADOS (NOMADA):
+      Email: carlos.perez@travelagency.com / 1234
+
+3️⃣ ABRE EL NAVEGADOR:
+
+   Abre: http://localhost:5173
+
+4️⃣ INTENTA LOGIN:
+
+   Email: carlos.perez@travelagency.com
+   Contraseña: 1234
+
+════════════════════════════════════════════════════════════════
+  🔍 SI AÚN NO FUNCIONA
+════════════════════════════════════════════════════════════════
+
+PASO 1: Limpia caché
+   🔘 Presiona: Ctrl + Shift + Delete
+   🔘 Marca: Todas las cookies
+   🔘 Haz clic: Eliminar
+
+PASO 2: Recarga forzada
+   🔘 Presiona: Ctrl + F5
+
+PASO 3: Verifica en DevTools
+   🔘 Presiona: F12
+   🔘 Ve a: Console
+   🔘 Busca: [LOGIN] 
+   (Te mostrará qué está pasando)
+
+PASO 4: Verifica el servidor
+   💾 Ejecuta: VERIFICAR_SERVIDOR.bat
+
+════════════════════════════════════════════════════════════════
+
+¿PROBLEMA PERSISTE? 
+
+Ejecuta en CMD:
+   npm run server
+
+Deberías ver en la terminal EXACTAMENTE:
+
+   ✅ SERVIDOR DE VIAJES INICIADO CORRECTAMENTE
+   👨‍💼 EMPLEADOS (NOMADA):
+      Email: carlos.perez@travelagency.com / Contraseña: 1234
+
+Si NO ves esto, el servidor no reinició correctamente.
+
+════════════════════════════════════════════════════════════════
