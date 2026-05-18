@@ -35,7 +35,7 @@ export default function BookingsCRUD() {
     e.preventDefault()
     try {
       if (isEditing) {
-        await bookingService.confirm({ ...form, id: currentId })
+        await bookingService.update(currentId, form)
       } else {
         await bookingService.confirm(form)
       }
