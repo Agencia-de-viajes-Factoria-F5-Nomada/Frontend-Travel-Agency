@@ -160,4 +160,4 @@ export default function TripSegmentsCRUD() {
       />
     </div>
   )
-}git
+}
