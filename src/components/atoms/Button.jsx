@@ -20,8 +20,6 @@ const SIZE_STYLES = {
   icon: 'h-10 w-10 p-0',
 }
 
-// Usar la utilidad global .btn definida en src/index.css para mantener consistencia
-// Añadir micro-animaciones: ligero escalado en hover y foco visible definido por utilidades Tailwind
 const BASE_STYLES = 'btn transform-gpu hover:scale-[1.03] focus-visible:scale-[1.01]'
 
 const Button = forwardRef(function Button(
@@ -57,7 +55,7 @@ const Button = forwardRef(function Button(
 
   if (href) {
     return (
-      <a ref={ref} href={href} className={composed} {...rest}>
+      <a ref={ref} href={href} className={composed} target="_blank" rel="noopener noreferrer" {...rest}>
         {children}
       </a>
     )
