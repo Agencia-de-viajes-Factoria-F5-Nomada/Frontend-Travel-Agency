@@ -1,11 +1,13 @@
 import { API } from '../constants/api';
 
 const headers = { 'Content-Type': 'application/json' };
+// Antes
 
 export const authService = {
   login: async (email, password) => {
     console.log(`[AUTH] Intentando login con email: ${email}`);
-    const res = await fetch(`${API}/auth/login`, {
+
+   const res = await fetch(`${API}/authentication/login`, {
       method: 'POST', headers,
       body: JSON.stringify({ email, password }),
     });

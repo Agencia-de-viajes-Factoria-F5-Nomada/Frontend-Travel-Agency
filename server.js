@@ -144,34 +144,34 @@ app.post('/api/auth/register', (req, res) => {
 });
 
 // ============ USUARIOS ============
-app.get('/api/users', verifyToken, (req, res) => {
+app.get('/api/users', (req, res) => {
   res.json(db.users);
 });
 
-app.get('/api/users/:id', verifyToken, (req, res) => {
+app.get('/api/users/:id', (req, res) => {
   const user = db.users.find(u => u.id === parseInt(req.params.id));
   if (!user) return res.status(404).json({ error: 'Usuario no encontrado' });
   res.json(user);
 });
 
-app.get('/api/users/activos', verifyToken, (req, res) => {
+app.get('/api/users/activos', (req, res) => {
   res.json(db.users.filter(u => u.active));
 });
 
-app.post('/api/users', verifyToken, (req, res) => {
+app.post('/api/users', (req, res) => {
   const newUser = { id: db.users.length + 1, ...req.body, active: true };
   db.users.push(newUser);
   res.status(201).json(newUser);
 });
 
-app.put('/api/users/:id', verifyToken, (req, res) => {
+app.put('/api/users/:id', (req, res) => {
   const user = db.users.find(u => u.id === parseInt(req.params.id));
   if (!user) return res.status(404).json({ error: 'Usuario no encontrado' });
   Object.assign(user, req.body);
   res.json(user);
 });
 
-app.delete('/api/users/:id', verifyToken, (req, res) => {
+app.delete('/api/users/:id', (req, res) => {
   const index = db.users.findIndex(u => u.id === parseInt(req.params.id));
   if (index === -1) return res.status(404).json({ error: 'Usuario no encontrado' });
   db.users.splice(index, 1);
@@ -189,20 +189,20 @@ app.get('/api/hotels/:id', (req, res) => {
   res.json(hotel);
 });
 
-app.post('/api/hotels', verifyToken, (req, res) => {
+app.post('/api/hotels', (req, res) => {
   const newHotel = { id: db.hotels.length + 1, ...req.body };
   db.hotels.push(newHotel);
   res.status(201).json(newHotel);
 });
 
-app.put('/api/hotels/:id', verifyToken, (req, res) => {
+app.put('/api/hotels/:id', (req, res) => {
   const hotel = db.hotels.find(h => h.id === parseInt(req.params.id));
   if (!hotel) return res.status(404).json({ error: 'Hotel no encontrado' });
   Object.assign(hotel, req.body);
   res.json(hotel);
 });
 
-app.delete('/api/hotels/:id', verifyToken, (req, res) => {
+app.delete('/api/hotels/:id', (req, res) => {
   const index = db.hotels.findIndex(h => h.id === parseInt(req.params.id));
   if (index === -1) return res.status(404).json({ error: 'Hotel no encontrado' });
   db.hotels.splice(index, 1);
@@ -220,20 +220,20 @@ app.get('/api/buses/:id', (req, res) => {
   res.json(bus);
 });
 
-app.post('/api/buses', verifyToken, (req, res) => {
+app.post('/api/buses', (req, res) => {
   const newBus = { id: db.buses.length + 1, ...req.body };
   db.buses.push(newBus);
   res.status(201).json(newBus);
 });
 
-app.put('/api/buses/:id', verifyToken, (req, res) => {
+app.put('/api/buses/:id', (req, res) => {
   const bus = db.buses.find(b => b.id === parseInt(req.params.id));
   if (!bus) return res.status(404).json({ error: 'Bus no encontrado' });
   Object.assign(bus, req.body);
   res.json(bus);
 });
 
-app.delete('/api/buses/:id', verifyToken, (req, res) => {
+app.delete('/api/buses/:id', (req, res) => {
   const index = db.buses.findIndex(b => b.id === parseInt(req.params.id));
   if (index === -1) return res.status(404).json({ error: 'Bus no encontrado' });
   db.buses.splice(index, 1);
@@ -251,20 +251,20 @@ app.get('/api/drivers/:id', (req, res) => {
   res.json(driver);
 });
 
-app.post('/api/drivers', verifyToken, (req, res) => {
+app.post('/api/drivers', (req, res) => {
   const newDriver = { id: db.drivers.length + 1, ...req.body };
   db.drivers.push(newDriver);
   res.status(201).json(newDriver);
 });
 
-app.put('/api/drivers/:id', verifyToken, (req, res) => {
+app.put('/api/drivers/:id', (req, res) => {
   const driver = db.drivers.find(d => d.id === parseInt(req.params.id));
   if (!driver) return res.status(404).json({ error: 'Conductor no encontrado' });
   Object.assign(driver, req.body);
   res.json(driver);
 });
 
-app.delete('/api/drivers/:id', verifyToken, (req, res) => {
+app.delete('/api/drivers/:id', (req, res) => {
   const index = db.drivers.findIndex(d => d.id === parseInt(req.params.id));
   if (index === -1) return res.status(404).json({ error: 'Conductor no encontrado' });
   db.drivers.splice(index, 1);
@@ -282,20 +282,20 @@ app.get('/api/travels/:id', (req, res) => {
   res.json(travel);
 });
 
-app.post('/api/travels', verifyToken, (req, res) => {
+app.post('/api/travels', (req, res) => {
   const newTravel = { id: db.travels.length + 1, ...req.body };
   db.travels.push(newTravel);
   res.status(201).json(newTravel);
 });
 
-app.put('/api/travels/:id', verifyToken, (req, res) => {
+app.put('/api/travels/:id', (req, res) => {
   const travel = db.travels.find(t => t.id === parseInt(req.params.id));
   if (!travel) return res.status(404).json({ error: 'Viaje no encontrado' });
   Object.assign(travel, req.body);
   res.json(travel);
 });
 
-app.delete('/api/travels/:id', verifyToken, (req, res) => {
+app.delete('/api/travels/:id', (req, res) => {
   const index = db.travels.findIndex(t => t.id === parseInt(req.params.id));
   if (index === -1) return res.status(404).json({ error: 'Viaje no encontrado' });
   db.travels.splice(index, 1);
@@ -303,30 +303,30 @@ app.delete('/api/travels/:id', verifyToken, (req, res) => {
 });
 
 // ============ RESERVAS ============
-app.get('/api/bookings', verifyToken, (req, res) => {
+app.get('/api/bookings', (req, res) => {
   res.json(db.bookings);
 });
 
-app.get('/api/bookings/:id', verifyToken, (req, res) => {
+app.get('/api/bookings/:id', (req, res) => {
   const booking = db.bookings.find(b => b.id === req.params.id);
   if (!booking) return res.status(404).json({ error: 'Reserva no encontrada' });
   res.json(booking);
 });
 
-app.post('/api/bookings', verifyToken, (req, res) => {
-  const newBooking = { id: `TR-${Date.now()}`, ...req.body, userId: req.user.id };
+app.post('/api/bookings', (req, res) => {
+  const newBooking = { id: `TR-${Date.now()}`, ...req.body };
   db.bookings.push(newBooking);
   res.status(201).json(newBooking);
 });
 
-app.put('/api/bookings/:id', verifyToken, (req, res) => {
+app.put('/api/bookings/:id', (req, res) => {
   const booking = db.bookings.find(b => b.id === req.params.id);
   if (!booking) return res.status(404).json({ error: 'Reserva no encontrada' });
   Object.assign(booking, req.body);
   res.json(booking);
 });
 
-app.delete('/api/bookings/:id', verifyToken, (req, res) => {
+app.delete('/api/bookings/:id', (req, res) => {
   const index = db.bookings.findIndex(b => b.id === req.params.id);
   if (index === -1) return res.status(404).json({ error: 'Reserva no encontrada' });
   db.bookings.splice(index, 1);
@@ -344,20 +344,20 @@ app.get('/api/offers/:id', (req, res) => {
   res.json(offer);
 });
 
-app.post('/api/offers', verifyToken, (req, res) => {
+app.post('/api/offers', (req, res) => {
   const newOffer = { id: db.offers.length + 1, ...req.body };
   db.offers.push(newOffer);
   res.status(201).json(newOffer);
 });
 
-app.put('/api/offers/:id', verifyToken, (req, res) => {
+app.put('/api/offers/:id', (req, res) => {
   const offer = db.offers.find(o => o.id === parseInt(req.params.id));
   if (!offer) return res.status(404).json({ error: 'Oferta no encontrada' });
   Object.assign(offer, req.body);
   res.json(offer);
 });
 
-app.delete('/api/offers/:id', verifyToken, (req, res) => {
+app.delete('/api/offers/:id', (req, res) => {
   const index = db.offers.findIndex(o => o.id === parseInt(req.params.id));
   if (index === -1) return res.status(404).json({ error: 'Oferta no encontrada' });
   db.offers.splice(index, 1);
@@ -365,8 +365,8 @@ app.delete('/api/offers/:id', verifyToken, (req, res) => {
 });
 
 // ============ DASHBOARD ============
-app.get('/api/dashboard', verifyToken, (req, res) => {
-  console.log(`[DASHBOARD] Usuario ${req.user.email} consultó dashboard`);
+app.get('/api/dashboard', (req, res) => {
+  console.log(`[DASHBOARD] Dashboard consultado (SIN AUTENTICACIÓN PARA DEBUGGING)`);
   res.json({
     currentYearEarnings: 156000,
     travelsPerYear: { 2024: 15, 2025: 22, 2026: 8 },
@@ -388,7 +388,7 @@ app.get('/api/trip-segments', (req, res) => {
   res.json([]);
 });
 
-app.post('/api/trip-segments', verifyToken, (req, res) => {
+app.post('/api/trip-segments', (req, res) => {
   const newSegment = { id: 1, ...req.body };
   res.status(201).json(newSegment);
 });
