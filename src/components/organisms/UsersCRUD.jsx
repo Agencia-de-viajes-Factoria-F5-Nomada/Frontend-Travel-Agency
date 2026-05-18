@@ -51,15 +51,15 @@ export default function UsersCRUD() {
   const openEdit = (user) => {
     setEditing(user)
     setForm({
-      name: user.name ?? '',
-      surname: user.surname ?? '',
-      email: user.email ?? '',
-      password: '',
-      passport: user.passport ?? '',
+      name:      user.name      ?? '',
+      surname:   user.surname   ?? '',
+      email:     user.email     ?? '',
+      password:  '',
+      passport:  user.passport  ?? '',
       birthDate: user.birthDate ?? '',
-      tutorId: user.tutorId ?? '',
-      rol: user.rol ?? 'USER',
-      active: user.active ?? true,
+      tutorId:   user.tutorId   ?? '',
+      rol:       user.rol       ?? 'USER',
+      active:    user.active    ?? true,
     })
     setShowForm(true)
   }
@@ -69,8 +69,7 @@ export default function UsersCRUD() {
     try {
       const payload = { ...form }
       if (!payload.password) delete payload.password
-      if (!payload.tutorId) delete payload.tutorId
-
+      if (!payload.tutorId)  delete payload.tutorId
       if (editing) {
         await userService.update(editing.id, payload)
       } else {
@@ -89,31 +88,20 @@ export default function UsersCRUD() {
       await userService.delete(deleting.id)
       setDeleting(null)
       load()
-      setError(e.message)
-    }
-  }
-
-  const handleDelete = async () => {
-    try {
-      await userService.delete(deleting.id)
-      setDeleting(null)
-      load()
     } catch (e) {
       setError(e.message)
     }
   }
 
   const columns = [
-    { key: 'name', label: 'Nombre' },
+    { key: 'name',    label: 'Nombre' },
     { key: 'surname', label: 'Apellido' },
-    { key: 'email', label: 'Email' },
+    { key: 'email',   label: 'Email' },
     {
       key: 'rol',
       label: 'Rol',
       render: (val) => (
-        <Badge tone={val === 'ADMIN' ? 'brand' : 'neutral'}>
-          {val}
-        </Badge>
+        <Badge tone={val === 'ADMIN' ? 'brand' : 'neutral'}>{val}</Badge>
       )
     },
     {

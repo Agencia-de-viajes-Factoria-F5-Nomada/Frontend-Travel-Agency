@@ -1,11 +1,10 @@
-import { API } from '../constants/api';
-const h = () => ({ 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` });
+import { apiClient } from './api';
 
 export const busService = {
-  getAll:  async ()     => { const r = await fetch(`${API}/buses`, { headers: h() }); if (!r.ok) throw new Error('Error buses'); return r.json(); },
-  getPage: async (page = 0, size = 10) => { const r = await fetch(`${API}/buses?page=${page}&size=${size}`, { headers: h() }); if (!r.ok) throw new Error('Error buses'); return r.json(); },
-  getById: async (id)   => { const r = await fetch(`${API}/buses/${id}`, { headers: h() }); if (!r.ok) throw new Error('Bus no encontrado'); return r.json(); },
-  create:  async (data) => { const r = await fetch(`${API}/buses`, { method: 'POST', headers: h(), body: JSON.stringify(data) }); if (!r.ok) throw new Error('Error crear bus'); return r.json(); },
-  update:  async (id, data) => { const r = await fetch(`${API}/buses/${id}`, { method: 'PUT', headers: h(), body: JSON.stringify(data) }); if (!r.ok) throw new Error('Error actualizar'); return r.json(); },
-  delete:  async (id)   => { const r = await fetch(`${API}/buses/${id}`, { method: 'DELETE', headers: h() }); if (!r.ok) throw new Error('Error eliminar'); },
+  getAll:  async ()                    => (await apiClient.get('/buses')).data,
+  getPage: async (page = 0, size = 10) => (await apiClient.get(`/buses?page=${page}&size=${size}`)).data,
+  getById: async (id)                  => (await apiClient.get(`/buses/${id}`)).data,
+  create:  async (data)                => (await apiClient.post('/buses', data)).data,
+  update:  async (id, data)            => (await apiClient.put(`/buses/${id}`, data)).data,
+  delete:  async (id)                  => { await apiClient.delete(`/buses/${id}`) },
 };

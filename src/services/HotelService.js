@@ -1,54 +1,13 @@
-import { API } from '../constants/api';
-
-const API_URL = `${API}/hotels`;
-const h = () => ({ 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` });
+import { apiClient } from './api';
 
 export const hotelService = {
-  getAll: async () => {
-    const res = await fetch(API_URL, { headers: h() });
-    if (!res.ok) throw new Error(`Error ${res.status} al cargar hoteles`);
-    const data = await res.json();
-    return Array.isArray(data) ? data : (data.content || []);
+  getAll:  async () => {
+    const { data } = await apiClient.get('/hotels')
+    return Array.isArray(data) ? data : (data.content || [])
   },
-
-  getById: async (id) => {
-    const res = await fetch(`${API_URL}/${id}`, { headers: h() });
-    if (!res.ok) throw new Error('Hotel no encontrado');
-    return res.json();
-  },
-
-  getPage: async (page = 0, size = 10) => {
-    const res = await fetch(`${API_URL}?page=${page}&size=${size}`, { headers: h() });
-    if (!res.ok) throw new Error(`Error ${res.status} al cargar hoteles`);
-    return res.json();
-  },
-
-  create: async (hotelData) => {
-    const res = await fetch(API_URL, {
-      method: 'POST',
-      headers: h(),
-      body: JSON.stringify(hotelData),
-    });
-    if (!res.ok) throw new Error('Error al crear hotel');
-    return res.json();
-  },
-
-  update: async (id, hotelData) => {
-    const res = await fetch(`${API_URL}/${id}`, {
-      method: 'PUT',
-      headers: h(),
-      body: JSON.stringify(hotelData),
-    });
-    if (!res.ok) throw new Error('Error al actualizar hotel');
-    return res.json();
-  },
-
-  delete: async (id) => {
-    const res = await fetch(`${API_URL}/${id}`, {
-      method: 'DELETE',
-      headers: h(),
-    });
-    if (!res.ok) throw new Error('Error al eliminar hotel');
-    return true;
-  },
+  getById: async (id)                  => (await apiClient.get(`/hotels/${id}`)).data,
+  getPage: async (page = 0, size = 10) => (await apiClient.get(`/hotels?page=${page}&size=${size}`)).data,
+  create:  async (data)                => (await apiClient.post('/hotels', data)).data,
+  update:  async (id, data)            => (await apiClient.put(`/hotels/${id}`, data)).data,
+  delete:  async (id)                  => { await apiClient.delete(`/hotels/${id}`) },
 };
