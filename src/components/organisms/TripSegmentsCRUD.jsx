@@ -3,36 +3,42 @@ import Table from '../molecules/Table'
 import Modal from '../molecules/Modal'
 import Alert from '../molecules/Alert'
 import ConfirmDialog from '../molecules/ConfirmDialog'
-import Pagination from '../molecules/Pagination'
 import Button from '../atoms/Button'
 import TripSegmentForm from './TripSegmentForm'
-import { tripSegmentsService } from '../../services/tripSegmentsService'
-import usePagination from '../../hooks/usePagination'
+import { tripSegmentsService } from '../../services/TripSegmentsService'
 
 const EMPTY_FORM = {
-  origin: '',
+  origin:      '',
   destination: '',
-  start_time: '',
-  end_time: '',
-  bus_id: '',
-  driver_id: '',
-  travel_id: ''
+  start_time:  '',
+  end_time:    '',
+  bus_id:      '',
+  driver_id:   '',
+  travel_id:   ''
 }
 
 export default function TripSegmentsCRUD() {
-  const [error, setError] = useState(null)
-  const [showForm, setShowForm] = useState(false)
-  const [editing, setEditing] = useState(null)
-  const [deleting, setDeleting] = useState(null)
-  const [form, setForm] = useState(EMPTY_FORM)
+  const [segments, setSegments]   = useState([])
+  const [loading, setLoading]     = useState(true)
+  const [error, setError]         = useState(null)
+  const [showForm, setShowForm]   = useState(false)
+  const [editing, setEditing]     = useState(null)
+  const [deleting, setDeleting]   = useState(null)
+  const [form, setForm]           = useState(EMPTY_FORM)
 
-  const { data: segments, page, totalPages, loading, load } = usePagination(
-    (pageNum, size) => tripSegmentsService.getPage(pageNum, size),
-    0,
-    10
-  )
+  const load = async () => {
+    try {
+      setLoading(true)
+      const data = await tripSegmentsService.getAll()
+      setSegments(data)
+    } catch (e) {
+      setError(e.message)
+    } finally {
+      setLoading(false)
+    }
+  }
 
-  useEffect(() => { load() }, [load])
+  useEffect(() => { load() }, [])
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -48,53 +54,57 @@ export default function TripSegmentsCRUD() {
   const openEdit = (segment) => {
     setEditing(segment)
     setForm({
-      origin: segment.origin || '',
+      origin:      segment.origin      || '',
       destination: segment.destination || '',
-      start_time: segment.start_time || '',
-      end_time: segment.end_time || '',
-      bus_id: segment.bus_id || '',
-      driver_id: segment.driver_id || '',
-      travel_id: segment.travel_id || ''
+      start_time:  segment.start_time  || '',
+      end_time:    segment.end_time    || '',
+      bus_id:      segment.bus_id      || '',
+      driver_id:   segment.driver_id   || '',
+      travel_id:   segment.travel_id   || ''
     })
     setShowForm(true)
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     try {
       const payload = {
         ...form,
-        bus_id: Number(form.bus_id),
+        bus_id:    Number(form.bus_id),
         driver_id: Number(form.driver_id),
-        travel_id: Number(form.travel_id),
-        id: editing ? editing.id : Date.now()
+        travel_id: Number(form.travel_id)
       }
-
       if (editing) {
-        setSegments(prev => prev.map(s => s.id === editing.id ? payload : s))
+        await tripSegmentsService.update(editing.id, payload)
       } else {
-        setSegments(prev => [...prev, { ...payload, id: Date.now() }])
+        await tripSegmentsService.create(payload)
       }
       setShowForm(false)
       setEditing(null)
+      load()
     } catch (e) {
       setError(e.message)
     }
   }
 
-  const handleDelete = () => {
-    setSegments(prev => prev.filter(s => s.id !== deleting.id))
-    setDeleting(null)
+  const handleDelete = async () => {
+    try {
+      await tripSegmentsService.delete(deleting.id)
+      setDeleting(null)
+      load()
+    } catch (e) {
+      setError(e.message)
+    }
   }
 
   const columns = [
-    { key: 'origin', label: 'Origen' },
+    { key: 'origin',      label: 'Origen' },
     { key: 'destination', label: 'Destino' },
-    { key: 'start_time', label: 'Salida' },
-    { key: 'end_time', label: 'Llegada' },
-    { key: 'bus_id', label: 'Bus ID' },
-    { key: 'driver_id', label: 'Conductor ID' },
-    { key: 'travel_id', label: 'Viaje ID' },
+    { key: 'start_time',  label: 'Salida' },
+    { key: 'end_time',    label: 'Llegada' },
+    { key: 'bus_id',      label: 'Bus ID' },
+    { key: 'driver_id',   label: 'Conductor ID' },
+    { key: 'travel_id',   label: 'Viaje ID' },
     {
       key: 'actions',
       label: '',
@@ -120,14 +130,6 @@ export default function TripSegmentsCRUD() {
       )}
 
       <Table columns={columns} data={segments} loading={loading} emptyMessage="No hay segmentos" />
-
-      <div className="flex justify-center pt-4">
-        <Pagination
-          currentPage={page + 1}
-          totalPages={totalPages}
-          onPageChange={(p) => load(p - 1)}
-        />
-      </div>
 
       <Modal
         isOpen={showForm}

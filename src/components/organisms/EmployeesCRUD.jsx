@@ -3,12 +3,10 @@ import Table from '../molecules/Table'
 import Modal from '../molecules/Modal'
 import Alert from '../molecules/Alert'
 import ConfirmDialog from '../molecules/ConfirmDialog'
-import Pagination from '../molecules/Pagination'
 import Button from '../atoms/Button'
 import Badge from '../atoms/Badge'
 import EmployeeForm from './EmployeeForm'
-import { employeesService } from '../../services/employeesService'
-import usePagination from '../../hooks/usePagination'
+import { employeesService } from '../../services/EmployeesService'
 
 const EMPTY_FORM = {
   name: '',
@@ -19,19 +17,27 @@ const EMPTY_FORM = {
 }
 
 export default function EmployeesCRUD() {
-  const [error, setError] = useState(null)
-  const [showForm, setShowForm] = useState(false)
-  const [editing, setEditing] = useState(null)
-  const [deleting, setDeleting] = useState(null)
-  const [form, setForm] = useState(EMPTY_FORM)
+  const [employees, setEmployees] = useState([])
+  const [loading, setLoading]     = useState(true)
+  const [error, setError]         = useState(null)
+  const [showForm, setShowForm]   = useState(false)
+  const [editing, setEditing]     = useState(null)
+  const [deleting, setDeleting]   = useState(null)
+  const [form, setForm]           = useState(EMPTY_FORM)
 
-  const { data: employees, page, totalPages, loading, load } = usePagination(
-    (pageNum, size) => employeesService.getPage(pageNum, size),
-    0,
-    10
-  )
+  const load = async () => {
+    try {
+      setLoading(true)
+      const data = await employeesService.getAll()
+      setEmployees(data)
+    } catch (e) {
+      setError(e.message)
+    } finally {
+      setLoading(false)
+    }
+  }
 
-  useEffect(() => { load() }, [load])
+  useEffect(() => { load() }, [])
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target
@@ -47,45 +53,46 @@ export default function EmployeesCRUD() {
   const openEdit = (employee) => {
     setEditing(employee)
     setForm({
-      name: employee.name || '',
-      surname: employee.surname || '',
-      gender: employee.gender || 'Male',
+      name:      employee.name      || '',
+      surname:   employee.surname   || '',
+      gender:    employee.gender    || 'Male',
       work_hour: employee.work_hour || 40,
-      hired: employee.hired ?? true
+      hired:     employee.hired     ?? true
     })
     setShowForm(true)
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      const payload = {
-        ...form,
-        work_hour: Number(form.work_hour),
-        id: editing ? editing.id : Date.now()
-      }
-
+      const payload = { ...form, work_hour: Number(form.work_hour) }
       if (editing) {
-        setEmployees(prev => prev.map(e => e.id === editing.id ? payload : e))
+        await employeesService.update(editing.id, payload)
       } else {
-        setEmployees(prev => [...prev, { ...payload, id: Date.now() }])
+        await employeesService.create(payload)
       }
       setShowForm(false)
       setEditing(null)
+      load()
     } catch (e) {
       setError(e.message)
     }
   }
 
-  const handleDelete = () => {
-    setEmployees(prev => prev.filter(e => e.id !== deleting.id))
-    setDeleting(null)
+  const handleDelete = async () => {
+    try {
+      await employeesService.delete(deleting.id)
+      setDeleting(null)
+      load()
+    } catch (e) {
+      setError(e.message)
+    }
   }
 
   const columns = [
-    { key: 'name', label: 'Nombre' },
-    { key: 'surname', label: 'Apellido' },
-    { key: 'gender', label: 'Género' },
+    { key: 'name',      label: 'Nombre' },
+    { key: 'surname',   label: 'Apellido' },
+    { key: 'gender',    label: 'Género' },
     { key: 'work_hour', label: 'Horas' },
     {
       key: 'hired',
@@ -121,14 +128,6 @@ export default function EmployeesCRUD() {
       )}
 
       <Table columns={columns} data={employees} loading={loading} emptyMessage="No hay empleados" />
-
-      <div className="flex justify-center pt-4">
-        <Pagination
-          currentPage={page + 1}
-          totalPages={totalPages}
-          onPageChange={(p) => load(p - 1)}
-        />
-      </div>
 
       <Modal
         isOpen={showForm}

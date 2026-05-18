@@ -3,12 +3,10 @@ import Table from '../molecules/Table'
 import Modal from '../molecules/Modal'
 import Alert from '../molecules/Alert'
 import ConfirmDialog from '../molecules/ConfirmDialog'
-import Pagination from '../molecules/Pagination'
 import Button from '../atoms/Button'
 import Badge from '../atoms/Badge'
 import OfferForm from './OfferForm'
-import { offersService } from '../../services/offersService'
-import usePagination from '../../hooks/usePagination'
+import { offersService } from '../../services/OffersService'
 
 const EMPTY_FORM = {
   discount_percentage: 0,
@@ -17,26 +15,34 @@ const EMPTY_FORM = {
 }
 
 export default function OffersCRUD() {
-  const [error, setError] = useState(null)
-  const [showForm, setShowForm] = useState(false)
-  const [editing, setEditing] = useState(null)
-  const [deleting, setDeleting] = useState(null)
-  const [form, setForm] = useState(EMPTY_FORM)
-
-  const { data: offers, page, totalPages, loading, load } = usePagination(
-    (pageNum, size) => offersService.getPage(pageNum, size),
-    0,
-    10
-  )
-
-  useEffect(() => { load() }, [load])
+  const [offers, setOffers]       = useState([])
+  const [loading, setLoading]     = useState(true)
+  const [error, setError]         = useState(null)
+  const [showForm, setShowForm]   = useState(false)
+  const [editing, setEditing]     = useState(null)
+  const [deleting, setDeleting]   = useState(null)
+  const [form, setForm]           = useState(EMPTY_FORM)
 
   const isActive = (offer) => {
-    const now = new Date()
+    const now   = new Date()
     const start = new Date(offer.start_date)
-    const end = new Date(offer.end_date)
+    const end   = new Date(offer.end_date)
     return now >= start && now <= end
   }
+
+  const load = async () => {
+    try {
+      setLoading(true)
+      const data = await offersService.getAll()
+      setOffers(data)
+    } catch (e) {
+      setError(e.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => { load() }, [])
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -53,42 +59,43 @@ export default function OffersCRUD() {
     setEditing(offer)
     setForm({
       discount_percentage: offer.discount_percentage || 0,
-      start_date: offer.start_date || '',
-      end_date: offer.end_date || ''
+      start_date:          offer.start_date          || '',
+      end_date:            offer.end_date            || ''
     })
     setShowForm(true)
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      const payload = {
-        ...form,
-        discount_percentage: Number(form.discount_percentage),
-        id: editing ? editing.id : Date.now()
-      }
-
+      const payload = { ...form, discount_percentage: Number(form.discount_percentage) }
       if (editing) {
-        setOffers(prev => prev.map(o => o.id === editing.id ? payload : o))
+        await offersService.update(editing.id, payload)
       } else {
-        setOffers(prev => [...prev, { ...payload, id: Date.now() }])
+        await offersService.create(payload)
       }
       setShowForm(false)
       setEditing(null)
+      load()
     } catch (e) {
       setError(e.message)
     }
   }
 
-  const handleDelete = () => {
-    setOffers(prev => prev.filter(o => o.id !== deleting.id))
-    setDeleting(null)
+  const handleDelete = async () => {
+    try {
+      await offersService.delete(deleting.id)
+      setDeleting(null)
+      load()
+    } catch (e) {
+      setError(e.message)
+    }
   }
 
   const columns = [
     { key: 'discount_percentage', label: 'Descuento (%)', render: (val) => `${val}%` },
-    { key: 'start_date', label: 'Inicio' },
-    { key: 'end_date', label: 'Fin' },
+    { key: 'start_date',          label: 'Inicio' },
+    { key: 'end_date',            label: 'Fin' },
     {
       key: 'status',
       label: 'Estado',
@@ -123,14 +130,6 @@ export default function OffersCRUD() {
       )}
 
       <Table columns={columns} data={offers} loading={loading} emptyMessage="No hay ofertas" />
-
-      <div className="flex justify-center pt-4">
-        <Pagination
-          currentPage={page + 1}
-          totalPages={totalPages}
-          onPageChange={(p) => load(p - 1)}
-        />
-      </div>
 
       <Modal
         isOpen={showForm}
