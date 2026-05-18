@@ -14,6 +14,7 @@ import SearchResultsPage    from '../pages/SearchResultsPage';
 import CheckoutPage         from '../pages/CheckoutPage';
 import AuthPage             from '../pages/AuthPage';
 import EntitiesPage          from '../pages/EntitiesPage';
+import ProfilePage           from '../pages/ProfilePage';
 import PersonalAreaPage     from '../pages/PersonalAreaPage';
 import LegalPage            from '../pages/LegalPage';
 import NotFoundPage         from '../pages/NotFoundPage';
@@ -46,6 +47,7 @@ export default function AppRoutes() {
         <Route path="/auth"                element={<AuthPage />} />
         <Route path="/legal/:slug"         element={<LegalPage />} />
         <Route path="/profile"             element={<EntitiesPage />} />
+        <Route path="/profile/original"    element={<ProfilePage />} />
         <Route path="/personal/:section"   element={<PersonalAreaPage />} />
         <Route path="/checkout"            element={
           <PrivateRoute><CheckoutPage /></PrivateRoute>
