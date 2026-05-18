@@ -3,6 +3,7 @@ const h = () => ({ 'Content-Type': 'application/json', Authorization: `Bearer ${
 
 export const employeesService = {
   getAll:  async ()          => { const r = await fetch(`${API}/employees`, { headers: h() }); if (!r.ok) throw new Error('Error empleados'); return r.json(); },
+  getPage: async (page = 0, size = 10) => { const r = await fetch(`${API}/employees?page=${page}&size=${size}`, { headers: h() }); if (!r.ok) throw new Error('Error empleados'); return r.json(); },
   getById: async (id)        => { const r = await fetch(`${API}/employees/${id}`, { headers: h() }); if (!r.ok) throw new Error('Empleado no encontrado'); return r.json(); },
   create:  async (data)      => { const r = await fetch(`${API}/employees`, { method: 'POST', headers: h(), body: JSON.stringify(data) }); if (!r.ok) throw new Error('Error crear empleado'); return r.json(); },
   update:  async (id, data)  => { const r = await fetch(`${API}/employees/${id}`, { method: 'PUT', headers: h(), body: JSON.stringify(data) }); if (!r.ok) throw new Error('Error actualizar'); return r.json(); },

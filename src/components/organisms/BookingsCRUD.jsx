@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react'
 import Table from '../molecules/Table'
 import Alert from '../molecules/Alert'
+import Pagination from '../molecules/Pagination'
 import Button from '../atoms/Button'
 import BookingForm from './BookingForm'
 import { bookingService } from '../../services/BookingService'
+import usePagination from '../../hooks/usePagination'
 
 const EMPTY_FORM = {
   customerName: '',
@@ -12,26 +14,18 @@ const EMPTY_FORM = {
 }
 
 export default function BookingsCRUD() {
-  const [bookings, setBookings] = useState([])
-  const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [form, setForm] = useState(EMPTY_FORM)
   const [isEditing, setIsEditing] = useState(false)
   const [currentId, setCurrentId] = useState(null)
 
-  const loadBookings = async () => {
-    try {
-      setLoading(true)
-      const data = await bookingService.getAll()
-      setBookings(data)
-    } catch (e) {
-      setError(e.message)
-    } finally {
-      setLoading(false)
-    }
-  }
+  const { data: bookings, page, totalPages, loading, load } = usePagination(
+    (pageNum, size) => bookingService.getPage(pageNum, size),
+    0,
+    10
+  )
 
-  useEffect(() => { loadBookings() }, [])
+  useEffect(() => { load() }, [load])
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value })
@@ -46,7 +40,7 @@ export default function BookingsCRUD() {
         await bookingService.confirm(form)
       }
       resetForm()
-      loadBookings()
+      load()
     } catch (e) {
       setError(e.message)
     }
@@ -65,7 +59,7 @@ export default function BookingsCRUD() {
   const deleteBooking = async (id) => {
     try {
       await bookingService.delete(id)
-      loadBookings()
+      load()
     } catch (e) {
       setError(e.message)
     }
@@ -121,6 +115,14 @@ export default function BookingsCRUD() {
       </div>
 
       <Table columns={columns} data={bookings} loading={loading} emptyMessage="No hay reservas" />
+
+      <div className="flex justify-center pt-4">
+        <Pagination
+          currentPage={page + 1}
+          totalPages={totalPages}
+          onPageChange={(p) => load(p - 1)}
+        />
+      </div>
     </div>
   )
 }

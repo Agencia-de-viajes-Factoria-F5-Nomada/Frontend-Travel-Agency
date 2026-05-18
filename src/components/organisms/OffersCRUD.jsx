@@ -3,9 +3,12 @@ import Table from '../molecules/Table'
 import Modal from '../molecules/Modal'
 import Alert from '../molecules/Alert'
 import ConfirmDialog from '../molecules/ConfirmDialog'
+import Pagination from '../molecules/Pagination'
 import Button from '../atoms/Button'
 import Badge from '../atoms/Badge'
 import OfferForm from './OfferForm'
+import { offersService } from '../../services/offersService'
+import usePagination from '../../hooks/usePagination'
 
 const EMPTY_FORM = {
   discount_percentage: 0,
@@ -14,13 +17,19 @@ const EMPTY_FORM = {
 }
 
 export default function OffersCRUD() {
-  const [offers, setOffers] = useState([])
-  const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [showForm, setShowForm] = useState(false)
   const [editing, setEditing] = useState(null)
   const [deleting, setDeleting] = useState(null)
   const [form, setForm] = useState(EMPTY_FORM)
+
+  const { data: offers, page, totalPages, loading, load } = usePagination(
+    (pageNum, size) => offersService.getPage(pageNum, size),
+    0,
+    10
+  )
+
+  useEffect(() => { load() }, [load])
 
   const isActive = (offer) => {
     const now = new Date()
@@ -114,6 +123,14 @@ export default function OffersCRUD() {
       )}
 
       <Table columns={columns} data={offers} loading={loading} emptyMessage="No hay ofertas" />
+
+      <div className="flex justify-center pt-4">
+        <Pagination
+          currentPage={page + 1}
+          totalPages={totalPages}
+          onPageChange={(p) => load(p - 1)}
+        />
+      </div>
 
       <Modal
         isOpen={showForm}

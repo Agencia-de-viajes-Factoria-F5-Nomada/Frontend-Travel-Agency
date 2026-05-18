@@ -19,11 +19,9 @@ const HomePage = () => {
   useEffect(() => {
     travelService.getFeatured()
       .then(data => {
-        console.log('✅ Viajes destacados cargados en HomePage:', data.length);
         setTravels(data);
       })
-      .catch(error => {
-        console.error('❌ Error cargando viajes en HomePage:', error);
+      .catch(() => {
         setTravels([]);
       })
       .finally(() => setLoading(false))

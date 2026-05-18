@@ -5,6 +5,7 @@ import Button from '../atoms/Button'
 import { ADMIN_NAV } from '../../constants/navigation'
 import { PUBLIC_PATHS } from '../../constants/paths'
 import { classNames } from '../../utils/classNames'
+import { authService } from '../../services/authService'
 
 const itemBase =
   'flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors'
@@ -51,7 +52,7 @@ const AdminSidebar = ({ open, onNavigate }) => (
       <Button variant="ghost" size="sm" to={PUBLIC_PATHS.HOME}>
         Volver al sitio
       </Button>
-      <Button variant="secondary" size="sm" to={PUBLIC_PATHS.AUTH}>
+      <Button variant="secondary" size="sm" onClick={() => authService.logout()}>
         <LogOut className="h-4 w-4" aria-hidden="true" />
         Cerrar sesión
       </Button>
