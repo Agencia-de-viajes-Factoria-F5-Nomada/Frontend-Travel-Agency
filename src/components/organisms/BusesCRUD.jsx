@@ -35,8 +35,6 @@ export default function BusesCRUD() {
 
   useEffect(() => { load() }, [load])
 
-  useEffect(() => { load() }, [])
-
   const change = (e) => {
     const { name, value, type, checked } = e.target
     setForm(f => ({ ...f, [name]: type === 'checkbox' ? checked : value }))
