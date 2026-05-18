@@ -6,9 +6,8 @@ import PageHeader from '../components/atoms/PageHeader'
 import StatCard from '../components/organisms/StatCard'
 import StatusPill from '../components/organisms/StatusPill'
 import { ADMIN_PATHS } from '../constants/paths'
+import { API } from '../constants/api'
 import { formatCurrency } from '../utils/formatters'
-
-const API_BASE = 'http://localhost:8080/api'
 
 const DashboardPage = () => {
   const [dashData, setDashData] = useState(null)
@@ -19,29 +18,21 @@ const DashboardPage = () => {
     const fetchDashboard = async () => {
       try {
         const token = localStorage.getItem('token')
-        console.log(`[DASHBOARD] Token obtenido:`, token ? `${token.substring(0, 20)}...` : 'SIN TOKEN')
-        
         const headers = { 'Content-Type': 'application/json' }
         if (token) {
           headers['Authorization'] = `Bearer ${token}`
-          console.log(`[DASHBOARD] Header Authorization:`, headers['Authorization'].substring(0, 30) + '...')
         }
-        
-        console.log(`[DASHBOARD] Llamando a ${API_BASE}/dashboard`)
-        const res = await fetch(`${API_BASE}/dashboard`, { headers })
-        console.log(`[DASHBOARD] Respuesta:`, res.status, res.statusText)
-        
+
+        const res = await fetch(`${API}/dashboard`, { headers })
+
         if (!res.ok) {
           const errorData = await res.json().catch(() => ({}))
-          console.error(`[DASHBOARD] Error response:`, errorData)
           throw new Error(`Error ${res.status}: ${errorData.error || 'Error desconocido'}`)
         }
-        
+
         const json = await res.json()
-        console.log(`[DASHBOARD] ✅ Datos cargados correctamente`)
         setDashData(json)
       } catch (err) {
-        console.error(`[DASHBOARD] ❌ Error:`, err.message)
         setError(err.message)
       } finally {
         setLoading(false)
