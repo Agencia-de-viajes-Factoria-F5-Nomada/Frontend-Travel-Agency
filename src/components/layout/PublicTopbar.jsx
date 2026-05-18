@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { NavLink, useLocation } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import { Menu, X } from 'lucide-react'
 import BrandMark from './BrandMark'
 import Button from '../atoms/Button'
@@ -29,7 +29,6 @@ const buildAuthLinkClass = ({ isActive }) =>
 
 const PublicTopbar = () => {
   const [open, setOpen] = useState(false)
-  useLocation()
 
   const isAuthenticated = authService.isAuthenticated()
   const primaryNav = PUBLIC_NAV.filter(
