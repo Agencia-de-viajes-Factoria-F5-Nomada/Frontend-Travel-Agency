@@ -19,7 +19,7 @@ export const PUBLIC_NAV = [
   { label: 'Inicio',          to: PUBLIC_PATHS.HOME,      icon: Compass },
   { label: 'Buscar',          to: PUBLIC_PATHS.SEARCH,    icon: Search },
   { label: 'Ofertas',         to: PUBLIC_PATHS.OFFERS,    icon: Tag },
-  { label: 'Mi perfil',       to: PUBLIC_PATHS.PROFILE,   icon: UserCircle },
+  { label: 'Panel',           to: PUBLIC_PATHS.PROFILE,   icon: LayoutDashboard },
   { label: 'Iniciar sesión',  to: PUBLIC_PATHS.AUTH,      icon: LogIn },
 ]
 
