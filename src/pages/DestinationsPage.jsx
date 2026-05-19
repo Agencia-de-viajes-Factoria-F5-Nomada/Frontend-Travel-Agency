@@ -19,9 +19,14 @@ const DestinationsPage = () => {
       .finally(() => setLoading(false))
   }, [])
 
-  const filtered = travels.filter(t =>
-    (t.destiny || t.name || '').toLowerCase().includes(search.toLowerCase())
-  )
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+
+  const filtered = travels.filter(t => {
+    const matchesSearch = (t.destiny || t.name || '').toLowerCase().includes(search.toLowerCase())
+    const isFuture = t.startDate ? new Date(t.startDate) >= today : true
+    return matchesSearch && isFuture
+  })
 
   return (
     <div className="container-page py-12">
