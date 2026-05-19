@@ -31,9 +31,17 @@ const TravelsPage = () => {
     passengers: 2,
   })
 
+  // Filtros existentes
   const [onlyOffers, setOnlyOffers] = useState(false)
   const [sortBy, setSortBy] = useState('recommended')
   const [priceRange, setPriceRange] = useState({ min: 0, max: 5000 })
+
+  // Nuevos filtros
+  const [selectedRegions, setSelectedRegions] = useState([])
+  const [durationRange, setDurationRange] = useState(null)
+  const [starFilter, setStarFilter] = useState([])
+  const [availabilityOnly, setAvailabilityOnly] = useState(false)
+  const [boardType, setBoardType] = useState('half')
 
   useEffect(() => {
     travelService.getAvailable()
@@ -41,6 +49,16 @@ const TravelsPage = () => {
       .catch(e => setError(e.message))
       .finally(() => setLoading(false))
   }, [])
+
+  // Extraer regiones unicas de los datos cargados
+  const regions = useMemo(() => {
+    const set = new Set()
+    travels.forEach(t => {
+      const region = t.hotelCountry || t.country
+      if (region) set.add(region)
+    })
+    return [...set].sort()
+  }, [travels])
 
   const handleSearch = (e) => {
     e.preventDefault()
@@ -57,6 +75,11 @@ const TravelsPage = () => {
     setOnlyOffers(false)
     setSortBy('recommended')
     setPriceRange({ min: 0, max: 5000 })
+    setSelectedRegions([])
+    setDurationRange(null)
+    setStarFilter([])
+    setAvailabilityOnly(false)
+    setBoardType('half')
   }
 
   const sortOptions = [
@@ -94,18 +117,46 @@ const TravelsPage = () => {
         if (!(tripStart >= monthStart && tripStart <= monthEnd)) return false
       }
 
-      const price = t.price || t.halfBoardPrice || 0
+      const price = boardType === 'full'
+        ? (t.fullBoardPrice || t.halfBoardPrice || 0)
+        : (t.halfBoardPrice || t.price || 0)
       const matchPrice = price >= priceRange.min && price <= priceRange.max
 
-      return matchFuture && matchDestiny && matchOffer && matchPrice
+      // Region / Pais
+      const matchRegion = selectedRegions.length === 0 ||
+        selectedRegions.includes(t.hotelCountry) ||
+        selectedRegions.includes(t.country)
+
+      // Duracion en dias
+      let matchDuration = true
+      if (durationRange && t.startDate && t.endDate) {
+        const days = Math.ceil(
+          (new Date(t.endDate) - new Date(t.startDate)) / (1000 * 60 * 60 * 24)
+        )
+        matchDuration = days >= durationRange.min && days <= durationRange.max
+      }
+
+      // Estrellas del hotel
+      const stars = t.hotelStars || t.stars || t.rating
+      const matchStars = starFilter.length === 0 || (stars && starFilter.includes(stars))
+
+      // Disponibilidad
+      const matchAvailability = !availabilityOnly || (t.availablePlaces && t.availablePlaces > 0)
+
+      return matchFuture && matchDestiny && matchOffer && matchPrice &&
+             matchRegion && matchDuration && matchStars && matchAvailability
     })
+
+    const getPrice = (t) => boardType === 'full'
+      ? (t.fullBoardPrice || t.halfBoardPrice || 0)
+      : (t.halfBoardPrice || t.price || 0)
 
     switch (sortBy) {
       case 'price-asc':
-        result.sort((a, b) => (a.price || a.halfBoardPrice || 0) - (b.price || b.halfBoardPrice || 0))
+        result.sort((a, b) => getPrice(a) - getPrice(b))
         break
       case 'price-desc':
-        result.sort((a, b) => (b.price || b.halfBoardPrice || 0) - (a.price || a.halfBoardPrice || 0))
+        result.sort((a, b) => getPrice(b) - getPrice(a))
         break
       case 'date-asc':
         result.sort((a, b) => new Date(a.startDate) - new Date(b.startDate))
@@ -118,7 +169,8 @@ const TravelsPage = () => {
     }
 
     return result
-  }, [travels, appliedSearch, onlyOffers, sortBy, priceRange, searchMode])
+  }, [travels, appliedSearch, onlyOffers, sortBy, priceRange, searchMode,
+      selectedRegions, durationRange, starFilter, availabilityOnly, boardType])
 
   return (
     <>
@@ -159,6 +211,17 @@ const TravelsPage = () => {
             setPriceRange={setPriceRange}
             onlyOffers={onlyOffers}
             setOnlyOffers={setOnlyOffers}
+            regions={regions}
+            selectedRegions={selectedRegions}
+            setSelectedRegions={setSelectedRegions}
+            durationRange={durationRange}
+            setDurationRange={setDurationRange}
+            starFilter={starFilter}
+            setStarFilter={setStarFilter}
+            availabilityOnly={availabilityOnly}
+            setAvailabilityOnly={setAvailabilityOnly}
+            boardType={boardType}
+            setBoardType={setBoardType}
             onClearFilters={handleClearFilters}
           />
 
@@ -178,7 +241,7 @@ const TravelsPage = () => {
           ) : (
             <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
               {filtered.map(travel => (
-                <DestinationCard key={travel.id} destination={travel} showOfferPrice={travel.sale === true} featured />
+                <DestinationCard key={travel.id} destination={travel} showOfferPrice={travel.sale === true} boardType={boardType} featured />
               ))}
             </div>
           )}

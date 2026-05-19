@@ -32,14 +32,18 @@ const PublicTopbar = () => {
 
   const isAuthenticated = authService.isAuthenticated()
   const primaryNav = PUBLIC_NAV.filter(
-    (item) => item.to !== PUBLIC_PATHS.AUTH,
+    (item) => {
+      if (item.to === PUBLIC_PATHS.AUTH) return false;
+      if (item.to === PUBLIC_PATHS.PROFILE_ORIGINAL) return authService.isAdmin();
+      return true;
+    }
   )
   const sessionNav = PUBLIC_NAV.find((item) =>
     item.to === (isAuthenticated ? PUBLIC_PATHS.PROFILE : PUBLIC_PATHS.AUTH)
   )
 
   return (
-    <header className="sticky top-0 z-30 border-b border-surface-700/40 bg-gradient-to-b from-brand-100/60 to-surface-950/40 shadow-[0_10px_30px_-22px_rgba(255,255,255,0.35)] backdrop-blur">
+    <header className="sticky top-0 z-30 border-b border-surface-700/40 bg-gradient-to-b from-brand-100/60 to-surface-950/40 shadow-[0_10px_30px_-22px_rgba(255,255,255,0.35)] backdrop-blur-sm">
       <div className="container-page flex h-16 items-center justify-between gap-4">
         <BrandMark />
 
@@ -84,7 +88,7 @@ const PublicTopbar = () => {
       {open ? (
         <div
           id="public-mobile-nav"
-          className="border-t border-surface-700/40 bg-gradient-to-b from-brand-100/70 to-surface-950/95 shadow-xl backdrop-blur md:hidden"
+          className="border-t border-surface-700/40 bg-gradient-to-b from-brand-100/70 to-surface-950/95 shadow-xl backdrop-blur-sm md:hidden"
         >
           <nav aria-label="Principal movil" className="container-page grid gap-1 py-4">
             {primaryNav.map((item) => (

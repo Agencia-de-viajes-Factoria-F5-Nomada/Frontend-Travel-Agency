@@ -18,22 +18,32 @@ const GRADIENTS = [
 
 const cardGradient = (id = 0) => GRADIENTS[id % GRADIENTS.length]
 
-const DestinationCard = ({ destination, showOfferPrice = false, featured = false }) => {
+const BOARD_LABELS = { half: 'Media pension', full: 'Pension completa' }
+
+const DestinationCard = ({ destination, showOfferPrice, boardType = 'half', featured = false }) => {
   const [isFavorite, setIsFavorite] = useState(false)
   const image = getDestinationImage(destination) || getDestinationFallbackImage(destination)
   const name    = destination.destiny       || destination.name
   const country = destination.hotelCity     || destination.country
-  const price   = destination.halfBoardPrice || destination.price || 0
+  const basePrice = boardType === 'full'
+    ? (destination.fullBoardPrice || destination.halfBoardPrice || destination.price || 0)
+    : (destination.halfBoardPrice || destination.price || 0)
 
   const rating  = destination.hotelStars    || destination.rating || 0
   const tag     = destination.tag           || (destination.sale ? 'Oferta' : 'Disponible')
 
   const discountPct = destination.discountPercentage || 0
 
-  const originalPrice =
-    showOfferPrice && discountPct > 0
-      ? Math.round(price / (1 - discountPct / 100))
-      : null
+  // Mostrar precio de oferta: automatico si sale===true, o forzado con showOfferPrice
+  const isOnOffer = showOfferPrice !== undefined
+    ? showOfferPrice && discountPct > 0
+    : destination.sale === true && discountPct > 0
+
+  const discountedPrice = isOnOffer
+    ? Math.round(basePrice * (1 - discountPct / 100))
+    : null
+
+  const displayPrice = discountedPrice ?? basePrice
 
   return (
     <Card className="overflow-hidden transition-transform duration-200 hover:-translate-y-1">
@@ -69,23 +79,6 @@ const DestinationCard = ({ destination, showOfferPrice = false, featured = false
             {tag}
           </Badge>
         </div>
-        <button
-          onClick={(e) => {
-            e.preventDefault()
-            setIsFavorite((current) => !current)
-          }}
-          aria-label={isFavorite ? `Quitar ${name} de favoritos` : `Guardar ${name} en favoritos`}
-          aria-pressed={isFavorite}
-          className={classNames(
-            'absolute right-3 top-3 flex items-center justify-center h-10 w-10 rounded-full backdrop-blur transition-colors focus-visible:ring-2 focus-visible:ring-brand-500',
-            isFavorite
-              ? 'border border-white/80 bg-white text-surface-950 shadow-md hover:bg-white/90'
-              : featured
-                ? 'border border-white/20 bg-white/15 text-white shadow-md hover:bg-white/90 hover:text-surface-950'
-                : 'bg-surface-950/60 text-white hover:bg-white/90 hover:text-surface-950',
-          )}
-        >
-        </button>
       </Link>
       <div className="flex flex-col gap-4 p-5">
         <div className="flex items-start justify-between gap-3">
@@ -102,23 +95,26 @@ const DestinationCard = ({ destination, showOfferPrice = false, featured = false
           <div>
             <p className="text-xs uppercase tracking-wide text-ink-muted">Desde</p>
             <div className="flex flex-wrap items-baseline gap-2">
-              {originalPrice ? (
+              {isOnOffer && (
                 <span className="text-sm font-medium text-ink-muted line-through">
-                  {formatCurrency(originalPrice)}
+                  {formatCurrency(basePrice)}
                 </span>
-              ) : null}
-              {originalPrice && discountPct > 0 ? (
+              )}
+              {isOnOffer && (
                 <span className="rounded-full bg-red-500/20 px-2 py-0.5 text-xs font-bold text-red-400">
                   -{discountPct}%
                 </span>
-              ) : null}
+              )}
               <span className={classNames(
                 'text-xl font-semibold',
-                originalPrice ? 'text-brand-400' : 'text-white',
+                isOnOffer ? 'text-brand-400' : 'text-white',
               )}>
-                {formatCurrency(price)}
+                {formatCurrency(displayPrice)}
               </span>
             </div>
+            <p className="mt-0.5 text-[10px] uppercase tracking-wider text-ink-muted">
+              {BOARD_LABELS[boardType] || BOARD_LABELS.half}
+            </p>
           </div>
           <Button to={buildDestinationPath(destination.id)} size="sm">
             Ver

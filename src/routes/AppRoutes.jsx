@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 
 // Layouts
 import PublicLayout   from '../components/layout/PublicLayout';
@@ -49,7 +49,7 @@ export default function AppRoutes() {
         <Route path="/travels"             element={<TravelsPage />} />
         <Route path="/legal/:slug"         element={<LegalPage />} />
         <Route path="/profile"             element={<PrivateRoute><EntitiesPage /></PrivateRoute>} />
-        <Route path="/profile/original"    element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
+        <Route path="/profile/original"    element={<Navigate to="/admin" replace />} />
         <Route path="/personal/:section"   element={<PrivateRoute><PersonalAreaPage /></PrivateRoute>} />
         <Route path="/checkout"            element={
           <PrivateRoute><CheckoutPage /></PrivateRoute>
