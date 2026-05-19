@@ -8,11 +8,15 @@ import EntityTable from '../components/organisms/EntityTable'
 import { authService } from '../services/authService'
 
 const CRUD_OPTIONS = [
-  { key: 'travels',    label: 'Viajes' },
-  { key: 'hotels',     label: 'Hoteles' },
-  { key: 'buses',      label: 'Autobuses' },
-  { key: 'drivers',    label: 'Conductores' },
-  { key: 'bookings',   label: 'Reservas' },
+  { key: 'travels',        label: 'Viajes' },
+  { key: 'hotels',         label: 'Hoteles' },
+  { key: 'buses',          label: 'Autobuses' },
+  { key: 'drivers',        label: 'Conductores' },
+  { key: 'bookings',       label: 'Reservas' },
+  { key: 'users',          label: 'Usuarios' },
+  { key: 'employees',      label: 'Empleados' },
+  { key: 'offers',         label: 'Ofertas' },
+  { key: 'trip-segments',  label: 'Tramos' },
 ]
 
 const EntitiesPage = () => {

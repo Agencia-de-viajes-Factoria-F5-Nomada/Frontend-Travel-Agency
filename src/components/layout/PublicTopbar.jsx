@@ -4,7 +4,7 @@ import { Menu, X } from 'lucide-react'
 import BrandMark from './BrandMark'
 import Button from '../atoms/Button'
 import { PUBLIC_NAV } from '../../constants/navigation'
-import { PUBLIC_PATHS } from '../../constants/paths'
+import { PUBLIC_PATHS, ADMIN_PATHS } from '../../constants/paths'
 import { authService } from '../../services/authService'
 import { classNames } from '../../utils/classNames'
 
@@ -34,12 +34,12 @@ const PublicTopbar = () => {
   const primaryNav = PUBLIC_NAV.filter(
     (item) => {
       if (item.to === PUBLIC_PATHS.AUTH) return false;
-      if (item.to === PUBLIC_PATHS.PROFILE_ORIGINAL) return authService.isAdmin();
+      if (item.to === ADMIN_PATHS.DASHBOARD) return authService.isAdmin();
       return true;
     }
   )
-  const sessionNav = PUBLIC_NAV.find((item) =>
-    item.to === (isAuthenticated ? PUBLIC_PATHS.PROFILE : PUBLIC_PATHS.AUTH)
+  const sessionNav = isAuthenticated ? null : PUBLIC_NAV.find((item) =>
+    item.to === PUBLIC_PATHS.AUTH
   )
 
   return (

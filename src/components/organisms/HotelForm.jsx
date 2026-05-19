@@ -1,6 +1,7 @@
 import FormField from '../molecules/FormField'
 import SelectField from '../molecules/SelectField'
 import CheckboxField from '../molecules/CheckboxField'
+import ImageUpload from '../molecules/ImageUpload'
 
 const STAR_OPTIONS = [
   { value: 1, label: '1 ⭐' },
@@ -41,19 +42,12 @@ export default function HotelForm({ form, onChange, initialData }) {
         <FormField label="Precio pensión completa (€)" name="fullBoardPrice" type="number" step="0.01" value={form.fullBoardPrice} onChange={onChange} />
       </div>
 
-      <FormField
-        label="URL de imagen"
+      <ImageUpload
+        label="Imagen del hotel"
         name="imageUrl"
-        type="url"
         value={form.imageUrl}
         onChange={onChange}
-        placeholder="https://..."
-        hint={form.imageUrl ? 'Vista previa abajo' : undefined}
       />
-
-      {form.imageUrl && (
-        <img src={form.imageUrl} alt="preview" className="h-24 w-full rounded-lg object-cover" />
-      )}
 
       <CheckboxField
         label="Hotel activo"

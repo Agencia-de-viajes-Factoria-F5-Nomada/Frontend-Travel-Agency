@@ -19,7 +19,7 @@ export const PUBLIC_NAV = [
   { label: 'Viajes',          to: PUBLIC_PATHS.TRAVELS,   icon: MapPinned },
   { label: 'Ofertas',         to: PUBLIC_PATHS.OFFERS,    icon: Tag },
   { label: 'Panel',           to: PUBLIC_PATHS.PROFILE,   icon: LayoutDashboard },
-  { label: 'Mi Perfil',       to: PUBLIC_PATHS.PROFILE_ORIGINAL, icon: UserCircle },
+  { label: 'Mi Perfil',       to: ADMIN_PATHS.DASHBOARD, icon: UserCircle },
   { label: 'Iniciar sesión',  to: PUBLIC_PATHS.AUTH,      icon: LogIn },
 ]
 
