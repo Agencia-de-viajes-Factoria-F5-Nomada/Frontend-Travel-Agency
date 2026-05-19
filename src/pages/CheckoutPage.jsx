@@ -16,13 +16,17 @@ const STEPS = [
   { id: 4, label: 'Confirmado' },
 ]
 
-const TARIFA_OPTIONS = [
-  { value: 'ADULT',     label: 'Adulto' },
-  { value: 'CHILD',     label: 'Niño' },
-  { value: 'PENSIONER', label: 'Pensionista' },
-]
+const EMPTY_PASSENGER = { name: '', surname: '', birthDate: '' }
 
-const EMPTY_PASSENGER = { name: '', surname: '', tarifa: 'ADULT' }
+const calculateAge = (birthDate) => {
+  if (!birthDate) return null
+  const today = new Date()
+  const birth = new Date(birthDate)
+  let age = today.getFullYear() - birth.getFullYear()
+  const m = today.getMonth() - birth.getMonth()
+  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--
+  return age
+}
 
 const Stepper = ({ currentStep }) => (
   <ol className="flex flex-wrap items-center gap-3">
@@ -50,6 +54,13 @@ const Stepper = ({ currentStep }) => (
     })}
   </ol>
 )
+
+const CATEGORY_LABEL = {
+  BABY:      'Bebé (0-2 años)',
+  CHILD:     'Niño (2-11 años)',
+  ADULT:     'Adulto',
+  PENSIONER: 'Pensionista (65+)',
+}
 
 const CheckoutPage = () => {
   const location  = useLocation()
@@ -79,14 +90,18 @@ const CheckoutPage = () => {
   const changePassenger = (i, field, value) =>
     setPassengers(p => p.map((pass, idx) => idx === i ? { ...pass, [field]: value } : pass))
 
-  const hasMinor   = passengers.some(p => p.tarifa === 'CHILD')
-  const hasAdult   = passengers.some(p => p.tarifa === 'ADULT' || p.tarifa === 'PENSIONER')
+  // Validación: menor de 12 años sin adulto
+  const hasMinor  = passengers.some(p => p.birthDate && calculateAge(p.birthDate) < 12)
+  const hasAdult  = passengers.some(p => p.birthDate && calculateAge(p.birthDate) >= 12)
   const minorError = hasMinor && !hasAdult
+
+  // Validación: todos los pasajeros tienen los campos rellenos
+  const allFilled = passengers.every(p => p.name.trim() && p.surname.trim() && p.birthDate)
 
   // ── Cotización ────────────────────────────────────
   const handleQuote = async () => {
     if (minorError) {
-      setError('Un menor necesita al menos un adulto o pensionista en el grupo.')
+      setError('Un menor necesita al menos un adulto en el grupo.')
       return
     }
     setLoading(true)
@@ -99,9 +114,9 @@ const CheckoutPage = () => {
         isGroup,
         userId: user?.id,
         passengers: passengers.map(p => ({
-          name:    p.name,
-          surname: p.surname,
-          tarifa:  p.tarifa,
+          name:      p.name,
+          surname:   p.surname,
+          birthDate: p.birthDate,
         })),
       })
       setQuote(result)
@@ -124,9 +139,9 @@ const CheckoutPage = () => {
         typeBoard,
         isGroup,
         passengers: passengers.map(p => ({
-          name:    p.name,
-          surname: p.surname,
-          tarifa:  p.tarifa,
+          name:      p.name,
+          surname:   p.surname,
+          birthDate: p.birthDate,
         })),
         userId: user?.id,
       })
@@ -184,21 +199,33 @@ const CheckoutPage = () => {
                       onChange={e => changePassenger(i, 'surname', e.target.value)} required />
                   </div>
                   <div>
-                    <label className="text-xs font-medium text-ink-muted">Tarifa</label>
-                    <select value={p.tarifa}
-                      onChange={e => changePassenger(i, 'tarifa', e.target.value)}
-                      className="mt-1 w-full rounded-lg border border-surface-600 bg-surface-900 px-3 py-2 text-sm text-ink">
-                      {TARIFA_OPTIONS.map(o => (
-                        <option key={o.value} value={o.value}>{o.label}</option>
-                      ))}
-                    </select>
+                    <label className="text-xs font-medium text-ink-muted">Fecha de nacimiento</label>
+                    <input
+                      type="date"
+                      value={p.birthDate}
+                      max={new Date().toISOString().split('T')[0]}
+                      onChange={e => changePassenger(i, 'birthDate', e.target.value)}
+                      className="mt-1 w-full rounded-lg border border-surface-600 bg-surface-900 px-3 py-2 text-sm text-ink focus:outline-none"
+                    />
+                    {p.birthDate && (
+                      <p className="mt-1 text-xs text-ink-muted">
+                        {calculateAge(p.birthDate)} años —{' '}
+                        {calculateAge(p.birthDate) < 2
+                          ? 'Bebé (5% del precio)'
+                          : calculateAge(p.birthDate) < 12
+                          ? 'Niño (60% del precio)'
+                          : calculateAge(p.birthDate) >= 65
+                          ? 'Pensionista (10% descuento)'
+                          : 'Adulto (precio completo)'}
+                      </p>
+                    )}
                   </div>
                 </div>
               ))}
 
               {minorError && (
                 <p className="rounded-lg bg-amber-50 p-3 text-sm text-amber-700">
-                  Un menor no puede viajar sin un adulto o pensionista.
+                  Un menor no puede viajar sin un adulto.
                 </p>
               )}
 
@@ -232,7 +259,7 @@ const CheckoutPage = () => {
               </label>
 
               <div className="flex justify-end pt-2">
-                <Button onClick={handleQuote} disabled={loading || minorError}>
+                <Button onClick={handleQuote} disabled={loading || minorError || !allFilled}>
                   {loading ? 'Calculando...' : 'Ver cotización'}
                   <ArrowRight className="h-4 w-4" />
                 </Button>
@@ -245,21 +272,23 @@ const CheckoutPage = () => {
             <div className="mt-8 space-y-4">
               <h2 className="font-semibold text-white">Resumen de la cotización</h2>
               <ul className="divide-y divide-surface-700 rounded-xl border border-surface-600 overflow-hidden">
-                {quote.passengers?.map((p, i) => (
+                {quote.passengerDetails?.map((p, i) => (
                   <li key={i} className="flex justify-between px-4 py-3 text-sm">
-                    <span className="text-ink-soft">{p.name} {p.surname} — {p.tarifa}</span>
-                    <span className="text-white font-medium">{p.price}€</span>
+                    <span className="text-ink-soft">
+                      {p.name} {p.surname} — {CATEGORY_LABEL[p.category] ?? p.category}
+                    </span>
+                    <span className="text-white font-medium">{p.finalPrice}€</span>
                   </li>
                 ))}
-                {quote.groupDiscount > 0 && (
+                {quote.totalDiscount > 0 && (
                   <li className="flex justify-between px-4 py-3 text-sm text-green-400">
-                    <span>Descuento de grupo</span>
-                    <span>-{quote.groupDiscount}€</span>
+                    <span>Descuentos aplicados</span>
+                    <span>-{quote.totalDiscount}€</span>
                   </li>
                 )}
                 <li className="flex justify-between px-4 py-3 text-sm font-bold bg-surface-900">
                   <span className="text-white">Total</span>
-                  <span className="text-white">{quote.total}€</span>
+                  <span className="text-white">{quote.totalPrice}€</span>
                 </li>
               </ul>
 
@@ -297,7 +326,7 @@ const CheckoutPage = () => {
                 </li>
                 <li className="flex justify-between px-4 py-3 font-bold">
                   <span className="text-white">Total</span>
-                  <span className="text-white">{quote?.total}€</span>
+                  <span className="text-white">{quote?.totalPrice}€</span>
                 </li>
               </ul>
 
@@ -362,12 +391,12 @@ const CheckoutPage = () => {
               <span className="text-white">{passengers.length}</span>
             </li>
           </ul>
-          {quote?.total && (
+          {quote?.totalPrice && (
             <>
               <hr className="my-4 border-surface-700" />
               <p className="flex justify-between text-base font-bold text-white">
                 <span>Total</span>
-                <span>{quote.total}€</span>
+                <span>{quote.totalPrice}€</span>
               </p>
             </>
           )}
