@@ -37,8 +37,13 @@ const SearchResultsPage = () => {
     { value: 'date-desc', label: 'Fecha: más lejano' },
   ]
 
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+
   const filtered = useMemo(() => {
     let result = travels.filter(t => {
+      const matchFuture = new Date(t.startDate) >= today
+
       const matchDestiny = !search ||
         t.destiny?.toLowerCase().includes(search.toLowerCase()) ||
         t.hotelCity?.toLowerCase().includes(search.toLowerCase())
@@ -54,7 +59,7 @@ const SearchResultsPage = () => {
       const price = t.price || t.halfBoardPrice || 0
       const matchPrice = price >= priceRange.min && price <= priceRange.max
 
-      return matchDestiny && matchOffer && matchStartDate && matchEndDate && matchPrice
+      return matchFuture && matchDestiny && matchOffer && matchStartDate && matchEndDate && matchPrice
     })
 
     switch (sortBy) {
