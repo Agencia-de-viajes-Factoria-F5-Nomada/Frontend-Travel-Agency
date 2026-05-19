@@ -1,11 +1,10 @@
-import { API } from '../constants/api';
-const h = () => ({ 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` });
+import { apiClient } from './api';
 
 export const tripSegmentsService = {
-  getAll:  async ()         => { const r = await fetch(`${API}/trip-segments`, { headers: h() }); if (!r.ok) throw new Error('Error segmentos'); return r.json(); },
-  getPage: async (page = 0, size = 10) => { const r = await fetch(`${API}/trip-segments?page=${page}&size=${size}`, { headers: h() }); if (!r.ok) throw new Error('Error segmentos'); return r.json(); },
-  getById: async (id)       => { const r = await fetch(`${API}/trip-segments/${id}`, { headers: h() }); if (!r.ok) throw new Error('Segmento no encontrado'); return r.json(); },
-  create:  async (data)     => { const r = await fetch(`${API}/trip-segments`, { method: 'POST', headers: h(), body: JSON.stringify(data) }); if (!r.ok) throw new Error('Error crear segmento'); return r.json(); },
-  update:  async (id, data) => { const r = await fetch(`${API}/trip-segments/${id}`, { method: 'PUT', headers: h(), body: JSON.stringify(data) }); if (!r.ok) throw new Error('Error actualizar'); return r.json(); },
-  delete:  async (id)       => { const r = await fetch(`${API}/trip-segments/${id}`, { method: 'DELETE', headers: h() }); if (!r.ok) throw new Error('Error eliminar'); },
+  getAll:  async ()                    => (await apiClient.get('/trip-segments')).data,
+  getPage: async (page = 0, size = 10) => (await apiClient.get(`/trip-segments?page=${page}&size=${size}`)).data,
+  getById: async (id)                  => (await apiClient.get(`/trip-segments/${id}`)).data,
+  create:  async (data)                => (await apiClient.post('/trip-segments', data)).data,
+  update:  async (id, data)            => (await apiClient.put(`/trip-segments/${id}`, data)).data,
+  delete:  async (id)                  => { await apiClient.delete(`/trip-segments/${id}`) },
 };
