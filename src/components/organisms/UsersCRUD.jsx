@@ -7,7 +7,7 @@ import Pagination from '../molecules/Pagination'
 import Button from '../atoms/Button'
 import Badge from '../atoms/Badge'
 import UserForm from './UserForm'
-import { userService } from '../../services/UserService'
+import { userService } from '../../services/usersService'
 import usePagination from '../../hooks/usePagination'
 
 const EMPTY_FORM = {
