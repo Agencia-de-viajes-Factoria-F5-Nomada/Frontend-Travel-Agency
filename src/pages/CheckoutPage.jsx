@@ -17,9 +17,9 @@ const STEPS = [
 ]
 
 const TARIFA_OPTIONS = [
-  { value: 'ADULT',    label: 'Adulto' },
-  { value: 'CHILD',    label: 'Niño' },
-  { value: 'PENSIONER',label: 'Pensionista' },
+  { value: 'ADULT',     label: 'Adulto' },
+  { value: 'CHILD',     label: 'Niño' },
+  { value: 'PENSIONER', label: 'Pensionista' },
 ]
 
 const EMPTY_PASSENGER = { name: '', surname: '', tarifa: 'ADULT' }
@@ -52,20 +52,19 @@ const Stepper = ({ currentStep }) => (
 )
 
 const CheckoutPage = () => {
-  const location              = useLocation()
-  const navigate              = useNavigate()
+  const location  = useLocation()
+  const navigate  = useNavigate()
   const { travelId, typeBoard: initialBoard, travel, hotel } = location.state ?? {}
 
-  const [step, setStep]           = useState(1)
-  const [typeBoard, setTypeBoard] = useState(initialBoard ?? 'HALF_BOARD')
-  const [isGroup, setIsGroup]     = useState(false)
+  const [step, setStep]             = useState(1)
+  const [typeBoard, setTypeBoard]   = useState(initialBoard ?? 'HALF_BOARD')
+  const [isGroup, setIsGroup]       = useState(false)
   const [passengers, setPassengers] = useState([{ ...EMPTY_PASSENGER }])
-  const [quote, setQuote]         = useState(null)
-  const [booking, setBooking]     = useState(null)
-  const [loading, setLoading]     = useState(false)
-  const [error, setError]         = useState(null)
+  const [quote, setQuote]           = useState(null)
+  const [booking, setBooking]       = useState(null)
+  const [loading, setLoading]       = useState(false)
+  const [error, setError]           = useState(null)
 
-  // Redirigir si no hay viaje
   if (!travelId) {
     return (
       <div className="container-page py-12 text-center">
@@ -75,18 +74,14 @@ const CheckoutPage = () => {
     )
   }
 
-  // ── Pasajeros ──────────────────────────────────────
-  const addPassenger = () => setPassengers(p => [...p, { ...EMPTY_PASSENGER }])
-
-  const removePassenger = (i) =>
-    setPassengers(p => p.filter((_, idx) => idx !== i))
-
+  const addPassenger    = () => setPassengers(p => [...p, { ...EMPTY_PASSENGER }])
+  const removePassenger = (i) => setPassengers(p => p.filter((_, idx) => idx !== i))
   const changePassenger = (i, field, value) =>
     setPassengers(p => p.map((pass, idx) => idx === i ? { ...pass, [field]: value } : pass))
 
-  const hasMinor    = passengers.some(p => p.tarifa === 'CHILD')
-  const hasAdult    = passengers.some(p => p.tarifa === 'ADULT' || p.tarifa === 'PENSIONER')
-  const minorError  = hasMinor && !hasAdult
+  const hasMinor   = passengers.some(p => p.tarifa === 'CHILD')
+  const hasAdult   = passengers.some(p => p.tarifa === 'ADULT' || p.tarifa === 'PENSIONER')
+  const minorError = hasMinor && !hasAdult
 
   // ── Cotización ────────────────────────────────────
   const handleQuote = async () => {
@@ -97,13 +92,17 @@ const CheckoutPage = () => {
     setLoading(true)
     setError(null)
     try {
-      const user        = authService.getUser()
-      const customerIds = passengers.map(() => user?.id).filter(Boolean)
+      const user   = authService.getUser()
       const result = await bookingService.quote({
         travelId,
         typeBoard,
         isGroup,
-        customerIds,
+        userId: user?.id,
+        passengers: passengers.map(p => ({
+          name:    p.name,
+          surname: p.surname,
+          tarifa:  p.tarifa,
+        })),
       })
       setQuote(result)
       setStep(2)
@@ -203,7 +202,6 @@ const CheckoutPage = () => {
                 </p>
               )}
 
-              {/* Tipo de pensión */}
               <div className="rounded-xl border border-surface-600 p-4 space-y-2">
                 <p className="text-sm font-medium text-white">Tipo de pensión</p>
                 <div className="grid grid-cols-2 gap-2">
@@ -224,7 +222,6 @@ const CheckoutPage = () => {
                 </div>
               </div>
 
-              {/* Grupo */}
               <label className="flex items-center gap-3 cursor-pointer">
                 <input type="checkbox" checked={isGroup}
                   onChange={e => setIsGroup(e.target.checked)}
