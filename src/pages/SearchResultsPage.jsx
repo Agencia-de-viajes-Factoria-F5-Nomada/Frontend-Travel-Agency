@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { SlidersHorizontal, MapPin } from 'lucide-react'
 import Button from '../components/atoms/Button'
@@ -6,6 +6,9 @@ import Card from '../components/atoms/Card'
 import DestinationCard from '../components/organisms/DestinationCard'
 import PageHeader from '../components/atoms/PageHeader'
 import { travelService } from '../services/TravelsService'
+
+const normalize = (str) =>
+  str?.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase() ?? ''
 
 const SearchResultsPage = () => {
   const [searchParams]          = useSearchParams()
@@ -18,6 +21,9 @@ const SearchResultsPage = () => {
   const startDateParam = searchParams.get('startDate') ?? ''
   const endDateParam   = searchParams.get('endDate') ?? ''
 
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+
   useEffect(() => {
     travelService.getAvailable()
       .then(data => setTravels(data))
@@ -25,10 +31,12 @@ const SearchResultsPage = () => {
       .finally(() => setLoading(false))
   }, [])
 
-  const filtered = travels.filter(t => {
+  const filtered = useMemo(() => travels.filter(t => {
+    const matchFuture = new Date(t.startDate) >= today
+
     const matchDestiny = !search ||
-      t.destiny?.toLowerCase().includes(search.toLowerCase()) ||
-      t.hotelCity?.toLowerCase().includes(search.toLowerCase())
+      normalize(t.destiny).includes(normalize(search)) ||
+      normalize(t.hotelCity).includes(normalize(search))
 
     const matchOffer = onlyOffers ? t.sale === true : true
 
@@ -38,8 +46,8 @@ const SearchResultsPage = () => {
     const matchEndDate = !endDateParam ||
       new Date(t.endDate) <= new Date(endDateParam)
 
-    return matchDestiny && matchOffer && matchStartDate && matchEndDate
-  })
+    return matchFuture && matchDestiny && matchOffer && matchStartDate && matchEndDate
+  }), [travels, search, onlyOffers, startDateParam, endDateParam])
 
   return (
     <div className="container-page py-12">
