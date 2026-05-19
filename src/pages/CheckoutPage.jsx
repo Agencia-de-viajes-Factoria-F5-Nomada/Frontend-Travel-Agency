@@ -6,6 +6,7 @@ import Card from '../components/atoms/Card'
 import Input from '../components/atoms/Input'
 import PageHeader from '../components/atoms/PageHeader'
 import { bookingService } from '../services/BookingService'
+import { userService } from '../services/UserService'
 import { authService } from '../services/authService'
 import { classNames } from '../utils/classNames'
 
@@ -16,7 +17,7 @@ const STEPS = [
   { id: 4, label: 'Confirmado' },
 ]
 
-const EMPTY_PASSENGER = { name: '', surname: '', birthDate: '' }
+const EMPTY_PASSENGER = { name: '', surname: '', birthDate: '', email: '', dni: '', passport: '' }
 
 const calculateAge = (birthDate) => {
   if (!birthDate) return null
@@ -68,7 +69,7 @@ const CheckoutPage = () => {
   const { travelId, typeBoard: initialBoard, travel, hotel } = location.state ?? {}
 
   const [step, setStep]             = useState(1)
-  const [typeBoard, setTypeBoard]   = useState(initialBoard ?? 'HALF_BOARD')
+  const [typeBoard, setTypeBoard]   = useState(initialBoard ?? 'HALF')
   const [isGroup, setIsGroup]       = useState(false)
   const [passengers, setPassengers] = useState([{ ...EMPTY_PASSENGER }])
   const [quote, setQuote]           = useState(null)
@@ -96,7 +97,7 @@ const CheckoutPage = () => {
   const minorError = hasMinor && !hasAdult
 
   // Validación: todos los pasajeros tienen los campos rellenos
-  const allFilled = passengers.every(p => p.name.trim() && p.surname.trim() && p.birthDate)
+  const allFilled = passengers.every(p => p.name.trim() && p.surname.trim() && p.birthDate && p.email.trim())
 
   // ── Cotización ────────────────────────────────────
   const handleQuote = async () => {
@@ -121,8 +122,8 @@ const CheckoutPage = () => {
       })
       setQuote(result)
       setStep(2)
-    } catch (e) {
-      setError(e.message)
+    } catch (error) {
+      setError(error.response?.data?.error || error.response?.data?.message || error.message)
     } finally {
       setLoading(false)
     }
@@ -133,22 +134,35 @@ const CheckoutPage = () => {
     setLoading(true)
     setError(null)
     try {
-      const user   = authService.getUser()
+      const user = authService.getUser()
+
+      const customerIds = []
+      for (const p of passengers) {
+        const age = calculateAge(p.birthDate)
+        const newUser = await userService.create({
+          name: p.name,
+          surname: p.surname,
+          email: p.email,
+          dni: p.dni || undefined,
+          passport: p.passport || undefined,
+          age,
+          tutorId: age < 18 ? user?.id : undefined,
+        })
+        customerIds.push(newUser.id)
+      }
+
       const result = await bookingService.confirm({
         travelId,
         typeBoard,
         isGroup,
-        passengers: passengers.map(p => ({
-          name:      p.name,
-          surname:   p.surname,
-          birthDate: p.birthDate,
-        })),
-        userId: user?.id,
+        totalPrice: quote.totalPrice,
+        customerIds,
+        employeeId: user?.employeeId ?? null,
       })
       setBooking(result)
       setStep(4)
     } catch (e) {
-      setError(e.message)
+      setError(e.response?.data?.error || e.response?.data?.message || e.message)
     } finally {
       setLoading(false)
     }
@@ -220,6 +234,16 @@ const CheckoutPage = () => {
                       </p>
                     )}
                   </div>
+                  <Input label="Correo electrónico" type="email" value={p.email}
+                    onChange={e => changePassenger(i, 'email', e.target.value)} required />
+                  <div className="grid grid-cols-2 gap-3">
+                    <Input label="DNI (opcional)" value={p.dni}
+                      placeholder="12345678Z"
+                      onChange={e => changePassenger(i, 'dni', e.target.value)} />
+                    <Input label="Pasaporte (opcional)" value={p.passport}
+                      placeholder="AAA123456"
+                      onChange={e => changePassenger(i, 'passport', e.target.value)} />
+                  </div>
                 </div>
               ))}
 
@@ -233,13 +257,13 @@ const CheckoutPage = () => {
                 <p className="text-sm font-medium text-white">Tipo de pensión</p>
                 <div className="grid grid-cols-2 gap-2">
                   {[
-                    { value: 'HALF_BOARD', label: 'Media pensión' },
-                    { value: 'FULL_BOARD', label: 'Pensión completa' },
+                    { value: 'HALF', label: 'Media pensión' },
+                    { value: 'FULL', label: 'Pensión completa' },
                   ].map(o => (
                     <label key={o.value}
                       className="flex items-center gap-2 rounded-lg p-3 cursor-pointer border"
                       style={{ borderColor: typeBoard === o.value ? '#4A8FA8' : 'transparent',
-                               background:   typeBoard === o.value ? '#DAEEF7' : '' }}>
+                                background:   typeBoard === o.value ? '#DAEEF7' : '' }}>
                       <input type="radio" name="typeBoard" value={o.value}
                         checked={typeBoard === o.value}
                         onChange={() => setTypeBoard(o.value)} />
@@ -318,7 +342,7 @@ const CheckoutPage = () => {
                 </li>
                 <li className="flex justify-between px-4 py-3">
                   <span className="text-ink-soft">Pensión</span>
-                  <span className="text-white">{typeBoard === 'HALF_BOARD' ? 'Media pensión' : 'Pensión completa'}</span>
+                  <span className="text-white">{typeBoard === 'HALF' ? 'Media pensión' : 'Pensión completa'}</span>
                 </li>
                 <li className="flex justify-between px-4 py-3">
                   <span className="text-ink-soft">Pasajeros</span>

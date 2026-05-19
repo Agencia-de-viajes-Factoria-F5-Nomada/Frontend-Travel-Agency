@@ -7,6 +7,7 @@ export const PUBLIC_PATHS = {
   PROFILE_ORIGINAL: '/profile/original',
   ENTITIES:    '/profile',
   OFFERS:      '/offers',
+  TRAVELS:     '/travels',
   AUTH:        '/auth',
   DASHBOARD:   '/dashboard',
   LEGAL:       '/legal/:slug',

@@ -11,6 +11,7 @@ import DestinationsPage     from '../pages/DestinationsPage';
 import DestinationDetailPage from '../pages/DestinationDetailPage';
 import OffersPage           from '../pages/OffersPage';
 import SearchResultsPage    from '../pages/SearchResultsPage';
+import TravelsPage          from '../pages/TravelsPage';
 import CheckoutPage         from '../pages/CheckoutPage';
 import AuthPage             from '../pages/AuthPage';
 import EntitiesPage          from '../pages/EntitiesPage';
@@ -44,6 +45,7 @@ export default function AppRoutes() {
         <Route path="/destinations/:id"    element={<DestinationDetailPage />} />
         <Route path="/offers"              element={<OffersPage />} />
         <Route path="/search"              element={<SearchResultsPage />} />
+        <Route path="/travels"             element={<TravelsPage />} />
         <Route path="/auth"                element={<AuthPage />} />
         <Route path="/legal/:slug"         element={<LegalPage />} />
         <Route path="/profile"             element={<PrivateRoute><EntitiesPage /></PrivateRoute>} />
