@@ -40,13 +40,13 @@ export default function AppRoutes() {
 
       {/* ── Rutas públicas ── */}
       <Route element={<PublicLayout />}>
-        <Route path="/"                    element={<HomePage />} />
+        <Route path="/"                    element={<AuthPage />} />
+        <Route path="/home"               element={<HomePage />} />
         <Route path="/destinations"        element={<DestinationsPage />} />
         <Route path="/destinations/:id"    element={<DestinationDetailPage />} />
         <Route path="/offers"              element={<OffersPage />} />
         <Route path="/search"              element={<SearchResultsPage />} />
         <Route path="/travels"             element={<TravelsPage />} />
-        <Route path="/auth"                element={<AuthPage />} />
         <Route path="/legal/:slug"         element={<LegalPage />} />
         <Route path="/profile"             element={<PrivateRoute><EntitiesPage /></PrivateRoute>} />
         <Route path="/profile/original"    element={<PrivateRoute><ProfilePage /></PrivateRoute>} />

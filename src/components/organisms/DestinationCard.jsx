@@ -85,10 +85,6 @@ const DestinationCard = ({ destination, showOfferPrice = false, featured = false
                 : 'bg-surface-950/60 text-white hover:bg-white/90 hover:text-surface-950',
           )}
         >
-          <Heart
-            className={classNames('h-4 w-4', isFavorite && 'fill-current')}
-            aria-hidden="true"
-          />
         </button>
       </Link>
       <div className="flex flex-col gap-4 p-5">

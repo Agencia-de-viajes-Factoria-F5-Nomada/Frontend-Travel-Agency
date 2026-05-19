@@ -7,6 +7,7 @@ import { travelService } from '../services/TravelsService'
 import { hotelService } from '../services/HotelService'
 import { authService } from '../services/authService'
 import { getDestinationFallbackImage, getDestinationImage } from '../utils/destinationImages'
+import { formatDate } from '../utils/formatters'
 
 const DestinationDetailPage = () => {
   const { id }                  = useParams()
@@ -117,7 +118,7 @@ const DestinationDetailPage = () => {
             <div className="mt-3 flex flex-wrap gap-4 text-sm text-ink-muted">
               <span className="flex items-center gap-1">
                 <Calendar className="h-4 w-4" />
-                {travel.startDate} → {travel.endDate}
+                {formatDate(travel.startDate)} → {formatDate(travel.endDate)}
               </span>
               <span className="flex items-center gap-1">
                 <Users className="h-4 w-4" />

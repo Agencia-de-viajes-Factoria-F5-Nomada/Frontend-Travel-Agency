@@ -9,6 +9,7 @@ import { bookingService } from '../services/BookingService'
 import { userService } from '../services/UserService'
 import { authService } from '../services/authService'
 import { classNames } from '../utils/classNames'
+import { formatDate } from '../utils/formatters'
 
 const STEPS = [
   { id: 1, label: 'Pasajeros' },
@@ -338,7 +339,7 @@ const CheckoutPage = () => {
                 </li>
                 <li className="flex justify-between px-4 py-3">
                   <span className="text-ink-soft">Fechas</span>
-                  <span className="text-white">{travel?.startDate} → {travel?.endDate}</span>
+                  <span className="text-white">{formatDate(travel?.startDate)} → {formatDate(travel?.endDate)}</span>
                 </li>
                 <li className="flex justify-between px-4 py-3">
                   <span className="text-ink-soft">Pensión</span>
@@ -400,11 +401,11 @@ const CheckoutPage = () => {
             </li>
             <li className="flex justify-between text-ink-soft">
               <span>Salida</span>
-              <span className="text-white">{travel?.startDate ?? '—'}</span>
+              <span className="text-white">{formatDate(travel?.startDate) ?? '—'}</span>
             </li>
             <li className="flex justify-between text-ink-soft">
               <span>Vuelta</span>
-              <span className="text-white">{travel?.endDate ?? '—'}</span>
+              <span className="text-white">{formatDate(travel?.endDate) ?? '—'}</span>
             </li>
             <li className="flex justify-between text-ink-soft">
               <span>Hotel</span>

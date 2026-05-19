@@ -7,6 +7,7 @@ import Select from '../components/atoms/Select'
 import DestinationCard from '../components/organisms/DestinationCard'
 import PageHeader from '../components/atoms/PageHeader'
 import { travelService } from '../services/TravelsService'
+import { formatDate } from '../utils/formatters'
 
 const SearchResultsPage = () => {
   const [searchParams]          = useSearchParams()
@@ -153,8 +154,8 @@ const SearchResultsPage = () => {
 
           {startDateParam && (
             <div className="mt-4 rounded-lg bg-surface-800 p-3 text-xs text-ink-muted">
-              📅 Salida desde: <span className="text-white">{startDateParam}</span>
-              {endDateParam && <> · Vuelta hasta: <span className="text-white">{endDateParam}</span></>}
+              📅 Salida desde: <span className="text-white">{formatDate(startDateParam)}</span>
+              {endDateParam && <> · Vuelta hasta: <span className="text-white">{formatDate(endDateParam)}</span></>}
             </div>
           )}
 

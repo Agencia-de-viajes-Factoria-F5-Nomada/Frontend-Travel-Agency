@@ -7,6 +7,7 @@ import { hotelService } from '../../services/HotelService'
 import { busService } from '../../services/BusService'
 import { driverService } from '../../services/DriverService'
 import { bookingService } from '../../services/BookingService'
+import { formatDate } from '../../utils/formatters'
 
 const ENTITY_CONFIG = {
   travels: {
@@ -14,8 +15,8 @@ const ENTITY_CONFIG = {
     service: travelService,
     columns: [
       { key: 'destiny', label: 'Destino' },
-      { key: 'startDate', label: 'Inicio' },
-      { key: 'endDate', label: 'Fin' },
+      { key: 'startDate', label: 'Inicio', render: (v) => formatDate(v) },
+      { key: 'endDate', label: 'Fin', render: (v) => formatDate(v) },
       { key: 'availablePlaces', label: 'Plazas' },
       { key: 'sale', label: 'Oferta', render: (v) => v ? '✅' : '—' },
       { key: 'active', label: 'Activo', render: (v) => v ? '✅' : '❌' },
@@ -59,7 +60,7 @@ const ENTITY_CONFIG = {
     columns: [
       { key: 'id', label: 'Nº Reserva' },
       { key: 'travelDestiny', label: 'Destino' },
-      { key: 'startDate', label: 'Inicio' },
+      { key: 'startDate', label: 'Inicio', render: (v) => formatDate(v) },
       { key: 'total', label: 'Total', render: (v) => `${v}€` },
       { key: 'status', label: 'Estado' },
     ],
