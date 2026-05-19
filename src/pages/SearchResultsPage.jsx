@@ -1,26 +1,28 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { SlidersHorizontal, MapPin, ArrowUpDown } from 'lucide-react'
+import { SlidersHorizontal, MapPin } from 'lucide-react'
 import Button from '../components/atoms/Button'
 import Card from '../components/atoms/Card'
-import Select from '../components/atoms/Select'
 import DestinationCard from '../components/organisms/DestinationCard'
 import PageHeader from '../components/atoms/PageHeader'
 import { travelService } from '../services/TravelsService'
+
+const normalize = (str) =>
+  str?.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase() ?? ''
 
 const SearchResultsPage = () => {
   const [searchParams]          = useSearchParams()
   const [travels, setTravels]   = useState([])
   const [loading, setLoading]   = useState(true)
   const [error, setError]       = useState(null)
-
-  const [search, setSearch]     = useState(searchParams.get('destiny') ?? '')
   const [onlyOffers, setOnlyOffers] = useState(false)
-  const [sortBy, setSortBy]     = useState('recommended')
-  const [priceRange, setPriceRange] = useState({ min: 0, max: 5000 })
+  const [search, setSearch]     = useState(searchParams.get('destiny') ?? '')
 
   const startDateParam = searchParams.get('startDate') ?? ''
   const endDateParam   = searchParams.get('endDate') ?? ''
+
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
 
   useEffect(() => {
     travelService.getAvailable()
@@ -29,65 +31,23 @@ const SearchResultsPage = () => {
       .finally(() => setLoading(false))
   }, [])
 
-  const sortOptions = [
-    { value: 'recommended', label: 'Recomendados' },
-    { value: 'price-asc', label: 'Precio: menor a mayor' },
-    { value: 'price-desc', label: 'Precio: mayor a menor' },
-    { value: 'date-asc', label: 'Fecha: más cercano' },
-    { value: 'date-desc', label: 'Fecha: más lejano' },
-  ]
+  const filtered = useMemo(() => travels.filter(t => {
+    const matchFuture = new Date(t.startDate) >= today
 
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
+    const matchDestiny = !search ||
+      normalize(t.destiny).includes(normalize(search)) ||
+      normalize(t.hotelCity).includes(normalize(search))
 
-  const filtered = useMemo(() => {
-    let result = travels.filter(t => {
-      const matchFuture = new Date(t.startDate) >= today
+    const matchOffer = onlyOffers ? t.sale === true : true
 
-      const matchDestiny = !search ||
-        t.destiny?.toLowerCase().includes(search.toLowerCase()) ||
-        t.hotelCity?.toLowerCase().includes(search.toLowerCase())
+    const matchStartDate = !startDateParam ||
+      new Date(t.startDate) >= new Date(startDateParam)
 
-      const matchOffer = onlyOffers ? t.sale === true : true
+    const matchEndDate = !endDateParam ||
+      new Date(t.endDate) <= new Date(endDateParam)
 
-      const matchStartDate = !startDateParam ||
-        new Date(t.startDate) >= new Date(startDateParam)
-
-      const matchEndDate = !endDateParam ||
-        new Date(t.endDate) <= new Date(endDateParam)
-
-      const price = t.price || t.halfBoardPrice || 0
-      const matchPrice = price >= priceRange.min && price <= priceRange.max
-
-      return matchFuture && matchDestiny && matchOffer && matchStartDate && matchEndDate && matchPrice
-    })
-
-    switch (sortBy) {
-      case 'price-asc':
-        result.sort((a, b) => (a.price || a.halfBoardPrice || 0) - (b.price || b.halfBoardPrice || 0))
-        break
-      case 'price-desc':
-        result.sort((a, b) => (b.price || b.halfBoardPrice || 0) - (a.price || a.halfBoardPrice || 0))
-        break
-      case 'date-asc':
-        result.sort((a, b) => new Date(a.startDate) - new Date(b.startDate))
-        break
-      case 'date-desc':
-        result.sort((a, b) => new Date(b.startDate) - new Date(a.startDate))
-        break
-      default:
-        break
-    }
-
-    return result
-  }, [travels, search, onlyOffers, startDateParam, endDateParam, priceRange, sortBy])
-
-  const handleClearFilters = () => {
-    setSearch('')
-    setOnlyOffers(false)
-    setSortBy('recommended')
-    setPriceRange({ min: 0, max: 5000 })
-  }
+    return matchFuture && matchDestiny && matchOffer && matchStartDate && matchEndDate
+  }), [travels, search, onlyOffers, startDateParam, endDateParam])
 
   return (
     <div className="container-page py-12">
@@ -96,14 +56,10 @@ const SearchResultsPage = () => {
         title="Viajes disponibles"
         description={`${filtered.length} destinos encontrados`}
         actions={
-          <div className="flex items-center gap-3">
-            <Select
-              options={sortOptions}
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="w-48"
-            />
-          </div>
+          <Button variant="secondary" size="md">
+            <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
+            Ordenar
+          </Button>
         }
       />
 
@@ -129,25 +85,6 @@ const SearchResultsPage = () => {
                 onChange={e => setSearch(e.target.value)}
                 className="h-10 w-full bg-transparent text-sm text-ink placeholder:text-ink-muted focus:outline-none"
               />
-            </div>
-          </div>
-
-          <div className="mt-4">
-            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink-muted">Precio</p>
-            <div className="space-y-2">
-              <input
-                type="range"
-                min="0"
-                max="5000"
-                step="50"
-                value={priceRange.max}
-                onChange={(e) => setPriceRange(p => ({ ...p, max: Number(e.target.value) }))}
-                className="w-full accent-brand-500"
-              />
-              <div className="flex justify-between text-xs text-ink-muted">
-                <span>0€</span>
-                <span>{priceRange.max}€</span>
-              </div>
             </div>
           </div>
 

@@ -13,8 +13,7 @@ import OffersPage           from '../pages/OffersPage';
 import SearchResultsPage    from '../pages/SearchResultsPage';
 import CheckoutPage         from '../pages/CheckoutPage';
 import AuthPage             from '../pages/AuthPage';
-import EntitiesPage          from '../pages/EntitiesPage';
-import ProfilePage           from '../pages/ProfilePage';
+import ProfilePage          from '../pages/ProfilePage';
 import PersonalAreaPage     from '../pages/PersonalAreaPage';
 import LegalPage            from '../pages/LegalPage';
 import NotFoundPage         from '../pages/NotFoundPage';
@@ -24,14 +23,11 @@ import DashboardPage        from '../pages/DashboardPage';
 import UsersPage            from '../pages/UsersPage';
 
 // CRUDs admin (nuevos componentes Atomic Design)
-import HotelsCRUD        from '../components/organisms/HotelsCRUD';
-import BusesCRUD         from '../components/organisms/BusesCRUD';
-import DriversCRUD       from '../components/organisms/DriversCRUD';
-import TravelsCRUD       from '../components/organisms/TravelsCRUD';
-import BookingsCRUD      from '../components/organisms/BookingsCRUD';
-import EmployeesCRUD     from '../components/organisms/EmployeesCRUD';
-import OffersCRUD        from '../components/organisms/OffersCRUD';
-import TripSegmentsCRUD  from '../components/organisms/TripSegmentsCRUD';
+import HotelsCRUD   from '../components/organisms/HotelsCRUD';
+import BusesCRUD    from '../components/organisms/BusesCRUD';
+import DriversCRUD  from '../components/organisms/DriversCRUD';
+import TravelsCRUD  from '../components/organisms/TravelsCRUD';
+import BookingsCRUD from '../components/organisms/BookingsCRUD';
 
 export default function AppRoutes() {
   return (
@@ -46,8 +42,7 @@ export default function AppRoutes() {
         <Route path="/search"              element={<SearchResultsPage />} />
         <Route path="/auth"                element={<AuthPage />} />
         <Route path="/legal/:slug"         element={<LegalPage />} />
-        <Route path="/profile"             element={<PrivateRoute><EntitiesPage /></PrivateRoute>} />
-        <Route path="/profile/original"    element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
+        <Route path="/profile"             element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
         <Route path="/personal/:section"   element={<PrivateRoute><PersonalAreaPage /></PrivateRoute>} />
         <Route path="/checkout"            element={
           <PrivateRoute><CheckoutPage /></PrivateRoute>
@@ -67,9 +62,6 @@ export default function AppRoutes() {
         <Route path="buses"                element={<BusesCRUD />} />
         <Route path="drivers"              element={<DriversCRUD />} />
         <Route path="travels"              element={<TravelsCRUD />} />
-        <Route path="employees"            element={<EmployeesCRUD />} />
-        <Route path="offers"               element={<OffersCRUD />} />
-        <Route path="trip-segments"        element={<TripSegmentsCRUD />} />
       </Route>
 
       {/* ── 404 ── */}
