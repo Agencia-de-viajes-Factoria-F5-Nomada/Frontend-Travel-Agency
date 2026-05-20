@@ -107,12 +107,12 @@ const SearchResultsPage = () => {
           <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-muted">Filtros</h2>
 
           <div className="mt-4">
-            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink-muted">Destino</p>
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink-muted">Viaje</p>
             <div className="flex items-center gap-2 rounded-xl border border-surface-600 bg-surface-900 px-3">
               <MapPin className="h-4 w-4 text-brand-400" aria-hidden="true" />
               <input
                 type="text"
-                placeholder="Buscar destino..."
+                placeholder="Viaje"
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 className="h-10 w-full bg-transparent text-sm text-ink placeholder:text-ink-muted focus:outline-none"
