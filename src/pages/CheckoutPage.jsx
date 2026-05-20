@@ -68,7 +68,7 @@ const CheckoutPage = () => {
   const { travelId, typeBoard: initialBoard, travel, hotel } = location.state ?? {}
 
   const [step, setStep]             = useState(1)
-  const [typeBoard, setTypeBoard]   = useState(initialBoard ?? 'HALF_BOARD')
+  const [typeBoard, setTypeBoard]   = useState(initialBoard ?? 'HALF')
   const [isGroup, setIsGroup]       = useState(false)
   const [passengers, setPassengers] = useState([{ ...EMPTY_PASSENGER }])
   const [quote, setQuote]           = useState(null)
@@ -90,20 +90,13 @@ const CheckoutPage = () => {
   const changePassenger = (i, field, value) =>
     setPassengers(p => p.map((pass, idx) => idx === i ? { ...pass, [field]: value } : pass))
 
-  // Validación: menor de 12 años sin adulto
-  const hasMinor  = passengers.some(p => p.birthDate && calculateAge(p.birthDate) < 12)
-  const hasAdult  = passengers.some(p => p.birthDate && calculateAge(p.birthDate) >= 12)
+  const hasMinor   = passengers.some(p => p.birthDate && calculateAge(p.birthDate) < 12)
+  const hasAdult   = passengers.some(p => p.birthDate && calculateAge(p.birthDate) >= 12)
   const minorError = hasMinor && !hasAdult
+  const allFilled  = passengers.every(p => p.name.trim() && p.surname.trim() && p.birthDate)
 
-  // Validación: todos los pasajeros tienen los campos rellenos
-  const allFilled = passengers.every(p => p.name.trim() && p.surname.trim() && p.birthDate)
-
-  // ── Cotización ────────────────────────────────────
   const handleQuote = async () => {
-    if (minorError) {
-      setError('Un menor necesita al menos un adulto en el grupo.')
-      return
-    }
+    if (minorError) { setError('Un menor necesita al menos un adulto en el grupo.'); return }
     setLoading(true)
     setError(null)
     try {
@@ -128,22 +121,16 @@ const CheckoutPage = () => {
     }
   }
 
-  // ── Confirmar ────────────────────────────────────
   const handleConfirm = async () => {
     setLoading(true)
     setError(null)
     try {
-      const user   = authService.getUser()
-      const result = await bookingService.confirm({
+      const result = await bookingService.create({
         travelId,
         typeBoard,
         isGroup,
-        passengers: passengers.map(p => ({
-          name:      p.name,
-          surname:   p.surname,
-          birthDate: p.birthDate,
-        })),
-        userId: user?.id,
+        customerIds: [1],
+        boughtDate: new Date().toISOString(),
       })
       setBooking(result)
       setStep(4)
@@ -170,7 +157,6 @@ const CheckoutPage = () => {
             <div className="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</div>
           )}
 
-          {/* ── PASO 1: Pasajeros ── */}
           {step === 1 && (
             <div className="mt-8 space-y-4">
               <div className="flex items-center justify-between">
@@ -233,13 +219,12 @@ const CheckoutPage = () => {
                 <p className="text-sm font-medium text-white">Tipo de pensión</p>
                 <div className="grid grid-cols-2 gap-2">
                   {[
-                    { value: 'HALF_BOARD', label: 'Media pensión' },
-                    { value: 'FULL_BOARD', label: 'Pensión completa' },
+                    { value: 'HALF', label: 'Media pensión' },
+                    { value: 'FULL', label: 'Pensión completa' },
                   ].map(o => (
                     <label key={o.value}
                       className="flex items-center gap-2 rounded-lg p-3 cursor-pointer border"
-                      style={{ borderColor: typeBoard === o.value ? '#4A8FA8' : 'transparent',
-                               background:   typeBoard === o.value ? '#DAEEF7' : '' }}>
+                      style={{ borderColor: typeBoard === o.value ? '#4A8FA8' : 'transparent', background: typeBoard === o.value ? '#DAEEF7' : '' }}>
                       <input type="radio" name="typeBoard" value={o.value}
                         checked={typeBoard === o.value}
                         onChange={() => setTypeBoard(o.value)} />
@@ -267,7 +252,6 @@ const CheckoutPage = () => {
             </div>
           )}
 
-          {/* ── PASO 2: Cotización ── */}
           {step === 2 && quote && (
             <div className="mt-8 space-y-4">
               <h2 className="font-semibold text-white">Resumen de la cotización</h2>
@@ -291,7 +275,6 @@ const CheckoutPage = () => {
                   <span className="text-white">{quote.totalPrice}€</span>
                 </li>
               </ul>
-
               <div className="flex justify-between pt-2">
                 <Button variant="ghost" onClick={() => setStep(1)}>
                   <ArrowLeft className="h-4 w-4" /> Atrás
@@ -303,7 +286,6 @@ const CheckoutPage = () => {
             </div>
           )}
 
-          {/* ── PASO 3: Confirmar ── */}
           {step === 3 && (
             <div className="mt-8 space-y-4">
               <h2 className="font-semibold text-white">Confirmar reserva</h2>
@@ -318,7 +300,7 @@ const CheckoutPage = () => {
                 </li>
                 <li className="flex justify-between px-4 py-3">
                   <span className="text-ink-soft">Pensión</span>
-                  <span className="text-white">{typeBoard === 'HALF_BOARD' ? 'Media pensión' : 'Pensión completa'}</span>
+                  <span className="text-white">{typeBoard === 'HALF' ? 'Media pensión' : 'Pensión completa'}</span>
                 </li>
                 <li className="flex justify-between px-4 py-3">
                   <span className="text-ink-soft">Pasajeros</span>
@@ -329,7 +311,6 @@ const CheckoutPage = () => {
                   <span className="text-white">{quote?.totalPrice}€</span>
                 </li>
               </ul>
-
               <div className="flex justify-between pt-2">
                 <Button variant="ghost" onClick={() => setStep(2)}>
                   <ArrowLeft className="h-4 w-4" /> Atrás
@@ -342,7 +323,6 @@ const CheckoutPage = () => {
             </div>
           )}
 
-          {/* ── PASO 4: Confirmado ── */}
           {step === 4 && (
             <div className="mt-8 flex flex-col items-center gap-4 py-6 text-center">
               <span className="grid h-16 w-16 place-items-center rounded-full"
@@ -354,9 +334,9 @@ const CheckoutPage = () => {
                 Hemos enviado la confirmación a tu correo. Puedes gestionar este viaje
                 desde tu perfil cuando quieras.
               </p>
-              {booking?.id && (
+              {booking?.bookingId && (
                 <p className="text-sm text-ink-muted">
-                  Número de reserva: <span className="font-bold text-white">#{booking.id}</span>
+                  Número de reserva: <span className="font-bold text-white">#{booking.bookingId}</span>
                 </p>
               )}
               <Button onClick={() => navigate('/profile')}>Ir a mis reservas</Button>
@@ -364,7 +344,6 @@ const CheckoutPage = () => {
           )}
         </Card>
 
-        {/* Resumen lateral */}
         <Card as="aside" className="h-fit p-6">
           <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-muted">
             Resumen del viaje
