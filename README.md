@@ -1,451 +1,400 @@
-<div align="center">
+# NOMADA Frontend
 
-# NOMADA — Travel Agency
+Frontend de la plataforma NOMADA, una aplicación web para una agencia de viajes que permite explorar viajes disponibles, consultar ofertas, iniciar sesión, realizar reservas, solicitar viajes personalizados y administrar entidades internas desde un panel de gestión.
 
-**Full-stack web application for travel package booking and agency management**
+El proyecto está desarrollado con React, Vite y Tailwind CSS, consumiendo una API REST mediante una capa de servicios basada en Axios. La interfaz está organizada con una arquitectura de componentes reutilizables inspirada en Atomic Design.
 
-[![React](https://img.shields.io/badge/React-19.2.5-61DAFB?style=flat-square&logo=react)](https://react.dev/)
-[![Vite](https://img.shields.io/badge/Vite-8.0-646CFF?style=flat-square&logo=vite)](https://vitejs.dev/)
-[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.4-38BDF8?style=flat-square&logo=tailwindcss)](https://tailwindcss.com/)
-[![Express](https://img.shields.io/badge/Express-4.22-000000?style=flat-square&logo=express)](https://expressjs.com/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)](LICENSE)
+## Autores
 
-</div>
+Este frontend ha sido desarrollado por:
 
----
+- Maria, desarrolladora frontend.
+- Facun, desarrollador frontend.
 
-## Table of Contents
+Ambos autores han trabajado en la construcción de la experiencia de usuario, la estructura de rutas, los componentes visuales, la integración con servicios HTTP, el flujo de autenticación, la navegación pública y las vistas privadas de administración.
 
-- [About the Project](#about-the-project)
-- [Screenshots](#screenshots)
-- [Flow Diagram](#flow-diagram)
-- [Tech Stack](#tech-stack)
-- [Architecture](#architecture)
-- [Data Model & Entity Relationships](#data-model--entity-relationships)
-- [Getting Started](#getting-started)
-- [Environment Variables](#environment-variables)
-- [API Reference](#api-reference)
-- [Available Scripts](#available-scripts)
-- [Project Structure](#project-structure)
-- [Testing](#testing)
-- [Deployment](#deployment)
-- [Roadmap](#roadmap)
-- [Contributing](#contributing)
-- [Developers](#developers)
+## Objetivo del Proyecto
 
----
+NOMADA nace como una aplicación orientada a digitalizar la experiencia de una agencia de viajes. El frontend proporciona una interfaz clara para dos perfiles principales:
 
-## About the Project
+- Usuarios finales, que pueden buscar viajes, ver detalles, consultar ofertas, iniciar sesión, reservar y solicitar viajes personalizados.
+- Personal administrador, que puede gestionar entidades operativas como viajes, hoteles, buses, conductores, reservas, usuarios, empleados, ofertas y segmentos de viaje.
 
-**NOMADA** is a travel agency web platform built as a real-world project for **Factoría F5**. It allows customers to browse, search, and book travel packages, while providing agency staff with a full admin dashboard to manage destinations, hotels, buses, drivers, bookings, and users.
+La aplicación busca ser funcional, mantenible y escalable, priorizando una navegación sencilla y una estructura técnica que permita seguir creciendo sin duplicar lógica ni acoplar componentes innecesariamente.
 
-**Key features:**
-- Public storefront: browse destinations, view offers, search for packages
-- Booking flow: select travel, choose hotel, and confirm reservation
-- Role-based access control: `admin` and `user` roles with protected routes
-- Admin dashboard: full CRUD for travels, hotels, buses, drivers, bookings, and users
-- JWT authentication with persistent session via `localStorage`
+## Funcionalidades Principales
 
----
+### Área Pública
 
-## Screenshots
+- Página de inicio con acceso rápido a destinos y viajes personalizados.
+- Catálogo de destinos y viajes disponibles.
+- Página de detalle para cada viaje.
+- Búsqueda de viajes por destino, fechas y pasajeros.
+- Filtros por precio, duración, región, estrellas, disponibilidad y tipo de pensión.
+- Página de ofertas.
+- Página de solicitud de viaje personalizado.
+- Páginas legales.
+- Registro e inicio de sesión.
 
-> _Add screenshots here — replace each placeholder with the actual image path_
+### Viajes Personalizados
 
-| Home Page | Destinations |
-|:---------:|:------------:|
-| ![Home](docs/screenshots/home.png) | ![Destinations](docs/screenshots/destinations.png) |
+La sección de viaje personalizado permite al usuario enviar una solicitud completa con preferencias específicas:
 
-| Booking Flow | Admin Dashboard |
-|:------------:|:---------------:|
-| ![Booking](docs/screenshots/booking.png) | ![Admin](docs/screenshots/admin-dashboard.png) |
+- Destino o idea de viaje.
+- Ciudad de salida.
+- Fechas de salida y vuelta.
+- Número de viajeros.
+- Presupuesto por persona.
+- Tipo de experiencia: playa, aventura, ruta, cultura, gastronomía o naturaleza.
+- Ritmo del viaje: relajado, equilibrado o intenso.
+- Tipo de alojamiento preferido.
+- Servicios incluidos: avión, hotel y actividades.
+- Imprescindibles del viaje.
+- Aspectos a evitar.
 
----
+Esta información se envía al backend como una solicitud personalizada para que el equipo pueda preparar una propuesta adaptada.
 
-## Flow Diagram
+### Área Privada
 
-> _Insert the application flow diagram below_
+- Perfil de usuario.
+- Área personal.
+- Checkout de reservas.
+- Confirmación de reservas.
+- Acceso protegido mediante rutas privadas.
 
-![Flow Diagram](docs/diagrams/flow-diagram.png)
+### Área Administrativa
 
----
+El panel de administración permite gestionar entidades clave del negocio:
 
-## Tech Stack
+- Viajes.
+- Hoteles.
+- Reservas.
+- Usuarios.
+- Buses.
+- Conductores.
+- Empleados.
+- Ofertas.
+- Segmentos de viaje.
 
-### Frontend
-| Technology | Version | Purpose |
-|---|---|---|
-| [React](https://react.dev/) | 19.2.5 | UI framework |
-| [Vite](https://vitejs.dev/) | 8.0 | Build tool & dev server |
-| [React Router DOM](https://reactrouter.com/) | 6.30 | Client-side routing |
-| [Tailwind CSS](https://tailwindcss.com/) | 3.4 | Utility-first styling |
-| [Axios](https://axios-http.com/) | 1.16 | HTTP client |
-| [Lucide React](https://lucide.dev/) | latest | Icon library |
+El acceso administrativo está protegido y reservado a usuarios con permisos adecuados.
 
-### Backend
-| Technology | Version | Purpose |
-|---|---|---|
-| [Express](https://expressjs.com/) | 4.22 | REST API server |
-| [JSON Web Token](https://jwt.io/) | 9.0 | Authentication |
-| [CORS](https://www.npmjs.com/package/cors) | 2.8 | Cross-origin requests |
+## Stack Tecnológico
 
-### Testing & Tooling
-| Technology | Purpose |
+| Tecnología | Uso |
 |---|---|
-| [Playwright](https://playwright.dev/) | End-to-end testing |
-| [ESLint](https://eslint.org/) | Code linting |
-| [Concurrently](https://www.npmjs.com/package/concurrently) | Run frontend + backend together |
+| React 19 | Construcción de interfaces |
+| Vite 8 | Servidor de desarrollo y build |
+| React Router DOM | Enrutado SPA |
+| Tailwind CSS | Sistema de estilos utility-first |
+| Axios | Cliente HTTP para consumir la API |
+| Lucide React | Iconografía |
+| ESLint | Revisión estática de código |
+| Express | Servidor local/API auxiliar del proyecto |
+| JWT | Autenticación basada en token |
 
----
+## Arquitectura Frontend
 
-## Architecture
+La estructura sigue una separación por responsabilidades:
 
-The project follows **Atomic Design** for the component layer:
-
-```
-Atoms → Molecules → Organisms → Pages
-```
-
-- **Atoms** — base UI elements: `Button`, `Input`, `Card`, `Badge`
-- **Molecules** — composed elements: `FormField`, `Alert`, `SearchBar`
-- **Organisms** — feature blocks: CRUD tables, booking forms, destination cards
-- **Pages** — full views assembled from organisms
-
-State is managed locally with React hooks (`useState`, `useEffect`). The backend is an Express server with an in-memory data store, serving a REST API on port `8080`.
-
----
-
-## Data Model & Entity Relationships
-
-### Entities
-
-#### User
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | number | Primary key |
-| `name` | string | Full name |
-| `email` | string | Unique email (login) |
-| `password` | string | Plain text (dev only) |
-| `role` | `ADMIN` \| `USER` | Access level |
-| `dni` | string | National ID (users only) |
-| `phone` | string | Contact phone |
-| `active` | boolean | Account status |
-
-#### Travel
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | number | Primary key |
-| `destiny` | string | Destination name |
-| `startDate` | date | Departure date |
-| `endDate` | date | Return date |
-| `hotelId` | number | **FK → Hotel** |
-| `availablePlaces` | number | Seats remaining |
-| `sale` | boolean | On sale flag |
-| `discountPercentage` | number | Discount % if on sale |
-| `active` | boolean | Listing status |
-
-#### Hotel
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | number | Primary key |
-| `name` | string | Hotel name |
-| `city` | string | City |
-| `country` | string | Country |
-| `stars` | number | Star rating (1–5) |
-| `capacity` | number | Total rooms |
-| `availablePlaces` | number | Available rooms |
-| `fullBoardPrice` | number | Price per night (full board) |
-| `halfBoardPrice` | number | Price per night (half board) |
-| `active` | boolean | Active status |
-
-#### Booking
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | string | Primary key (`TR-XXXX`) |
-| `destination` | string | Destination label |
-| `dates` | string | Date range |
-| `travelers` | number | Number of travelers |
-| `total` | number | Total price (€) |
-| `status` | `confirmed` \| `pending` | Booking state |
-| `userId` | number | **FK → User** |
-
-#### Bus
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | number | Primary key |
-| `busNumber` | string | Fleet identifier |
-| `model` | string | Manufacturer model |
-| `capacity` | number | Passenger capacity |
-| `available` | boolean | Availability |
-
-#### Driver
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | number | Primary key |
-| `name` | string | Full name |
-| `license` | string | Driver license number |
-| `experience` | number | Years of experience |
-| `active` | boolean | Active status |
-
-#### Offer
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | number | Primary key |
-| `title` | string | Offer title |
-| `description` | string | Short description |
-| `discount` | number | Discount percentage |
-| `validUntil` | date | Expiry date |
-
----
-
-### Entity Relationship Diagram
-
-```mermaid
-erDiagram
-    USER {
-        int     id      PK
-        string  name
-        string  email
-        string  role
-        boolean active
-    }
-    HOTEL {
-        int     id             PK
-        string  name
-        string  city
-        string  country
-        int     stars
-        float   fullBoardPrice
-        float   halfBoardPrice
-        boolean active
-    }
-    TRAVEL {
-        int     id                 PK
-        string  destiny
-        date    startDate
-        date    endDate
-        int     hotelId            FK
-        int     availablePlaces
-        boolean sale
-        int     discountPercentage
-        boolean active
-    }
-    BOOKING {
-        string  id        PK
-        int     travelers
-        float   total
-        string  status
-        int     userId    FK
-    }
-    BUS {
-        int     id        PK
-        string  busNumber
-        string  model
-        int     capacity
-        boolean available
-    }
-    DRIVER {
-        int     id         PK
-        string  name
-        string  license
-        int     experience
-        boolean active
-    }
-    OFFER {
-        int    id         PK
-        string title
-        int    discount
-        date   validUntil
-    }
-
-    USER    ||--o{ BOOKING : "makes"
-    BOOKING }o--||  TRAVEL  : "reserves"
-    TRAVEL  }o--||  HOTEL   : "hosted at"
+```text
+src/
+  assets/       Recursos estáticos
+  components/   Componentes reutilizables
+  constants/    Constantes de navegación y rutas
+  hooks/        Hooks personalizados
+  pages/        Vistas completas de la aplicación
+  routes/       Definición centralizada de rutas
+  services/     Capa de comunicación con la API
+  utils/        Funciones auxiliares
 ```
 
-**Key relationships:**
-- `Travel` belongs to one `Hotel` (N:1 via `hotelId`)
-- `Booking` belongs to one `User` (N:1 via `userId`)
-- One `User` can have many `Bookings` (1:N)
-- One `Hotel` can be linked to many `Travels` (1:N)
-- `Bus` and `Driver` are managed independently (assigned to travels at the operational level)
-- `Offer` is standalone — applies promotional discounts displayed on the storefront
+### Organización de Componentes
 
----
+Los componentes están agrupados según su nivel de responsabilidad:
 
-### Roles & Permissions
+```text
+components/
+  atoms/        Elementos base: Button, Input, Card, Badge, Select
+  molecules/    Composiciones pequeñas: filtros, buscadores, alertas
+  organisms/    Bloques funcionales: tablas, formularios CRUD, tarjetas
+  layout/       Layouts públicos y privados
+```
 
-| Action | `USER` | `ADMIN` |
-|--------|:------:|:-------:|
-| Browse travels & hotels | ✅ | ✅ |
-| View offers | ✅ | ✅ |
-| Register / Login | ✅ | ✅ |
-| Create a booking | ✅ | ✅ |
-| View own bookings | ✅ | ✅ |
-| View all bookings | ❌ | ✅ |
-| View all users | ❌ | ✅ |
-| Create / edit / delete Travel | ❌ | ✅ |
-| Create / edit / delete Hotel | ❌ | ✅ |
-| Create / edit / delete Bus | ❌ | ✅ |
-| Create / edit / delete Driver | ❌ | ✅ |
-| Create / edit / delete Offer | ❌ | ✅ |
-| Manage users | ❌ | ✅ |
-| Access admin dashboard | ❌ | ✅ |
+Esta organización ayuda a mantener una UI consistente y reduce la duplicación de código.
 
-> Protected routes on both frontend (React Router guards) and backend (JWT middleware `verifyToken`) enforce these permissions.
+## Rutas Principales
 
----
+| Ruta | Descripción |
+|---|---|
+| `/` | Página de inicio |
+| `/home` | Página de inicio |
+| `/destinations` | Catálogo de destinos |
+| `/destinations/:id` | Detalle de destino/viaje |
+| `/travels` | Listado de viajes |
+| `/travels/:id` | Detalle de viaje |
+| `/offers` | Ofertas disponibles |
+| `/search` | Resultados de búsqueda |
+| `/checkout` | Proceso de reserva |
+| `/checkout/custom` | Solicitud de viaje personalizado |
+| `/auth` | Login y registro |
+| `/profile` | Perfil protegido |
+| `/personal/:section` | Área personal |
+| `/admin` | Panel de administración |
 
-## Getting Started
+## Servicios de API
 
-### Prerequisites
+La comunicación con el backend se centraliza en `src/services`.
 
-- [Node.js](https://nodejs.org/) v18 or higher
-- npm v9 or higher
+Servicios principales:
 
-### Installation
+```text
+api.js
+authService.js
+TravelsService.js
+BookingService.js
+HotelService.js
+BusService.js
+DriverService.js
+UsersService.js
+offersService.js
+tripSegmentsService.js
+employeesService.js
+cloudinaryService.js
+```
+
+La capa de servicios evita que las páginas llamen directamente a Axios, concentrando la lógica de endpoints y facilitando cambios futuros en la API.
+
+## Autenticación y Seguridad
+
+La aplicación utiliza autenticación basada en JWT. El token se conserva en el cliente y se usa para consumir rutas protegidas.
+
+Características implementadas:
+
+- Inicio de sesión.
+- Registro.
+- Persistencia de sesión.
+- Rutas privadas.
+- Protección de rutas administrativas.
+- Redirección a login cuando el usuario no está autenticado.
+
+El componente `PrivateRoute` controla el acceso a vistas restringidas.
+
+## Flujo de Reserva
+
+El flujo de reserva permite:
+
+1. Seleccionar un viaje.
+2. Ver el detalle del viaje.
+3. Elegir tipo de pensión.
+4. Iniciar el checkout.
+5. Añadir pasajeros.
+6. Calcular precio.
+7. Confirmar reserva.
+
+El flujo contempla validaciones como:
+
+- Número de pasajeros.
+- Datos personales.
+- Fecha de nacimiento.
+- DNI o pasaporte.
+- Menores acompañados por adultos.
+- Tipo de pensión.
+- Precio total con IVA.
+
+## Viaje Personalizado
+
+La página `/checkout/custom` resuelve el flujo de solicitud personalizada. Esta ruta evita el error 404 que aparecía al hacer clic en el botón de viaje personalizado desde la página de inicio.
+
+La vista está pensada para recopilar datos útiles para que la agencia pueda preparar una propuesta realista:
+
+- Preferencias de destino.
+- Estilo del viaje.
+- Nivel de actividad.
+- Tipo de alojamiento.
+- Presupuesto.
+- Fechas aproximadas.
+- Servicios deseados.
+- Notas relevantes.
+
+El objetivo es que el usuario pueda expresar qué tipo de experiencia quiere sin estar limitado a un paquete ya creado.
+
+## Instalación
+
+### Requisitos Previos
+
+- Node.js 18 o superior.
+- npm 9 o superior.
+- Acceso al backend/API configurado.
+
+### Pasos
 
 ```bash
-# 1. Clone the repository
 git clone https://github.com/Agencia-de-viajes-Factoria-F5-Nomada/Frontend-Travel-Agency.git
 cd Frontend-Travel-Agency
-
-# 2. Install dependencies
 npm install
+```
 
-# 3. Configure environment variables
+Crear el archivo `.env` a partir del ejemplo:
+
+```bash
 cp .env.example .env
-# Edit .env if your backend runs on a different port
 ```
 
-### Running the App
-
-**Option A — single command (recommended):**
-```bash
-npm run dev:full
-```
-
-**Option B — two terminals:**
-```bash
-# Terminal 1 — backend API
-npm run server
-
-# Terminal 2 — frontend
-npm run dev
-```
-
-| Service | URL |
-|---------|-----|
-| Frontend | http://localhost:5173 |
-| Backend API | http://localhost:8080/api |
-| Health check | http://localhost:8080/api/health |
-
-### Test Credentials
-
-| Role | Email | Password |
-|------|-------|----------|
-| Admin | `admin@travel.io` | `admin123` |
-| User | `marta@travel.io` | `user123` |
-
----
-
-## Environment Variables
-
-Create a `.env` file in the project root:
+Configurar la URL de API si es necesario:
 
 ```env
 VITE_API_URL=http://localhost:8080
 ```
 
-| Variable | Default | Description |
-|---|---|---|
-| `VITE_API_URL` | `http://localhost:8080` | Base URL of the backend API |
+## Ejecución en Desarrollo
 
----
-
-## API Reference
-
-All endpoints are prefixed with `/api`.
-
-| Resource | Endpoint | Methods |
-|---|---|---|
-| Auth | `/api/auth/login` | `POST` |
-| Travels | `/api/travels` | `GET POST PUT DELETE` |
-| Hotels | `/api/hotels` | `GET POST PUT DELETE` |
-| Buses | `/api/buses` | `GET POST PUT DELETE` |
-| Drivers | `/api/drivers` | `GET POST PUT DELETE` |
-| Bookings | `/api/bookings` | `GET POST PUT DELETE` |
-| Users | `/api/users` | `GET POST PUT DELETE` |
-| Offers | `/api/offers` | `GET POST PUT DELETE` |
-| Health | `/api/health` | `GET` |
-
-Authentication is required for protected endpoints — include the JWT token as a Bearer token in the `Authorization` header:
-
-```
-Authorization: Bearer <token>
-```
-
----
-
-## Available Scripts
+Levantar solo el frontend:
 
 ```bash
-npm run dev          # Start frontend dev server (port 5173)
-npm run server       # Start backend API server (port 8080)
-npm run dev:full     # Start both concurrently
-npm run build        # Production build
-npm run preview      # Preview production build
-npm run lint         # Run ESLint
-npm run e2e:install  # Install Playwright browsers
-npm run e2e:test     # Run end-to-end tests
-npm run kill:port    # Kill process on port 8080 (Windows)
+npm run dev
 ```
 
----
+Levantar backend y frontend en paralelo:
 
-## Project Structure
-
-```
-├── public/                  # Static assets
-├── src/
-│   ├── assets/              # Images and media
-│   ├── components/
-│   │   ├── atoms/           # Base UI components
-│   │   ├── molecules/       # Composite components
-│   │   ├── organisms/       # Feature-level components
-│   │   └── layout/          # Layout wrappers
-│   ├── constants/           # Routes, API paths, navigation
-│   ├── hooks/               # Custom React hooks
-│   ├── pages/               # Full page views
-│   ├── routes/              # Route configuration
-│   ├── services/            # API service layer (Axios)
-│   ├── utils/               # Helpers and formatters
-│   ├── index.css            # Global styles
-│   └── main.jsx             # App entry point
-├── server.js                # Express backend server
-├── vite.config.js           # Vite configuration
-├── tailwind.config.js       # Tailwind configuration
-└── .env                     # Environment variables
+```bash
+npm run dev:full
 ```
 
----
+Ejecutar el servidor backend auxiliar:
 
-## Developers
+```bash
+npm run server
+```
 
-Built with dedication by:
+Por defecto:
 
-| | Name | GitHub |
+| Servicio | URL |
+|---|---|
+| Frontend | `http://localhost:5173` |
+| Backend/API | `http://localhost:8080` |
+
+El puerto del frontend puede cambiar automáticamente si el puerto `5173` está ocupado.
+
+## Scripts Disponibles
+
+| Script | Descripción |
+|---|---|
+| `npm run dev` | Inicia Vite en modo desarrollo |
+| `npm run build` | Genera la build de producción |
+| `npm run preview` | Sirve la build generada |
+| `npm run lint` | Ejecuta ESLint |
+| `npm run server` | Inicia el servidor Express |
+| `npm run dev:full` | Ejecuta frontend y backend en paralelo |
+| `npm run e2e:install` | Instala dependencias de Playwright |
+| `npm run e2e:test` | Ejecuta pruebas end-to-end |
+
+## Build de Producción
+
+Para generar una build optimizada:
+
+```bash
+npm run build
+```
+
+El resultado se genera en:
+
+```text
+dist/
+```
+
+Para previsualizar la build:
+
+```bash
+npm run preview
+```
+
+## Convenciones de Desarrollo
+
+### Componentes
+
+- Los componentes base deben mantenerse en `components/atoms`.
+- Las composiciones pequeñas deben ir en `components/molecules`.
+- Los bloques de funcionalidad más grandes deben ir en `components/organisms`.
+- Las vistas completas deben ir en `pages`.
+
+### Servicios
+
+- Las llamadas HTTP deben centralizarse en `services`.
+- Las páginas no deberían construir URLs complejas directamente.
+- La lógica de transformación de datos debe mantenerse cerca del servicio correspondiente.
+
+### Estilos
+
+- Se prioriza Tailwind CSS.
+- Se reutilizan colores y clases ya presentes en el proyecto.
+- Se evita introducir estilos globales innecesarios.
+- Se mantiene una UI consistente con el diseño existente.
+
+### Rutas
+
+- Las rutas se definen en `src/routes/AppRoutes.jsx`.
+- Las rutas protegidas se envuelven con `PrivateRoute`.
+- Las rutas administrativas requieren permisos de administrador.
+
+## Calidad y Mantenibilidad
+
+El proyecto está orientado a mantener una base de código clara:
+
+- Componentes pequeños y reutilizables.
+- Separación entre vistas y servicios.
+- Rutas centralizadas.
+- Estados locales simples mediante hooks.
+- Formularios controlados.
+- Feedback visual para errores y estados de carga.
+- Reutilización de componentes comunes como `Button`, `Card`, `Input` y `PageHeader`.
+
+## Variables de Entorno
+
+| Variable | Descripción | Ejemplo |
 |---|---|---|
-| 👨‍💻 | **Facundo** | [@facundo](https://github.com/facundo) |
-| 👩‍💻 | **Maria** | [@Maria19761976](https://github.com/Maria19761976) |
+| `VITE_API_URL` | URL base del backend | `http://localhost:8080` |
 
-Project developed as part of the **Factoría F5** bootcamp program.
+## Estructura Resumida
 
----
+```text
+NOMADA Frontend
+├── public/
+├── src/
+│   ├── assets/
+│   ├── components/
+│   │   ├── atoms/
+│   │   ├── molecules/
+│   │   ├── organisms/
+│   │   └── layout/
+│   ├── constants/
+│   ├── hooks/
+│   ├── pages/
+│   ├── routes/
+│   ├── services/
+│   ├── test/
+│   └── utils/
+├── server.js
+├── package.json
+├── vite.config.js
+├── tailwind.config.js
+└── README.md
+```
 
-<div align="center">
+## Estado del Proyecto
 
-Made with ❤️ by **NOMADA Team** · Factoría F5 · 2026que mas 
+El frontend se encuentra en desarrollo activo. Las funcionalidades principales ya están implementadas, incluyendo navegación pública, autenticación, área privada, panel administrativo, reservas y solicitudes de viaje personalizado.
 
+Próximas mejoras recomendadas:
 
-</div>
+- Mejorar cobertura de tests.
+- Añadir pruebas visuales de flujos críticos.
+- Conectar la página de viaje personalizado con recomendaciones reales de viajes existentes.
+- Mejorar la gestión de estados globales si la aplicación sigue creciendo.
+- Documentar contratos exactos de API.
+- Añadir capturas actualizadas de las principales pantallas.
+
+## Créditos
+
+Desarrollado por Maria y Facun como desarrolladores frontend del proyecto NOMADA.
+
+El proyecto forma parte del contexto formativo y práctico de Factoría F5, con enfoque en desarrollo web moderno, arquitectura de componentes, integración frontend-backend y construcción de una experiencia real de producto.
