@@ -233,4 +233,4 @@ const HomePage = () => {
   )
 }
 
-export default HomePageq
+export default HomePage
