@@ -73,36 +73,38 @@ const Modal = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 overflow-y-auto"
+      className="fixed inset-0 z-50"
       role="dialog"
       aria-modal="true"
       aria-labelledby="modal-title"
     >
-      <div className="flex min-h-full items-center justify-center p-4">
-        <div
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm"
-          onClick={closeOnBackdrop ? onClose : undefined}
-        />
-        <div
-          ref={modalRef}
-          className={classNames('relative w-full rounded-2xl bg-white shadow-xl', sizes[size])}
-        >
-          <div className="flex items-center justify-between border-b border-surface-700/40 px-6 py-4">
-            <h2 id="modal-title" className="text-lg font-semibold text-ink">{title}</h2>
-            {showClose && (
-              <Button variant="ghost" size="icon" onClick={onClose} aria-label="Cerrar modal">
-                <X className="h-5 w-5" />
-              </Button>
+      <div
+        className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+        onClick={closeOnBackdrop ? onClose : undefined}
+      />
+      <div className="fixed inset-0 overflow-y-auto">
+        <div className="flex min-h-full items-center justify-center p-4">
+          <div
+            ref={modalRef}
+            className={classNames('relative w-full rounded-2xl bg-white shadow-xl', sizes[size])}
+          >
+            <div className="flex items-center justify-between border-b border-surface-700/40 px-6 py-4">
+              <h2 id="modal-title" className="text-lg font-semibold text-ink">{title}</h2>
+              {showClose && (
+                <Button variant="ghost" size="icon" onClick={onClose} aria-label="Cerrar modal">
+                  <X className="h-5 w-5" />
+                </Button>
+              )}
+            </div>
+            <div className="px-6 py-4">
+              {children}
+            </div>
+            {footer && (
+              <div className="flex justify-end gap-3 border-t border-surface-700/40 px-6 py-4">
+                {footer}
+              </div>
             )}
           </div>
-          <div className="px-6 py-4">
-            {children}
-          </div>
-          {footer && (
-            <div className="flex justify-end gap-3 border-t border-surface-700/40 px-6 py-4">
-              {footer}
-            </div>
-          )}
         </div>
       </div>
     </div>
