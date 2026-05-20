@@ -257,11 +257,9 @@ const DestinationsPage = () => {
           </div>
         </div>
 
-        {tab === 'custom' && (
-          <div className="border-t border-surface-600 px-4 py-3 text-sm text-ink-soft">
-            El viaje incluye avión, hotel y actividades.
-          </div>
-        )}
+        <div className="border-t border-surface-600 px-4 py-3 text-sm text-ink-soft">
+          El viaje incluye avión, hotel y actividades.
+        </div>
 
         {tab === 'custom' && sent && (
           <div className="flex flex-col items-center gap-2 py-6 text-center border-t border-surface-600">
