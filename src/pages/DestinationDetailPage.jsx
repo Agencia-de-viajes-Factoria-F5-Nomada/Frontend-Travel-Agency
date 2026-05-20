@@ -16,7 +16,7 @@ const DestinationDetailPage = () => {
   const [hotel, setHotel]       = useState(null)
   const [loading, setLoading]   = useState(true)
   const [error, setError]       = useState(null)
-  const [typeBoard, setTypeBoard] = useState('HALF_BOARD')
+  const [typeBoard, setTypeBoard] = useState('HALF')
 
   useEffect(() => {
     const load = async () => {
@@ -62,7 +62,7 @@ const DestinationDetailPage = () => {
 
   const halfBoard = hotel?.halfBoardPrice ?? travel?.halfBoardPrice
   const fullBoard = hotel?.fullBoardPrice ?? travel?.fullBoardPrice
-  const price = typeBoard === 'HALF_BOARD' ? halfBoard : fullBoard
+  const price = typeBoard === 'HALF' ? halfBoard : fullBoard
 
   const isOffer = travel.sale === true
   const discountPct = isOffer && travel.discountPercentage ? travel.discountPercentage : 0
@@ -160,7 +160,7 @@ const DestinationDetailPage = () => {
               <div className="mt-4 space-y-2">
                 <p className="text-xs font-semibold uppercase tracking-wide text-ink-muted">Tipo de pensión</p>
                 <label className="flex items-center justify-between rounded-xl border p-3 cursor-pointer transition-colors"
-                  style={{ borderColor: typeBoard === 'HALF_BOARD' ? '#4A8FA8' : 'transparent', background: typeBoard === 'HALF_BOARD' ? '#DAEEF7' : '' }}>
+                  style={{ borderColor: typeBoard === 'HALF' ? '#4A8FA8' : 'transparent', background: typeBoard === 'HALF' ? '#DAEEF7' : '' }}>
                   <span className="text-sm font-medium" style={{ color: '#1A3A5C' }}>Media pensión</span>
                   <div className="flex items-center gap-2">
                     {isOffer && discountPct > 0 && (
@@ -170,11 +170,11 @@ const DestinationDetailPage = () => {
                     )}
                     <span className="font-bold" style={{ color: '#1A3A5C' }}>{halfBoard}€/persona</span>
                   </div>
-                  <input type="radio" name="typeBoard" value="HALF_BOARD"
-                    checked={typeBoard === 'HALF_BOARD'} onChange={() => setTypeBoard('HALF_BOARD')} className="ml-2" />
+                  <input type="radio" name="typeBoard" value="HALF"
+                    checked={typeBoard === 'HALF'} onChange={() => setTypeBoard('HALF')} className="ml-2" />
                 </label>
                 <label className="flex items-center justify-between rounded-xl border p-3 cursor-pointer transition-colors"
-                  style={{ borderColor: typeBoard === 'FULL_BOARD' ? '#4A8FA8' : 'transparent', background: typeBoard === 'FULL_BOARD' ? '#DAEEF7' : '' }}>
+                  style={{ borderColor: typeBoard === 'FULL' ? '#4A8FA8' : 'transparent', background: typeBoard === 'FULL' ? '#DAEEF7' : '' }}>
                   <span className="text-sm font-medium" style={{ color: '#1A3A5C' }}>Pensión completa</span>
                   <div className="flex items-center gap-2">
                     {isOffer && discountPct > 0 && (
@@ -184,8 +184,8 @@ const DestinationDetailPage = () => {
                     )}
                     <span className="font-bold" style={{ color: '#1A3A5C' }}>{fullBoard}€/persona</span>
                   </div>
-                  <input type="radio" name="typeBoard" value="FULL_BOARD"
-                    checked={typeBoard === 'FULL_BOARD'} onChange={() => setTypeBoard('FULL_BOARD')} className="ml-2" />
+                  <input type="radio" name="typeBoard" value="FULL"
+                    checked={typeBoard === 'FULL'} onChange={() => setTypeBoard('FULL')} className="ml-2" />
                 </label>
               </div>
             )}
