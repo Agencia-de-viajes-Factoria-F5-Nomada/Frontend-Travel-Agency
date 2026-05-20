@@ -21,16 +21,17 @@ const Select = ({
       disabled={disabled}
       className={classNames(
         'w-full rounded-lg border px-4 py-2.5 text-sm transition-colors',
-        'focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2',
+        'bg-surface-900 text-ink',
+        'focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 focus:ring-offset-surface-950',
         error ? 'border-red-500 focus:ring-red-500' : 'border-surface-600 hover:border-surface-500',
         disabled && 'opacity-50 cursor-not-allowed',
         className
       )}
       {...props}
     >
-      <option value="">{placeholder}</option>
+      <option value="" className="bg-surface-900">{placeholder}</option>
       {options.map((opt) => (
-        <option key={opt.value} value={opt.value}>
+        <option key={opt.value} value={opt.value} className="bg-surface-900">
           {opt.label}
         </option>
       ))}
