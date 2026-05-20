@@ -28,7 +28,7 @@ const calculateDiscount = (price) => {
   return Math.round(MIN_DISCOUNT + ratio * (MAX_DISCOUNT - MIN_DISCOUNT))
 }
 
-const BOARD_LABELS = { half: 'Media pension', full: 'Pension completa' }
+const BOARD_LABELS = { half: 'Media pensión', full: 'Pensión completa' }
 
 const DestinationCard = ({ destination, showOfferPrice, boardType = 'half', featured = false }) => {
   const image = getDestinationImage(destination) || getDestinationFallbackImage(destination)
@@ -50,10 +50,16 @@ const DestinationCard = ({ destination, showOfferPrice, boardType = 'half', feat
     : null
 
   const displayPrice = discountedPrice ?? basePrice
+  const destPath = buildDestinationPath(destination.id)
 
   return (
     <Card className="overflow-hidden transition-transform duration-200 hover:-translate-y-1">
-      <Link to={buildDestinationPath(destination.id)} className="relative block h-48 w-full overflow-hidden group">
+      <Link
+        to={destPath}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="relative block h-48 w-full overflow-hidden group"
+      >
         {image ? (
           <img
             src={image}
@@ -127,7 +133,7 @@ const DestinationCard = ({ destination, showOfferPrice, boardType = 'half', feat
               {BOARD_LABELS[boardType] || BOARD_LABELS.half}
             </p>
           </div>
-          <Button to={buildDestinationPath(destination.id)} size="sm">
+          <Button to={destPath} size="sm" target="_blank" rel="noopener noreferrer">
             Ver
           </Button>
         </div>
