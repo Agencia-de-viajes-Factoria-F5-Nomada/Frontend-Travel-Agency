@@ -1,252 +1,348 @@
-# NOMADA Frontend
+# 🧭 NÓMADA — Frontend
 
-Frontend de la plataforma NOMADA, una aplicación web para una agencia de viajes que permite explorar viajes disponibles, consultar ofertas, iniciar sesión, realizar reservas, solicitar viajes personalizados y administrar entidades internas desde un panel de gestión.
+> Plataforma web para una agencia de viajes terrestre y aérea con foco en Europa. Permite explorar destinos, realizar reservas, solicitar viajes personalizados y administrar entidades internas desde un panel de gestión dedicado.
 
-El proyecto está desarrollado con React, Vite y Tailwind CSS, consumiendo una API REST mediante una capa de servicios basada en Axios. La interfaz está organizada con una arquitectura de componentes reutilizables inspirada en Atomic Design.
+---
 
-## Autores
+## 📋 Índice
 
-Este frontend ha sido desarrollado por:
+- [Descripción](#descripción)
+- [Stack tecnológico](#stack-tecnológico)
+- [Arquitectura](#arquitectura)
+- [Estructura del proyecto](#estructura-del-proyecto)
+- [Rutas](#rutas)
+- [Servicios de API](#servicios-de-api)
+- [Autenticación](#autenticación)
+- [Flujo de reserva](#flujo-de-reserva)
+- [Viaje personalizado](#viaje-personalizado)
+- [Panel de administración](#panel-de-administración)
+- [Variables de entorno](#variables-de-entorno)
+- [Instalación y ejecución](#instalación-y-ejecución)
+- [Scripts disponibles](#scripts-disponibles)
+- [Build de producción](#build-de-producción)
+- [Convenciones de desarrollo](#convenciones-de-desarrollo)
+- [Estado del proyecto](#estado-del-proyecto)
+- [Autores](#autores)
 
-- Maria, desarrolladora frontend.
-- Facun, desarrollador frontend.
+---
 
-Ambos autores han trabajado en la construcción de la experiencia de usuario, la estructura de rutas, los componentes visuales, la integración con servicios HTTP, el flujo de autenticación, la navegación pública y las vistas privadas de administración.
+## Descripción
 
-## Objetivo del Proyecto
+NÓMADA es una aplicación web administrativa interna orientada a digitalizar la operativa de una agencia de viajes. Está pensada para ser utilizada por el personal de la agencia, con dos perfiles de acceso diferenciados:
 
-NOMADA nace como una aplicación orientada a digitalizar la experiencia de una agencia de viajes. El frontend proporciona una interfaz clara para dos perfiles principales:
+- **Usuario autenticado** — puede buscar viajes, consultar detalles y ofertas, realizar reservas y solicitar viajes personalizados.
+- **Administrador** — tiene acceso al panel de gestión para administrar viajes, hoteles, autobuses, conductores, reservas, usuarios, empleados, ofertas y segmentos de viaje.
 
-- Usuarios finales, que pueden buscar viajes, ver detalles, consultar ofertas, iniciar sesión, reservar y solicitar viajes personalizados.
-- Personal administrador, que puede gestionar entidades operativas como viajes, hoteles, buses, conductores, reservas, usuarios, empleados, ofertas y segmentos de viaje.
+El frontend consume una API REST desarrollada con Spring Boot y MySQL, con gestión de imágenes a través de Cloudinary.
 
-La aplicación busca ser funcional, mantenible y escalable, priorizando una navegación sencilla y una estructura técnica que permita seguir creciendo sin duplicar lógica ni acoplar componentes innecesariamente.
+---
 
-## Funcionalidades Principales
+## Stack tecnológico
 
-### Área Pública
+| Tecnología | Versión | Uso |
+|---|---|---|
+| React | 19 | Construcción de interfaces |
+| Vite | 8 | Servidor de desarrollo y build |
+| React Router DOM | — | Enrutado SPA |
+| Tailwind CSS | — | Sistema de estilos utility-first |
+| Axios | — | Cliente HTTP para consumir la API REST |
+| Lucide React | — | Librería de iconos |
+| JWT | — | Autenticación basada en token |
+| Express | — | Servidor local auxiliar |
+| ESLint | — | Análisis estático de código |
+| Playwright | — | Tests end-to-end |
 
-- Página de inicio con acceso rápido a destinos y viajes personalizados.
-- Catálogo de destinos y viajes disponibles.
-- Página de detalle para cada viaje.
-- Búsqueda de viajes por destino, fechas y pasajeros.
-- Filtros por precio, duración, región, estrellas, disponibilidad y tipo de pensión.
-- Página de ofertas.
-- Página de solicitud de viaje personalizado.
-- Páginas legales.
-- Registro e inicio de sesión.
+---
 
-### Viajes Personalizados
+## Arquitectura
 
-La sección de viaje personalizado permite al usuario enviar una solicitud completa con preferencias específicas:
+El frontend sigue una separación clara por responsabilidades, inspirada en **Atomic Design**:
 
-- Destino o idea de viaje.
-- Ciudad de salida.
-- Fechas de salida y vuelta.
-- Número de viajeros.
-- Presupuesto por persona.
-- Tipo de experiencia: playa, aventura, ruta, cultura, gastronomía o naturaleza.
-- Ritmo del viaje: relajado, equilibrado o intenso.
-- Tipo de alojamiento preferido.
-- Servicios incluidos: avión, hotel y actividades.
-- Imprescindibles del viaje.
-- Aspectos a evitar.
-
-Esta información se envía al backend como una solicitud personalizada para que el equipo pueda preparar una propuesta adaptada.
-
-### Área Privada
-
-- Perfil de usuario.
-- Área personal.
-- Checkout de reservas.
-- Confirmación de reservas.
-- Acceso protegido mediante rutas privadas.
-
-### Área Administrativa
-
-El panel de administración permite gestionar entidades clave del negocio:
-
-- Viajes.
-- Hoteles.
-- Reservas.
-- Usuarios.
-- Buses.
-- Conductores.
-- Empleados.
-- Ofertas.
-- Segmentos de viaje.
-
-El acceso administrativo está protegido y reservado a usuarios con permisos adecuados.
-
-## Stack Tecnológico
-
-| Tecnología | Uso |
-|---|---|
-| React 19 | Construcción de interfaces |
-| Vite 8 | Servidor de desarrollo y build |
-| React Router DOM | Enrutado SPA |
-| Tailwind CSS | Sistema de estilos utility-first |
-| Axios | Cliente HTTP para consumir la API |
-| Lucide React | Iconografía |
-| ESLint | Revisión estática de código |
-| Express | Servidor local/API auxiliar del proyecto |
-| JWT | Autenticación basada en token |
-
-## Arquitectura Frontend
-
-La estructura sigue una separación por responsabilidades:
-
-```text
+```
 src/
-  assets/       Recursos estáticos
-  components/   Componentes reutilizables
-  constants/    Constantes de navegación y rutas
-  hooks/        Hooks personalizados
-  pages/        Vistas completas de la aplicación
-  routes/       Definición centralizada de rutas
-  services/     Capa de comunicación con la API
-  utils/        Funciones auxiliares
+├── assets/         # Recursos estáticos (imágenes, fuentes)
+├── components/     # Componentes reutilizables organizados por nivel
+│   ├── atoms/      # Elementos base: Button, Input, Card, Badge, Select
+│   ├── molecules/  # Composiciones: filtros, buscadores, alertas
+│   ├── organisms/  # Bloques funcionales: tablas, formularios CRUD, tarjetas
+│   └── layout/     # Layouts públicos y privados
+├── constants/      # Constantes de navegación y rutas (paths.js, navigation.js)
+├── hooks/          # Hooks personalizados
+├── pages/          # Vistas completas de la aplicación
+├── routes/         # Definición centralizada de rutas (AppRoutes.jsx)
+├── services/       # Capa de comunicación con la API
+├── test/           # Tests unitarios y de integración
+└── utils/          # Funciones auxiliares (formatters, classNames, etc.)
 ```
 
-### Organización de Componentes
+### Principios aplicados
 
-Los componentes están agrupados según su nivel de responsabilidad:
+- Las páginas no construyen URLs ni llaman directamente a Axios — eso es responsabilidad de la capa de servicios.
+- Los componentes de `atoms` son agnósticos al dominio; los de `organisms` tienen contexto de negocio.
+- Las rutas protegidas se envuelven con `PrivateRoute`, que redirige a login si no hay sesión activa.
+- Los estados locales se gestionan con hooks de React; no se usa estado global externo salvo lo estrictamente necesario.
 
-```text
-components/
-  atoms/        Elementos base: Button, Input, Card, Badge, Select
-  molecules/    Composiciones pequeñas: filtros, buscadores, alertas
-  organisms/    Bloques funcionales: tablas, formularios CRUD, tarjetas
-  layout/       Layouts públicos y privados
+---
+
+## Estructura del proyecto
+
+```
+NÓMADA Frontend
+├── public/
+├── src/
+│   ├── assets/
+│   ├── components/
+│   │   ├── atoms/
+│   │   │   ├── Button.jsx
+│   │   │   ├── Card.jsx
+│   │   │   ├── Input.jsx
+│   │   │   ├── Badge.jsx
+│   │   │   └── Select.jsx
+│   │   ├── molecules/
+│   │   ├── organisms/
+│   │   │   └── DestinationCard.jsx
+│   │   └── layout/
+│   ├── constants/
+│   │   ├── paths.js
+│   │   └── navigation.js
+│   ├── hooks/
+│   ├── pages/
+│   │   └── HomePage.jsx
+│   ├── routes/
+│   │   └── AppRoutes.jsx
+│   ├── services/
+│   │   ├── api.js
+│   │   ├── authService.js
+│   │   ├── TravelsService.js
+│   │   ├── BookingService.js
+│   │   ├── HotelService.js
+│   │   ├── BusService.js
+│   │   ├── DriverService.js
+│   │   ├── UsersService.js
+│   │   ├── offersService.js
+│   │   ├── tripSegmentsService.js
+│   │   ├── employeesService.js
+│   │   └── cloudinaryService.js
+│   ├── test/
+│   └── utils/
+│       ├── classNames.js
+│       └── formatters.js
+├── server.js
+├── package.json
+├── vite.config.js
+├── tailwind.config.js
+├── .env.example
+└── README.md
 ```
 
-Esta organización ayuda a mantener una UI consistente y reduce la duplicación de código.
+---
 
-## Rutas Principales
+## Rutas
+
+### Públicas / autenticadas
 
 | Ruta | Descripción |
 |---|---|
-| `/` | Página de inicio |
+| `/` | Página de inicio con login/registro y destinos destacados |
 | `/home` | Página de inicio |
-| `/destinations` | Catálogo de destinos |
-| `/destinations/:id` | Detalle de destino/viaje |
+| `/destinations` | Catálogo de destinos disponibles |
+| `/destinations/:id` | Detalle de un destino |
 | `/travels` | Listado de viajes |
-| `/travels/:id` | Detalle de viaje |
-| `/offers` | Ofertas disponibles |
-| `/search` | Resultados de búsqueda |
-| `/checkout` | Proceso de reserva |
-| `/checkout/custom` | Solicitud de viaje personalizado |
+| `/travels/:id` | Detalle de un viaje |
+| `/offers` | Viajes en oferta |
+| `/search` | Resultados de búsqueda con filtros |
 | `/auth` | Login y registro |
-| `/profile` | Perfil protegido |
-| `/personal/:section` | Área personal |
+
+### Privadas (requieren sesión)
+
+| Ruta | Descripción |
+|---|---|
+| `/profile` | Perfil del usuario |
+| `/personal/:section` | Área personal del usuario |
+| `/checkout` | Proceso de reserva (pasajeros → precio → confirmar) |
+| `/checkout/custom` | Solicitud de viaje personalizado |
+
+### Administrativas (requieren rol admin)
+
+| Ruta | Descripción |
+|---|---|
 | `/admin` | Panel de administración |
+| `/admin/travels` | Gestión de viajes |
+| `/admin/hotels` | Gestión de hoteles |
+| `/admin/bookings` | Gestión de reservas |
+| `/admin/users` | Gestión de usuarios |
+| `/admin/buses` | Gestión de autobuses |
+| `/admin/drivers` | Gestión de conductores |
+
+---
 
 ## Servicios de API
 
-La comunicación con el backend se centraliza en `src/services`.
+Toda la comunicación con el backend está centralizada en `src/services`. Las páginas importan el servicio correspondiente en lugar de construir peticiones directamente.
 
-Servicios principales:
+```js
+// Ejemplo de uso en una página
+import { travelService } from '../services/TravelsService'
 
-```text
-api.js
-authService.js
-TravelsService.js
-BookingService.js
-HotelService.js
-BusService.js
-DriverService.js
-UsersService.js
-offersService.js
-tripSegmentsService.js
-employeesService.js
-cloudinaryService.js
+const data = await travelService.getFeatured()
 ```
 
-La capa de servicios evita que las páginas llamen directamente a Axios, concentrando la lógica de endpoints y facilitando cambios futuros en la API.
+### Servicios disponibles
 
-## Autenticación y Seguridad
+| Archivo | Responsabilidad |
+|---|---|
+| `api.js` | Instancia base de Axios con interceptores y base URL |
+| `authService.js` | Login, registro, logout, persistencia de sesión y JWT |
+| `TravelsService.js` | Listado, detalle, búsqueda y featured de viajes |
+| `BookingService.js` | Creación, consulta y quote de reservas |
+| `HotelService.js` | CRUD de hoteles |
+| `BusService.js` | CRUD de autobuses |
+| `DriverService.js` | CRUD de conductores |
+| `UsersService.js` | CRUD de usuarios |
+| `offersService.js` | Consulta y gestión de ofertas |
+| `tripSegmentsService.js` | Segmentos de viaje |
+| `employeesService.js` | Gestión de empleados |
+| `cloudinaryService.js` | Subida de imágenes a Cloudinary |
 
-La aplicación utiliza autenticación basada en JWT. El token se conserva en el cliente y se usa para consumir rutas protegidas.
+### Base URL
 
-Características implementadas:
+La URL base del backend se configura mediante variable de entorno:
 
-- Inicio de sesión.
-- Registro.
-- Persistencia de sesión.
-- Rutas privadas.
-- Protección de rutas administrativas.
-- Redirección a login cuando el usuario no está autenticado.
-
-El componente `PrivateRoute` controla el acceso a vistas restringidas.
-
-## Flujo de Reserva
-
-El flujo de reserva permite:
-
-1. Seleccionar un viaje.
-2. Ver el detalle del viaje.
-3. Elegir tipo de pensión.
-4. Iniciar el checkout.
-5. Añadir pasajeros.
-6. Calcular precio.
-7. Confirmar reserva.
-
-El flujo contempla validaciones como:
-
-- Número de pasajeros.
-- Datos personales.
-- Fecha de nacimiento.
-- DNI o pasaporte.
-- Menores acompañados por adultos.
-- Tipo de pensión.
-- Precio total con IVA.
-
-## Viaje Personalizado
-
-La página `/checkout/custom` resuelve el flujo de solicitud personalizada. Esta ruta evita el error 404 que aparecía al hacer clic en el botón de viaje personalizado desde la página de inicio.
-
-La vista está pensada para recopilar datos útiles para que la agencia pueda preparar una propuesta realista:
-
-- Preferencias de destino.
-- Estilo del viaje.
-- Nivel de actividad.
-- Tipo de alojamiento.
-- Presupuesto.
-- Fechas aproximadas.
-- Servicios deseados.
-- Notas relevantes.
-
-El objetivo es que el usuario pueda expresar qué tipo de experiencia quiere sin estar limitado a un paquete ya creado.
-
-## Instalación
-
-### Requisitos Previos
-
-- Node.js 18 o superior.
-- npm 9 o superior.
-- Acceso al backend/API configurado.
-
-### Pasos
-
-```bash
-git clone https://github.com/Agencia-de-viajes-Factoria-F5-Nomada/Frontend-Travel-Agency.git
-cd Frontend-Travel-Agency
-npm install
+```
+VITE_API_URL=http://localhost:8080
 ```
 
-Crear el archivo `.env` a partir del ejemplo:
+El cliente Axios la recoge automáticamente al inicializarse.
+
+---
+
+## Autenticación
+
+La aplicación usa autenticación basada en **JWT**. El token se persiste en el cliente y se adjunta automáticamente a las peticiones protegidas mediante un interceptor de Axios.
+
+### Flujo
+
+1. El usuario introduce email y contraseña en el formulario de la home.
+2. `authService.login()` hace POST a `/auth/login` y almacena el token recibido.
+3. Las peticiones a rutas protegidas incluyen el token en el header `Authorization: Bearer <token>`.
+4. `PrivateRoute` verifica si hay sesión activa antes de renderizar una ruta privada; si no la hay, redirige a `/`.
+5. Las rutas administrativas verifican además que el usuario tenga rol de administrador.
+
+### Registro
+
+- Contraseña mínima de 8 caracteres.
+- Debe contener al menos una mayúscula y un número.
+- Tras el registro se hace login automático.
+
+### Validaciones de contraseña (frontend)
+
+```js
+if (form.password.length < 8) { /* error */ }
+if (!/[A-Z]/.test(form.password) || !/[0-9]/.test(form.password)) { /* error */ }
+```
+
+---
+
+## Flujo de reserva
+
+El checkout está dividido en 4 pasos:
+
+```
+1. Pasajeros  →  2. Precio  →  3. Confirmar  →  4. Confirmado
+```
+
+### Paso 1 — Pasajeros
+- Selección del número de pasajeros.
+- Introducción de datos personales de cada pasajero: nombre, apellido, fecha de nacimiento, DNI o pasaporte.
+- Validación de menores: deben ir acompañados de un adulto tutor.
+
+### Paso 2 — Precio
+- Cálculo del precio total mediante el endpoint `GET /api/bookings/quote`.
+- Desglose por tipo de pensión (media pensión / pensión completa).
+- Precio con IVA incluido.
+
+### Paso 3 — Confirmar
+- Resumen completo de la reserva.
+- Confirmación mediante `POST /api/bookings`.
+
+### Paso 4 — Confirmado
+- Vista de confirmación con los datos de la reserva.
+- Opción de volver al catálogo.
+
+---
+
+## Viaje personalizado
+
+La ruta `/checkout/custom` permite al usuario enviar una solicitud de viaje a medida con los siguientes campos:
+
+| Campo | Descripción |
+|---|---|
+| Destino | Destino o idea de viaje |
+| Ciudad de salida | Punto de partida |
+| Fechas | Salida y vuelta aproximadas |
+| Viajeros | Número de personas |
+| Presupuesto | Por persona |
+| Tipo de experiencia | Playa, aventura, ruta, cultura, gastronomía, naturaleza |
+| Ritmo | Relajado, equilibrado o intenso |
+| Alojamiento | Tipo preferido |
+| Servicios | Avión, hotel, actividades |
+| Imprescindibles | Lo que no puede faltar |
+| A evitar | Aspectos que no se desean |
+
+La solicitud se envía al backend para que el equipo prepare una propuesta personalizada.
+
+---
+
+## Panel de administración
+
+El área `/admin` está protegida y reservada a usuarios con rol de administrador. Desde aquí se pueden gestionar todas las entidades operativas de la agencia:
+
+- **Viajes** — crear, editar, activar/desactivar viajes.
+- **Hoteles** — CRUD completo con imagen (Cloudinary), estrellas, capacidad y precios.
+- **Autobuses** — gestión de flota con capacidad, matrícula y servicios (wifi, AC, USB, baño).
+- **Conductores** — alta, edición y control de licencia activa.
+- **Reservas** — listado y detalle de todas las reservas.
+- **Usuarios** — listado y gestión de usuarios registrados.
+- **Empleados** — gestión del personal de la agencia.
+- **Ofertas** — porcentajes de descuento y fechas de vigencia.
+- **Segmentos de viaje** — etapas o tramos que componen un viaje.
+
+---
+
+## Variables de entorno
+
+Crea un archivo `.env` en la raíz del proyecto a partir del ejemplo:
 
 ```bash
 cp .env.example .env
 ```
 
-Configurar la URL de API si es necesario:
+| Variable | Descripción | Ejemplo |
+|---|---|---|
+| `VITE_API_URL` | URL base del backend | `http://localhost:8080` |
 
-```env
-VITE_API_URL=http://localhost:8080
+> El backend debe estar corriendo antes de levantar el frontend en modo desarrollo.
+
+---
+
+## Instalación y ejecución
+
+### Requisitos previos
+
+- Node.js 18 o superior
+- npm 9 o superior
+- Backend de NÓMADA corriendo en `http://localhost:8080`
+
+### Instalación
+
+```bash
+git clone https://github.com/Agencia-de-viajes-Factoria-F5-Nomada/Frontend-Travel-Agency.git
+cd Frontend-Travel-Agency
+npm install
+cp .env.example .env
 ```
 
-## Ejecución en Desarrollo
+### Desarrollo
 
 Levantar solo el frontend:
 
@@ -254,147 +350,116 @@ Levantar solo el frontend:
 npm run dev
 ```
 
-Levantar backend y frontend en paralelo:
+Levantar frontend y backend en paralelo:
 
 ```bash
 npm run dev:full
 ```
 
-Ejecutar el servidor backend auxiliar:
-
-```bash
-npm run server
-```
-
-Por defecto:
-
-| Servicio | URL |
+| Servicio | URL por defecto |
 |---|---|
 | Frontend | `http://localhost:5173` |
-| Backend/API | `http://localhost:8080` |
+| Backend / API | `http://localhost:8080` |
 
-El puerto del frontend puede cambiar automáticamente si el puerto `5173` está ocupado.
+> El puerto del frontend puede cambiar automáticamente si el `5173` está ocupado.
 
-## Scripts Disponibles
+---
+
+## Scripts disponibles
 
 | Script | Descripción |
 |---|---|
 | `npm run dev` | Inicia Vite en modo desarrollo |
-| `npm run build` | Genera la build de producción |
-| `npm run preview` | Sirve la build generada |
-| `npm run lint` | Ejecuta ESLint |
-| `npm run server` | Inicia el servidor Express |
+| `npm run build` | Genera la build de producción en `/dist` |
+| `npm run preview` | Sirve la build generada localmente |
+| `npm run lint` | Ejecuta ESLint sobre el código fuente |
+| `npm run server` | Inicia el servidor Express auxiliar |
 | `npm run dev:full` | Ejecuta frontend y backend en paralelo |
 | `npm run e2e:install` | Instala dependencias de Playwright |
-| `npm run e2e:test` | Ejecuta pruebas end-to-end |
+| `npm run e2e:test` | Ejecuta los tests end-to-end |
 
-## Build de Producción
+---
 
-Para generar una build optimizada:
+## Build de producción
 
 ```bash
 npm run build
 ```
 
-El resultado se genera en:
-
-```text
-dist/
-```
-
-Para previsualizar la build:
+El resultado se genera en la carpeta `dist/`. Para previsualizar antes de desplegar:
 
 ```bash
 npm run preview
 ```
 
-## Convenciones de Desarrollo
+---
+
+## Convenciones de desarrollo
 
 ### Componentes
 
-- Los componentes base deben mantenerse en `components/atoms`.
-- Las composiciones pequeñas deben ir en `components/molecules`.
-- Los bloques de funcionalidad más grandes deben ir en `components/organisms`.
-- Las vistas completas deben ir en `pages`.
+- `atoms/` — elementos sin lógica de negocio: `Button`, `Input`, `Card`, `Badge`, `Select`.
+- `molecules/` — composiciones pequeñas reutilizables: filtros, buscadores, alertas.
+- `organisms/` — bloques con lógica de presentación: tablas CRUD, tarjetas de destino, formularios de reserva.
+- `pages/` — vistas completas que orquestan organisms y consumen servicios.
 
 ### Servicios
 
-- Las llamadas HTTP deben centralizarse en `services`.
-- Las páginas no deberían construir URLs complejas directamente.
-- La lógica de transformación de datos debe mantenerse cerca del servicio correspondiente.
+- Todas las llamadas HTTP van en `src/services`.
+- Las páginas nunca construyen URLs directamente.
+- La lógica de transformación de datos vive junto al servicio correspondiente.
 
 ### Estilos
 
-- Se prioriza Tailwind CSS.
-- Se reutilizan colores y clases ya presentes en el proyecto.
-- Se evita introducir estilos globales innecesarios.
-- Se mantiene una UI consistente con el diseño existente.
+- Se usa Tailwind CSS como sistema principal.
+- Se reutilizan los colores y tokens ya definidos en `tailwind.config.js` (`brand-500`, `surface-*`, `ink-*`).
+- No se introducen estilos globales innecesarios.
+- Las clases condicionales se gestionan con la utilidad `classNames()`.
 
 ### Rutas
 
-- Las rutas se definen en `src/routes/AppRoutes.jsx`.
-- Las rutas protegidas se envuelven con `PrivateRoute`.
-- Las rutas administrativas requieren permisos de administrador.
+- Todas las rutas se definen en `src/routes/AppRoutes.jsx`.
+- Las rutas privadas se envuelven con `<PrivateRoute>`.
+- Las rutas administrativas requieren rol de administrador.
+- Las constantes de rutas se centralizan en `src/constants/paths.js`.
 
-## Calidad y Mantenibilidad
+### Git
 
-El proyecto está orientado a mantener una base de código clara:
+- Ramas por funcionalidad: `feat/nombre`, `fix/nombre`, `chore/nombre`.
+- Un PR por funcionalidad; se hace merge a `dev` antes de pasar a `main`.
 
-- Componentes pequeños y reutilizables.
-- Separación entre vistas y servicios.
-- Rutas centralizadas.
-- Estados locales simples mediante hooks.
-- Formularios controlados.
-- Feedback visual para errores y estados de carga.
-- Reutilización de componentes comunes como `Button`, `Card`, `Input` y `PageHeader`.
+---
 
-## Variables de Entorno
+## Estado del proyecto
 
-| Variable | Descripción | Ejemplo |
-|---|---|---|
-| `VITE_API_URL` | URL base del backend | `http://localhost:8080` |
+El frontend está en desarrollo activo. Las funcionalidades principales están implementadas:
 
-## Estructura Resumida
+- ✅ Navegación pública y autenticación
+- ✅ Catálogo de viajes y detalle
+- ✅ Búsqueda y filtros
+- ✅ Flujo de reserva completo (pasajeros → precio → confirmación)
+- ✅ Solicitud de viaje personalizado
+- ✅ Área personal y perfil de usuario
+- ✅ Panel de administración (viajes, hoteles, autobuses, conductores, reservas, usuarios, ofertas)
+- ✅ Integración con Cloudinary para imágenes
+- ✅ Autenticación JWT con rutas protegidas
 
-```text
-NOMADA Frontend
-├── public/
-├── src/
-│   ├── assets/
-│   ├── components/
-│   │   ├── atoms/
-│   │   ├── molecules/
-│   │   ├── organisms/
-│   │   └── layout/
-│   ├── constants/
-│   ├── hooks/
-│   ├── pages/
-│   ├── routes/
-│   ├── services/
-│   ├── test/
-│   └── utils/
-├── server.js
-├── package.json
-├── vite.config.js
-├── tailwind.config.js
-└── README.md
-```
+### Próximas mejoras
 
-## Estado del Proyecto
+- [ ] Ampliar cobertura de tests unitarios y E2E
+- [ ] Conectar la vista de viaje personalizado con recomendaciones de viajes existentes
+- [ ] Añadir filtrado avanzado en el panel de reservas
+- [ ] Documentar contratos exactos de API con OpenAPI / Swagger
+- [ ] Añadir capturas de pantalla de las principales vistas en este README
 
-El frontend se encuentra en desarrollo activo. Las funcionalidades principales ya están implementadas, incluyendo navegación pública, autenticación, área privada, panel administrativo, reservas y solicitudes de viaje personalizado.
+---
 
-Próximas mejoras recomendadas:
+## Autores
 
-- Mejorar cobertura de tests.
-- Añadir pruebas visuales de flujos críticos.
-- Conectar la página de viaje personalizado con recomendaciones reales de viajes existentes.
-- Mejorar la gestión de estados globales si la aplicación sigue creciendo.
-- Documentar contratos exactos de API.
-- Añadir capturas actualizadas de las principales pantallas.
+Desarrollado por **Maria Perez** y **Facundo Garavaglia** como parte del proyecto NÓMADA en el contexto formativo de **Factoría F5**.
 
-## Créditos
+El proyecto tiene enfoque en desarrollo web moderno, arquitectura de componentes, integración frontend-backend y construcción de una experiencia real de producto.
 
-Desarrollado por Maria y Facun como desarrolladores frontend del proyecto NOMADA.
+---
 
-El proyecto forma parte del contexto formativo y práctico de Factoría F5, con enfoque en desarrollo web moderno, arquitectura de componentes, integración frontend-backend y construcción de una experiencia real de producto.
+*Agencia de Viajes NÓMADA · Factoría F5 · 2026*
