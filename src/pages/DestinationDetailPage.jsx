@@ -67,7 +67,6 @@ const DestinationDetailPage = () => {
   const isOffer = travel.sale === true
   const discountPct = isOffer && travel.discountPercentage ? travel.discountPercentage : 0
   const originalPrice = discountPct > 0 ? Math.round(price / (1 - discountPct / 100)) : null
-  const discountedPrice = discountPct > 0 ? price : null
 
   const isPast = travel.startDate && new Date(travel.startDate) < new Date()
   const isFull = travel.availablePlaces === 0
@@ -76,7 +75,6 @@ const DestinationDetailPage = () => {
   return (
     <div className="container-page py-12">
 
-      {/* Volver */}
       <button
         onClick={() => navigate(-1)}
         className="mb-6 flex items-center gap-2 text-sm text-ink-muted hover:text-white transition-colors"
@@ -87,23 +85,16 @@ const DestinationDetailPage = () => {
 
       <div className="grid gap-8 lg:grid-cols-[1fr_360px]">
 
-        {/* Info principal */}
         <div className="space-y-6">
-
-          {/* Imagen o banner */}
           <div className="relative h-64 overflow-hidden rounded-2xl bg-surface-800 lg:h-80">
             {image ? (
-              <img
-                src={image}
-                alt={travel.destiny}
-                className="h-full w-full object-cover"
+              <img src={image} alt={travel.destiny} className="h-full w-full object-cover"
                 onError={(event) => {
                   const fallbackImage = getDestinationFallbackImage(travel)
                   if (fallbackImage && event.currentTarget.src !== fallbackImage) {
                     event.currentTarget.src = fallbackImage
                   }
-                }}
-              />
+                }} />
             ) : (
               <div className="flex h-full items-center justify-center">
                 <MapPin className="h-16 w-16 text-brand-400" />
@@ -111,8 +102,7 @@ const DestinationDetailPage = () => {
             )}
             {travel.sale && (
               <div className="absolute left-4 top-4 flex gap-2">
-                <span className="rounded-full px-3 py-1 text-sm font-bold text-white"
-                  style={{ background: '#4A8FA8' }}>
+                <span className="rounded-full px-3 py-1 text-sm font-bold text-white" style={{ background: '#4A8FA8' }}>
                   EN OFERTA
                 </span>
                 {discountPct > 0 && (
@@ -124,7 +114,6 @@ const DestinationDetailPage = () => {
             )}
           </div>
 
-          {/* Título */}
           <div>
             <h1 className="text-3xl font-bold text-white">{travel.destiny}</h1>
             <div className="mt-3 flex flex-wrap gap-4 text-sm text-ink-muted">
@@ -139,7 +128,6 @@ const DestinationDetailPage = () => {
             </div>
           </div>
 
-          {/* Descripción */}
           {(travel.description || travel.notes) && (
             <Card className="p-5">
               <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-muted mb-3">Sobre este viaje</h2>
@@ -147,7 +135,6 @@ const DestinationDetailPage = () => {
             </Card>
           )}
 
-          {/* Hotel */}
           {(hotel || travel.hotelName) && (
             <Card className="p-5">
               <div className="flex items-start gap-3">
@@ -163,21 +150,17 @@ const DestinationDetailPage = () => {
               </div>
             </Card>
           )}
-
         </div>
 
-        {/* Panel de reserva */}
         <div className="space-y-4">
           <Card className="p-6">
             <h2 className="text-lg font-bold text-white">Reservar este viaje</h2>
 
-            {/* Tipo de pensión */}
             {(hotel || travel.halfBoardPrice) && (
               <div className="mt-4 space-y-2">
                 <p className="text-xs font-semibold uppercase tracking-wide text-ink-muted">Tipo de pensión</p>
                 <label className="flex items-center justify-between rounded-xl border p-3 cursor-pointer transition-colors"
-                  style={{ borderColor: typeBoard === 'HALF_BOARD' ? '#4A8FA8' : 'transparent',
-                           background: typeBoard === 'HALF_BOARD' ? '#DAEEF7' : '' }}>
+                  style={{ borderColor: typeBoard === 'HALF_BOARD' ? '#4A8FA8' : 'transparent', background: typeBoard === 'HALF_BOARD' ? '#DAEEF7' : '' }}>
                   <span className="text-sm font-medium" style={{ color: '#1A3A5C' }}>Media pensión</span>
                   <div className="flex items-center gap-2">
                     {isOffer && discountPct > 0 && (
@@ -188,13 +171,10 @@ const DestinationDetailPage = () => {
                     <span className="font-bold" style={{ color: '#1A3A5C' }}>{halfBoard}€/persona</span>
                   </div>
                   <input type="radio" name="typeBoard" value="HALF_BOARD"
-                    checked={typeBoard === 'HALF_BOARD'}
-                    onChange={() => setTypeBoard('HALF_BOARD')}
-                    className="ml-2" />
+                    checked={typeBoard === 'HALF_BOARD'} onChange={() => setTypeBoard('HALF_BOARD')} className="ml-2" />
                 </label>
                 <label className="flex items-center justify-between rounded-xl border p-3 cursor-pointer transition-colors"
-                  style={{ borderColor: typeBoard === 'FULL_BOARD' ? '#4A8FA8' : 'transparent',
-                           background: typeBoard === 'FULL_BOARD' ? '#DAEEF7' : '' }}>
+                  style={{ borderColor: typeBoard === 'FULL_BOARD' ? '#4A8FA8' : 'transparent', background: typeBoard === 'FULL_BOARD' ? '#DAEEF7' : '' }}>
                   <span className="text-sm font-medium" style={{ color: '#1A3A5C' }}>Pensión completa</span>
                   <div className="flex items-center gap-2">
                     {isOffer && discountPct > 0 && (
@@ -205,17 +185,14 @@ const DestinationDetailPage = () => {
                     <span className="font-bold" style={{ color: '#1A3A5C' }}>{fullBoard}€/persona</span>
                   </div>
                   <input type="radio" name="typeBoard" value="FULL_BOARD"
-                    checked={typeBoard === 'FULL_BOARD'}
-                    onChange={() => setTypeBoard('FULL_BOARD')}
-                    className="ml-2" />
+                    checked={typeBoard === 'FULL_BOARD'} onChange={() => setTypeBoard('FULL_BOARD')} className="ml-2" />
                 </label>
               </div>
             )}
 
-            {/* Precio */}
             {price && (
               <div className="mt-4 rounded-xl p-4 text-center" style={{ background: '#DAEEF7' }}>
-                <p className="text-xs text-ink-muted">Precio por persona</p>
+                <p className="text-xs text-ink-muted">Precio por persona · IVA incluido</p>
                 {originalPrice && (
                   <p className="text-sm line-through" style={{ color: '#9CA3AF' }}>{originalPrice}€</p>
                 )}
@@ -226,7 +203,6 @@ const DestinationDetailPage = () => {
               </div>
             )}
 
-            {/* Advertencias */}
             {isPast && (
               <p className="mt-3 rounded-lg bg-red-50 p-3 text-sm text-red-600">
                 Este viaje ya ha pasado y no admite reservas.
@@ -238,12 +214,9 @@ const DestinationDetailPage = () => {
               </p>
             )}
 
-            <button
-              onClick={handleReservar}
-              disabled={isPast || isFull}
+            <button onClick={handleReservar} disabled={isPast || isFull}
               className="mt-4 w-full rounded-xl py-3 font-semibold text-white transition-opacity disabled:opacity-40"
-              style={{ background: '#4A8FA8' }}
-            >
+              style={{ background: '#4A8FA8' }}>
               {isPast ? 'Viaje finalizado' : isFull ? 'Sin plazas' : 'Reservar ahora'}
             </button>
 

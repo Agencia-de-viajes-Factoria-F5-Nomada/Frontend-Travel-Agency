@@ -70,7 +70,7 @@ const CheckoutPage = () => {
   const { travelId, typeBoard: initialBoard, travel, hotel } = location.state ?? {}
 
   const [step, setStep]             = useState(1)
-  const [typeBoard, setTypeBoard]   = useState(initialBoard ?? 'HALF')
+  const [typeBoard, setTypeBoard]   = useState(initialBoard ?? 'HALF_BOARD')
   const [isGroup, setIsGroup]       = useState(false)
   const [numPassengers, setNumPassengers] = useState(1)
   const [passengers, setPassengers] = useState([{ ...EMPTY_PASSENGER }])
@@ -107,7 +107,8 @@ const CheckoutPage = () => {
   const minorError = hasMinor && !hasAdult
 
   const allFilled = passengers.every(p =>
-    p.name.trim() && p.surname.trim() && p.birthDate && p.email.trim() && p.dni.trim() && p.passport.trim()
+    p.name.trim() && p.surname.trim() && p.birthDate && p.email.trim() &&
+    (p.dni.trim() || p.passport.trim())
   )
 
   const handleQuote = async () => {
@@ -117,15 +118,8 @@ const CheckoutPage = () => {
     try {
       const user   = authService.getUser()
       const result = await bookingService.quote({
-        travelId,
-        typeBoard,
-        isGroup,
-        userId: user?.id,
-        passengers: passengers.map(p => ({
-          name:      p.name,
-          surname:   p.surname,
-          birthDate: p.birthDate,
-        })),
+        travelId, typeBoard, isGroup, userId: user?.id,
+        passengers: passengers.map(p => ({ name: p.name, surname: p.surname, birthDate: p.birthDate })),
       })
       setQuote(result)
       setStep(2)
@@ -141,28 +135,19 @@ const CheckoutPage = () => {
     setError(null)
     try {
       const user = authService.getUser()
-
       const customerIds = []
       for (const p of passengers) {
         const age = calculateAge(p.birthDate)
         const newUser = await userService.create({
-          name: p.name,
-          surname: p.surname,
-          email: p.email,
-          dni: p.dni,
-          passport: p.passport,
-          age,
+          name: p.name, surname: p.surname, email: p.email,
+          dni: p.dni || undefined, passport: p.passport || undefined, age,
           tutorId: age < 18 ? user?.id : undefined,
         })
         customerIds.push(newUser.id)
       }
-
       const result = await bookingService.confirm({
-        travelId,
-        typeBoard,
-        isGroup,
-        totalPrice: quote.totalPrice,
-        customerIds,
+        travelId, typeBoard, isGroup,
+        totalPrice: quote.totalPrice, customerIds,
         employeeId: user?.employeeId ?? null,
       })
       setBooking(result)
@@ -176,19 +161,13 @@ const CheckoutPage = () => {
 
   return (
     <div className="container-page py-12">
-      <PageHeader
-        eyebrow="Reserva"
-        title="Completa tu reserva"
-        description="Unos pocos pasos para confirmar tu viaje."
-      />
+      <PageHeader eyebrow="Reserva" title="Completa tu reserva" description="Unos pocos pasos para confirmar tu viaje." />
 
       <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_360px]">
         <Card className="p-6 md:p-8">
           <Stepper currentStep={step} />
 
-          {error && (
-            <div className="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</div>
-          )}
+          {error && <div className="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</div>}
 
           {step === 1 && (
             <div className="mt-8 space-y-4">
@@ -218,10 +197,8 @@ const CheckoutPage = () => {
                 <div key={i} className="rounded-xl border border-surface-600 p-4 space-y-3">
                   <span className="text-sm font-medium text-white">Pasajero {i + 1}</span>
                   <div className="grid grid-cols-2 gap-3">
-                    <Input label="Nombre" value={p.name}
-                      onChange={e => changePassenger(i, 'name', e.target.value)} required />
-                    <Input label="Apellido" value={p.surname}
-                      onChange={e => changePassenger(i, 'surname', e.target.value)} required />
+                    <Input label="Nombre" value={p.name} onChange={e => changePassenger(i, 'name', e.target.value)} required />
+                    <Input label="Apellido" value={p.surname} onChange={e => changePassenger(i, 'surname', e.target.value)} required />
                   </div>
                   <div>
                     <label className="text-xs font-medium text-ink-muted">Fecha de nacimiento *</label>
@@ -242,15 +219,12 @@ const CheckoutPage = () => {
                   <Input label="Correo electrónico" type="email" value={p.email}
                     onChange={e => changePassenger(i, 'email', e.target.value)} required />
                   <div className="grid grid-cols-2 gap-3">
-                    <Input label="DNI *" value={p.dni}
-                      placeholder="12345678Z"
-                      onChange={e => changePassenger(i, 'dni', e.target.value)}
-                      required />
-                    <Input label="Pasaporte *" value={p.passport}
-                      placeholder="AAA123456"
-                      onChange={e => changePassenger(i, 'passport', e.target.value)}
-                      required />
+                    <Input label="DNI" value={p.dni} placeholder="12345678Z"
+                      onChange={e => changePassenger(i, 'dni', e.target.value)} />
+                    <Input label="Pasaporte" value={p.passport} placeholder="AAA123456"
+                      onChange={e => changePassenger(i, 'passport', e.target.value)} />
                   </div>
+                  <p className="text-xs text-ink-muted">* Se requiere DNI o Pasaporte</p>
                 </div>
               ))}
 
@@ -264,16 +238,13 @@ const CheckoutPage = () => {
                 <p className="text-sm font-medium text-white">Tipo de pensión</p>
                 <div className="grid grid-cols-2 gap-2">
                   {[
-                    { value: 'HALF', label: 'Media pensión' },
-                    { value: 'FULL', label: 'Pensión completa' },
+                    { value: 'HALF_BOARD', label: 'Media pensión' },
+                    { value: 'FULL_BOARD', label: 'Pensión completa' },
                   ].map(o => (
-                    <label key={o.value}
-                      className="flex items-center gap-2 rounded-lg p-3 cursor-pointer border"
-                      style={{ borderColor: typeBoard === o.value ? '#4A8FA8' : 'transparent',
-                                background:   typeBoard === o.value ? '#DAEEF7' : '' }}>
+                    <label key={o.value} className="flex items-center gap-2 rounded-lg p-3 cursor-pointer border"
+                      style={{ borderColor: typeBoard === o.value ? '#4A8FA8' : 'transparent', background: typeBoard === o.value ? '#DAEEF7' : '' }}>
                       <input type="radio" name="typeBoard" value={o.value}
-                        checked={typeBoard === o.value}
-                        onChange={() => setTypeBoard(o.value)} />
+                        checked={typeBoard === o.value} onChange={() => setTypeBoard(o.value)} />
                       <span className="text-sm" style={{ color: '#1A3A5C' }}>{o.label}</span>
                     </label>
                   ))}
@@ -281,12 +252,8 @@ const CheckoutPage = () => {
               </div>
 
               <label className="flex items-center gap-3 cursor-pointer">
-                <input type="checkbox" checked={isGroup}
-                  onChange={e => setIsGroup(e.target.checked)}
-                  className="h-4 w-4 rounded" />
-                <span className="text-sm text-ink-soft">
-                  Reserva de grupo (IMSERSO, colegio — aplica descuento)
-                </span>
+                <input type="checkbox" checked={isGroup} onChange={e => setIsGroup(e.target.checked)} className="h-4 w-4 rounded" />
+                <span className="text-sm text-ink-soft">Reserva de grupo (IMSERSO, colegio — aplica descuento)</span>
               </label>
 
               <div className="flex justify-end pt-2">
@@ -300,13 +267,11 @@ const CheckoutPage = () => {
 
           {step === 2 && quote && (
             <div className="mt-8 space-y-4">
-              <h2 className="font-semibold text-white">Resumen de precio</h2>
+              <h2 className="font-semibold text-white">Resumen de precio · IVA incluido</h2>
               <ul className="divide-y divide-surface-700 rounded-xl border border-surface-600 overflow-hidden">
                 {quote.passengerDetails?.map((p, i) => (
                   <li key={i} className="flex justify-between px-4 py-3 text-sm">
-                    <span className="text-ink-soft">
-                      {p.name} {p.surname} — {CATEGORY_LABEL[p.category] ?? p.category}
-                    </span>
+                    <span className="text-ink-soft">{p.name} {p.surname} — {CATEGORY_LABEL[p.category] ?? p.category}</span>
                     <span className="text-white font-medium">{p.finalPrice}€</span>
                   </li>
                 ))}
@@ -317,17 +282,13 @@ const CheckoutPage = () => {
                   </li>
                 )}
                 <li className="flex justify-between px-4 py-3 text-sm font-bold bg-surface-900">
-                  <span className="text-white">Total</span>
+                  <span className="text-white">Total (IVA incl.)</span>
                   <span className="text-white">{quote.totalPrice}€</span>
                 </li>
               </ul>
               <div className="flex justify-between pt-2">
-                <Button variant="ghost" onClick={() => setStep(1)}>
-                  <ArrowLeft className="h-4 w-4" /> Atrás
-                </Button>
-                <Button onClick={() => setStep(3)}>
-                  Continuar <ArrowRight className="h-4 w-4" />
-                </Button>
+                <Button variant="ghost" onClick={() => setStep(1)}><ArrowLeft className="h-4 w-4" /> Atrás</Button>
+                <Button onClick={() => setStep(3)}>Continuar <ArrowRight className="h-4 w-4" /></Button>
               </div>
             </div>
           )}
@@ -346,21 +307,19 @@ const CheckoutPage = () => {
                 </li>
                 <li className="flex justify-between px-4 py-3">
                   <span className="text-ink-soft">Pensión</span>
-                  <span className="text-white">{typeBoard === 'HALF' ? 'Media pensión' : 'Pensión completa'}</span>
+                  <span className="text-white">{typeBoard === 'HALF_BOARD' ? 'Media pensión' : 'Pensión completa'}</span>
                 </li>
                 <li className="flex justify-between px-4 py-3">
                   <span className="text-ink-soft">Pasajeros</span>
                   <span className="text-white">{passengers.length}</span>
                 </li>
                 <li className="flex justify-between px-4 py-3 font-bold">
-                  <span className="text-white">Total</span>
+                  <span className="text-white">Total (IVA incl.)</span>
                   <span className="text-white">{quote?.totalPrice}€</span>
                 </li>
               </ul>
               <div className="flex justify-between pt-2">
-                <Button variant="ghost" onClick={() => setStep(2)}>
-                  <ArrowLeft className="h-4 w-4" /> Atrás
-                </Button>
+                <Button variant="ghost" onClick={() => setStep(2)}><ArrowLeft className="h-4 w-4" /> Atrás</Button>
                 <Button onClick={handleConfirm} disabled={loading}>
                   {loading ? 'Confirmando...' : 'Confirmar y reservar'}
                   <Check className="h-4 w-4" />
@@ -389,9 +348,7 @@ const CheckoutPage = () => {
         </Card>
 
         <Card as="aside" className="h-fit p-6">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-muted">
-            Resumen del viaje
-          </h2>
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-muted">Resumen del viaje</h2>
           <ul className="mt-4 grid gap-3 text-sm">
             <li className="flex justify-between text-ink-soft">
               <span>Destino</span>
@@ -418,7 +375,7 @@ const CheckoutPage = () => {
             <>
               <hr className="my-4 border-surface-700" />
               <p className="flex justify-between text-base font-bold text-white">
-                <span>Total</span>
+                <span>Total (IVA incl.)</span>
                 <span>{quote.totalPrice}€</span>
               </p>
             </>
