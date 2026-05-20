@@ -1,6 +1,5 @@
 import FormField from '../molecules/FormField'
 import SelectField from '../molecules/SelectField'
-import CheckboxField from '../molecules/CheckboxField'
 
 const GENDER_OPTIONS = [
   { value: 'Male', label: 'Masculino' },
@@ -27,27 +26,11 @@ export default function EmployeeForm({ form, onChange }) {
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <SelectField
-          label="Género"
-          name="gender"
-          options={GENDER_OPTIONS}
-          value={form.gender}
-          onChange={onChange}
-        />
-        <FormField
-          label="Horas de trabajo"
-          name="work_hour"
-          type="number"
-          value={form.work_hour}
-          onChange={onChange}
-        />
-      </div>
-
-      <CheckboxField
-        label="Contratado"
-        name="hired"
-        checked={form.hired}
+      <SelectField
+        label="Género"
+        name="gender"
+        options={GENDER_OPTIONS}
+        value={form.gender}
         onChange={onChange}
       />
     </div>

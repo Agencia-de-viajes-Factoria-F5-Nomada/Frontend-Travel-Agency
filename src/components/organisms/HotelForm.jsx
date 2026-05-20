@@ -1,6 +1,5 @@
 import FormField from '../molecules/FormField'
 import SelectField from '../molecules/SelectField'
-import CheckboxField from '../molecules/CheckboxField'
 import ImageUpload from '../molecules/ImageUpload'
 
 const STAR_OPTIONS = [
@@ -46,13 +45,6 @@ export default function HotelForm({ form, onChange, initialData }) {
         label="Imagen del hotel"
         name="imageUrl"
         value={form.imageUrl}
-        onChange={onChange}
-      />
-
-      <CheckboxField
-        label="Hotel activo"
-        name="active"
-        checked={form.active}
         onChange={onChange}
       />
     </div>

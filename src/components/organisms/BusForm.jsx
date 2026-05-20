@@ -27,13 +27,6 @@ export default function BusForm({ form, onChange, initialData }) {
           <CheckboxField label="USB" name="usb" checked={form.usb} onChange={onChange} />
         </div>
       </div>
-
-      <CheckboxField
-        label="Disponible"
-        name="available"
-        checked={form.available}
-        onChange={onChange}
-      />
     </div>
   )
 }

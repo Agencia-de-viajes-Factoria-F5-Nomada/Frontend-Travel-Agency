@@ -1,5 +1,4 @@
 import FormField from '../molecules/FormField'
-import CheckboxField from '../molecules/CheckboxField'
 import ImageUpload from '../molecules/ImageUpload'
 
 export default function DriverForm({ form, onChange, initialData }) {
@@ -23,13 +22,6 @@ export default function DriverForm({ form, onChange, initialData }) {
         label="Imagen del conductor"
         name="imageUrl"
         value={form.imageUrl}
-        onChange={onChange}
-      />
-
-      <CheckboxField
-        label="Licencia activa"
-        name="licenceActive"
-        checked={form.licenceActive}
         onChange={onChange}
       />
     </div>

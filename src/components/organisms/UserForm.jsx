@@ -1,6 +1,5 @@
 import FormField from '../molecules/FormField'
 import SelectField from '../molecules/SelectField'
-import CheckboxField from '../molecules/CheckboxField'
 
 const ROL_OPTIONS = [
   { value: 'USER', label: 'Usuario' },
@@ -49,13 +48,6 @@ export default function UserForm({ form, onChange, initialData }) {
         />
         <FormField label="ID Tutor (menores)" name="tutorId" type="number" value={form.tutorId} onChange={onChange} />
       </div>
-
-      <CheckboxField
-        label="Usuario activo"
-        name="active"
-        checked={form.active}
-        onChange={onChange}
-      />
     </div>
   )
 }
