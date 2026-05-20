@@ -20,6 +20,7 @@ import { offersService } from '../../services/offersService'
 import { tripSegmentsService } from '../../services/tripSegmentsService'
 
 // Formularios
+import BaseForm from './BaseForm'
 import TravelForm from './TravelForm'
 import HotelForm from './HotelForm'
 import BusForm from './BusForm'
@@ -30,6 +31,24 @@ import EmployeeForm from './EmployeeForm'
 import OfferForm from './OfferForm'
 import TripSegmentForm from './TripSegmentForm'
 import { validatePasswordStrength } from '../../utils/passwordValidation'
+
+const GENDER_OPTIONS = [
+  { value: 'Male', label: 'Masculino' },
+  { value: 'Female', label: 'Femenino' },
+]
+
+const STAR_OPTIONS = [
+  { value: 1, label: '1 ⭐' },
+  { value: 2, label: '2 ⭐⭐' },
+  { value: 3, label: '3 ⭐⭐⭐' },
+  { value: 4, label: '4 ⭐⭐⭐⭐' },
+  { value: 5, label: '5 ⭐⭐⭐⭐⭐' },
+]
+
+const ROL_OPTIONS = [
+  { value: 'USER', label: 'Usuario' },
+  { value: 'ADMIN', label: 'Administrador' },
+]
 
 // ─────────────────────────────────────────────
 // Configuracion de las 9 entidades
@@ -70,6 +89,15 @@ const ENTITY_CONFIG = {
     deleteLabel: (row) => `el viaje a "${row.destiny}"`,
     relatedKeys: ['hotels', 'buses'],
     formProps: (related) => ({ hotels: related.hotels || [], buses: related.buses || [] }),
+    formFields: [
+      { name: 'destiny', label: 'Destino', type: 'text', required: true, placeholder: 'Ej: París, Francia' },
+      { name: 'startDate', label: 'Fecha inicio', type: 'date', required: true, fullWidth: false },
+      { name: 'endDate', label: 'Fecha fin', type: 'date', required: true, fullWidth: false },
+      { name: 'availablePlaces', label: 'Plazas disponibles', type: 'number', required: true },
+      { name: 'hotelId', label: 'Hotel', type: 'select', required: true, mapOptions: (r) => (r.hotels || []).map((h) => ({ value: h.id, label: `${h.name} — ${h.city}` })) },
+      { name: 'busId', label: 'Autobús', type: 'select', mapOptions: (r) => [{ value: '', label: 'Sin autobús asignado' }, ...(r.buses || []).map((b) => ({ value: b.id, label: `${b.licensePlate} (${b.capacity} plazas)` }))] },
+      { name: 'sale', label: 'En oferta', type: 'checkbox' },
+    ],
   },
 
   hotels: {
@@ -111,6 +139,19 @@ const ENTITY_CONFIG = {
       fullBoardPrice: Number(form.fullBoardPrice),
     }),
     deleteLabel: (row) => `el hotel "${row.name}"`,
+    formFields: [
+      { name: 'name', label: 'Nombre', type: 'text', required: true, fullWidth: false },
+      { name: 'stars', label: 'Estrellas', type: 'select', options: STAR_OPTIONS, fullWidth: false },
+      { name: 'address', label: 'Dirección', type: 'text' },
+      { name: 'city', label: 'Ciudad', type: 'text', required: true, fullWidth: false, breakRow: true },
+      { name: 'country', label: 'País', type: 'text', required: true, fullWidth: false },
+      { name: 'capacity', label: 'Capacidad total', type: 'number', fullWidth: false, breakRow: true },
+      { name: 'availablePlaces', label: 'Plazas disponibles', type: 'number', fullWidth: false },
+      { name: 'halfBoardPrice', label: 'Precio media pensión (€)', type: 'number', step: '0.01', fullWidth: false, breakRow: true },
+      { name: 'fullBoardPrice', label: 'Precio pensión completa (€)', type: 'number', step: '0.01', fullWidth: false },
+      { name: 'imageUrl', label: 'Imagen del hotel', type: 'image' },
+      { name: 'active', label: 'Activo', type: 'checkbox' },
+    ],
   },
 
   buses: {
@@ -140,6 +181,23 @@ const ENTITY_CONFIG = {
       driverId: form.driverId ? Number(form.driverId) : null,
     }),
     deleteLabel: (row) => `el autobus "${row.busNumber || row.licensePlate}"`,
+    formFields: [
+      { name: 'licensePlate', label: 'Matrícula', type: 'text', required: true, fullWidth: false },
+      { name: 'capacity', label: 'Capacidad', type: 'number', required: true, fullWidth: false },
+      { name: 'driverId', label: 'ID Conductor', type: 'number', hint: (init) => init ? 'Dejar vacío para quitar conductor' : 'Dejar vacío si no asignado' },
+      {
+        type: 'checkbox-group',
+        label: 'Equipamiento',
+        className: 'bg-brand-100/60',
+        checkboxes: [
+          { name: 'bath', label: 'Baño' },
+          { name: 'wifi', label: 'Wifi' },
+          { name: 'ac', label: 'Aire acondicionado' },
+          { name: 'usb', label: 'USB' },
+        ],
+      },
+      { name: 'available', label: 'Disponible', type: 'checkbox' },
+    ],
   },
 
   drivers: {
@@ -163,6 +221,13 @@ const ENTITY_CONFIG = {
     }),
     formToPayload: (form) => ({ ...form }),
     deleteLabel: (row) => `el conductor "${row.name}"`,
+    formFields: [
+      { name: 'name', label: 'Nombre', type: 'text', required: true, fullWidth: false },
+      { name: 'surname', label: 'Apellido', type: 'text', required: true, fullWidth: false },
+      { name: 'enrollment', label: 'Número de matriculación', type: 'text', required: true, placeholder: 'Ej: DRV-2024-001' },
+      { name: 'imageUrl', label: 'Imagen del conductor', type: 'image' },
+      { name: 'licenceActive', label: 'Licencia activa', type: 'checkbox' },
+    ],
   },
 
   bookings: {
@@ -179,14 +244,28 @@ const ENTITY_CONFIG = {
       { key: 'status', label: 'Estado' },
     ],
     FormComponent: BookingForm,
-    emptyForm: { customerName: '', destination: '', bookingDate: '' },
+    emptyForm: { travelId: '', customerId: '', typeBoard: 'HALF', isGroup: false },
     rowToForm: (row) => ({
-      customerName: row.customerName ?? '',
-      destination: row.destination ?? row.travelDestiny ?? '',
-      bookingDate: row.bookingDate ?? row.startDate ?? '',
+      travelId: row.travelId ?? '',
+      customerId: row.customerId ?? '',
+      typeBoard: row.typeBoard ?? 'HALF',
+      isGroup: row.isGroup ?? false,
     }),
-    formToPayload: (form) => ({ ...form }),
+    formToPayload: (form) => ({
+      travelId: Number(form.travelId),
+      typeBoard: form.typeBoard,
+      isGroup: form.isGroup === 'true' || form.isGroup === true,
+      customerIds: [Number(form.customerId)],
+      boughtDate: new Date().toISOString(),
+    }),
     deleteLabel: (row) => `la reserva "${row.id}"`,
+    relatedKeys: ['travels', 'users'],
+    formFields: [
+      { name: 'travelId', label: 'Viaje', type: 'select', required: true, mapOptions: (r) => (r.travels || []).map((t) => ({ value: t.id, label: `${t.destiny} (${t.startDate ?? ''})` })) },
+      { name: 'customerId', label: 'Cliente', type: 'select', required: true, mapOptions: (r) => (r.users || []).map((u) => ({ value: u.id, label: `${u.name} ${u.surname}` })) },
+      { name: 'typeBoard', label: 'Tipo de pensión', type: 'select', options: [{ value: 'HALF', label: 'Media pensión' }, { value: 'FULL', label: 'Pensión completa' }], required: true },
+      { name: 'isGroup', label: '¿Reserva de grupo?', type: 'select', options: [{ value: 'false', label: 'No' }, { value: 'true', label: 'Sí' }] },
+    ],
   },
 
   users: {
@@ -220,6 +299,17 @@ const ENTITY_CONFIG = {
       return payload
     },
     deleteLabel: (row) => `el usuario "${row.name} ${row.surname}"`,
+    formFields: [
+      { name: 'name', label: 'Nombre', type: 'text', required: true, fullWidth: false },
+      { name: 'surname', label: 'Apellido', type: 'text', required: true, fullWidth: false },
+      { name: 'email', label: 'Email', type: 'email', required: true },
+      { name: 'password', label: 'Contraseña', type: 'password', required: (init) => !init, hint: (init) => init ? 'Dejar vacío para mantener la actual' : undefined },
+      { name: 'passport', label: 'Pasaporte', type: 'text', fullWidth: false, breakRow: true },
+      { name: 'birthDate', label: 'Fecha nacimiento', type: 'date', fullWidth: false },
+      { name: 'rol', label: 'Rol', type: 'select', options: ROL_OPTIONS, fullWidth: false, breakRow: true },
+      { name: 'tutorId', label: 'ID Tutor (menores)', type: 'number', fullWidth: false },
+      { name: 'active', label: 'Activo', type: 'checkbox' },
+    ],
   },
 
   employees: {
@@ -243,6 +333,13 @@ const ENTITY_CONFIG = {
     }),
     formToPayload: (form) => ({ ...form, work_hour: Number(form.work_hour) }),
     deleteLabel: (row) => `el empleado "${row.name} ${row.surname}"`,
+    formFields: [
+      { name: 'name', label: 'Nombre', type: 'text', required: true, fullWidth: false },
+      { name: 'surname', label: 'Apellido', type: 'text', required: true, fullWidth: false },
+      { name: 'gender', label: 'Género', type: 'select', options: GENDER_OPTIONS, fullWidth: false, breakRow: true },
+      { name: 'work_hour', label: 'Horas trabajo', type: 'number', fullWidth: false },
+      { name: 'hired', label: 'Contratado', type: 'checkbox' },
+    ],
   },
 
   offers: {
@@ -262,6 +359,11 @@ const ENTITY_CONFIG = {
     }),
     formToPayload: (form) => ({ ...form, discount_percentage: Number(form.discount_percentage) }),
     deleteLabel: (row) => `la oferta con ${row.discount_percentage ?? row.discount}% de descuento`,
+    formFields: [
+      { name: 'discount_percentage', label: 'Porcentaje de descuento (%)', type: 'number', step: '0.01', required: true },
+      { name: 'start_date', label: 'Fecha de inicio', type: 'date', required: true, fullWidth: false },
+      { name: 'end_date', label: 'Fecha de fin', type: 'date', required: true, fullWidth: false },
+    ],
   },
 
   'trip-segments': {
@@ -294,6 +396,15 @@ const ENTITY_CONFIG = {
       travel_id: form.travel_id ? Number(form.travel_id) : null,
     }),
     deleteLabel: (row) => `el tramo "${row.origin} → ${row.destination}"`,
+    formFields: [
+      { name: 'origin', label: 'Origen', type: 'text', required: true, placeholder: 'Ciudad de origen', fullWidth: false },
+      { name: 'destination', label: 'Destino', type: 'text', required: true, placeholder: 'Ciudad de destino', fullWidth: false },
+      { name: 'start_time', label: 'Salida (Fecha y Hora)', type: 'datetime-local', required: true, fullWidth: false },
+      { name: 'end_time', label: 'Llegada (Fecha y Hora)', type: 'datetime-local', required: true, fullWidth: false },
+      { name: 'bus_id', label: 'ID Autobús', type: 'number', required: true, fullWidth: false },
+      { name: 'driver_id', label: 'ID Conductor', type: 'number', required: true, fullWidth: false },
+      { name: 'travel_id', label: 'ID Viaje', type: 'number', required: true, fullWidth: false },
+    ],
   },
 }
 
@@ -308,6 +419,14 @@ const RELATED_LOADERS = {
   },
   buses: async () => {
     const data = await busService.getAll()
+    return Array.isArray(data) ? data : (data.content || [])
+  },
+  travels: async () => {
+    const data = await travelService.getPage(0, 100)
+    return Array.isArray(data) ? data : (data.content || [])
+  },
+  users: async () => {
+    const data = await userService.getAll()
     return Array.isArray(data) ? data : (data.content || [])
   },
 }
@@ -485,12 +604,22 @@ const EntityTable = ({ entityType }) => {
           </>
         }
       >
-        <FormComponent
-          form={form}
-          onChange={change}
-          initialData={editing}
-          {...extraFormProps}
-        />
+        {config.formFields ? (
+          <BaseForm
+            fields={config.formFields}
+            form={form}
+            onChange={change}
+            initialData={editing}
+            relatedData={related}
+          />
+        ) : (
+          <FormComponent
+            form={form}
+            onChange={change}
+            initialData={editing}
+            {...extraFormProps}
+          />
+        )}
       </Modal>
 
       <ConfirmDialog

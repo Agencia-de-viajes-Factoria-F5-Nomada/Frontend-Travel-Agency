@@ -12,6 +12,7 @@ const FormField = ({
   placeholder,
   disabled = false,
   hint,
+  step,
   className,
 }) => {
   return (
@@ -30,6 +31,7 @@ const FormField = ({
         placeholder={placeholder}
         disabled={disabled}
         error={error}
+        step={step}
       />
       {hint && !error && <p className="text-xs text-ink-muted">{hint}</p>}
       {error && <p className="text-xs text-red-500">{error}</p>}
