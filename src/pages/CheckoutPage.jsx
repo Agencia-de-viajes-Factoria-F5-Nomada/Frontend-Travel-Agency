@@ -70,7 +70,7 @@ const CheckoutPage = () => {
   const { travelId, typeBoard: initialBoard, travel, hotel } = location.state ?? {}
 
   const [step, setStep]             = useState(1)
-  const [typeBoard, setTypeBoard]   = useState(initialBoard ?? 'HALF_BOARD')
+  const [typeBoard, setTypeBoard]   = useState(initialBoard ?? 'HALF')
   const [isGroup, setIsGroup]       = useState(false)
   const [numPassengers, setNumPassengers] = useState(1)
   const [passengers, setPassengers] = useState([{ ...EMPTY_PASSENGER }])
@@ -238,8 +238,8 @@ const CheckoutPage = () => {
                 <p className="text-sm font-medium text-white">Tipo de pensión</p>
                 <div className="grid grid-cols-2 gap-2">
                   {[
-                    { value: 'HALF_BOARD', label: 'Media pensión' },
-                    { value: 'FULL_BOARD', label: 'Pensión completa' },
+                    { value: 'HALF', label: 'Media pensión' },
+                    { value: 'FULL', label: 'Pensión completa' },
                   ].map(o => (
                     <label key={o.value} className="flex items-center gap-2 rounded-lg p-3 cursor-pointer border"
                       style={{ borderColor: typeBoard === o.value ? '#4A8FA8' : 'transparent', background: typeBoard === o.value ? '#DAEEF7' : '' }}>
@@ -307,7 +307,7 @@ const CheckoutPage = () => {
                 </li>
                 <li className="flex justify-between px-4 py-3">
                   <span className="text-ink-soft">Pensión</span>
-                  <span className="text-white">{typeBoard === 'HALF_BOARD' ? 'Media pensión' : 'Pensión completa'}</span>
+                  <span className="text-white">{typeBoard === 'HALF' ? 'Media pensión' : 'Pensión completa'}</span>
                 </li>
                 <li className="flex justify-between px-4 py-3">
                   <span className="text-ink-soft">Pasajeros</span>
