@@ -8,6 +8,7 @@ import DestinationCard from '../components/organisms/DestinationCard'
 import { travelService } from '../services/TravelsService'
 import { PUBLIC_PATHS } from '../constants/paths'
 import { authService } from '../services/authService'
+import { apiClient } from '../services/api'
 import { classNames } from '../utils/classNames'
 
 const POPULAR = ['Londres', 'París', 'Roma', 'Tokio']
@@ -50,12 +51,11 @@ const HomePage = () => {
       } else {
         if (form.password.length < 8) { setError('La contraseña debe tener al menos 8 caracteres'); setAuthLoading(false); return }
         if (!/[A-Z]/.test(form.password) || !/[0-9]/.test(form.password)) { setError('La contraseña debe contener al menos una mayúscula y un número'); setAuthLoading(false); return }
-        const res = await fetch(`${import.meta.env.VITE_API_URL ?? 'http://localhost:8080'}/api/auth/register`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name: form.name, email: form.email, password: form.password }),
+        await apiClient.post('/auth/register', {
+          name: form.name,
+          email: form.email,
+          password: form.password,
         })
-        if (!res.ok) throw new Error('Error al crear la cuenta')
         await authService.login(form.email, form.password)
       }
       const user = authService.getUser()
@@ -133,7 +133,7 @@ const HomePage = () => {
         <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
           <div>
             <h2 className="text-3xl font-semibold text-white">Destinos destacados</h2>
-            <p className="mt-2 text-ink-muted">Viajes disponibles, los favoritos de nuestros viajeros</p>
+            <p className="mt-2 text-ink-muted">Los favoritos de nuestros viajeros</p>
           </div>
           <Button to={PUBLIC_PATHS.SEARCH} variant="ghost">
             Ver todos <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -146,6 +146,8 @@ const HomePage = () => {
               <div key={i} className="h-64 animate-pulse rounded-2xl bg-surface-800" />
             ))}
           </div>
+        ) : travels.length === 0 ? (
+          <p className="text-ink-muted text-center py-8">No hay destinos destacados en este momento.</p>
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {travels.map(travel => (
@@ -231,4 +233,4 @@ const HomePage = () => {
   )
 }
 
-export default HomePage
+export default HomePageq
