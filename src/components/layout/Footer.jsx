@@ -30,7 +30,7 @@ const LEGAL_LINKS = [
 ]
 
 const Footer = () => (
-  <footer className="mt-8 border-t border-surface-700/40 bg-gradient-to-b from-brand-100/60 to-surface-950/40 shadow-[0_10px_30px_-22px_rgba(255,255,255,0.35)] backdrop-blur-sm">
+  <footer className="mt-8 border-t border-surface-700/40 bg-accent-dark shadow-[0_10px_30px_-22px_rgba(255,255,255,0.35)]">
     <div className="container-page py-4">
 
       {/* Single compact row */}
