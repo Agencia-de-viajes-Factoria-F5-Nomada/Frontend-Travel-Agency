@@ -25,27 +25,19 @@ const AuthPage = () => {
     setLoading(true)
     setError(null)
     try {
-      if (isSignIn) {
-        await authService.login(form.email, form.password)
-      } else {
-        if (form.password.length < 8) {
-          setError('La contraseña debe tener al menos 8 caracteres')
-          setLoading(false)
-          return
-        }
-        if (!/[A-Z]/.test(form.password) || !/[0-9]/.test(form.password)) {
-          setError('La contraseña debe contener al menos una mayúscula y un número')
-          setLoading(false)
-          return
-        }
-        await apiClient.post('/auth/register', {
-          name:     form.name,
-          email:    form.email,
-          password: form.password,
-        })
-        await authService.login(form.email, form.password)
-      }
-
+    // TODO: Mover estas validaciones al formulario de crear empleado
+    // if (form.password.length < 8) {
+    //   setError('La contraseña debe tener al menos 8 caracteres')
+    //   setLoading(false)
+    //   return
+    // }
+    // if (!/[A-Z]/.test(form.password) || !/[0-9]/.test(form.password)) {
+    //   setError('La contraseña debe contener al menos una mayúscula y un número')
+    //   setLoading(false)
+    //   return
+    // }
+      await authService.login(form.email, form.password)
+      
       const user = authService.getUser()
       navigate(user?.role === 'ADMIN' || user?.rol === 'ADMIN' ? '/admin' : '/profile')
     } catch (e) {

@@ -29,6 +29,7 @@ import UserForm from './UserForm'
 import EmployeeForm from './EmployeeForm'
 import OfferForm from './OfferForm'
 import TripSegmentForm from './TripSegmentForm'
+import { validatePasswordStrength } from '../../utils/passwordValidation'
 
 // ─────────────────────────────────────────────
 // Configuracion de las 9 entidades
@@ -384,6 +385,13 @@ const EntityTable = ({ entityType }) => {
   const handleSubmit = async (e) => {
     if (e?.preventDefault) e.preventDefault()
     try {
+      if (entityType === 'users') {
+        const passwordError = validatePasswordStrength(form.password || '')
+        if ((!editing && passwordError) || (editing && form.password && passwordError)) {
+          setError(passwordError)
+          return
+        }
+      }
       const payload = config.formToPayload(form)
       if (editing) {
         await service.update(editing.id, payload)

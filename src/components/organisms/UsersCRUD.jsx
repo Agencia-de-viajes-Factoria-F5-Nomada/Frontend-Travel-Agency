@@ -8,6 +8,7 @@ import Button from '../atoms/Button'
 import Badge from '../atoms/Badge'
 import UserForm from './UserForm'
 import { userService } from '../../services/usersService'
+import { validatePasswordStrength } from '../../utils/passwordValidation'
 import usePagination from '../../hooks/usePagination'
 
 const EMPTY_FORM = {
@@ -68,6 +69,11 @@ export default function UsersCRUD() {
     e.preventDefault()
     try {
       const payload = { ...form }
+      const passwordError = validatePasswordStrength(payload.password || '')
+      if ((!editing && passwordError) || (editing && payload.password && passwordError)) {
+        setError(passwordError)
+        return
+      }
       if (!payload.password) delete payload.password
       if (!payload.tutorId)  delete payload.tutorId
       if (editing) {

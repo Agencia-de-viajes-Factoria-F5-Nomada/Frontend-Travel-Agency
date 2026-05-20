@@ -84,7 +84,7 @@ const Modal = ({
       />
       <div
         ref={modalRef}
-        className={classNames('relative w-full rounded-2xl bg-white shadow-xl', sizes[size])}
+        className={classNames('relative w-full max-h-[90vh] flex flex-col rounded-2xl bg-white shadow-xl', sizes[size])}
       >
         <div className="flex items-center justify-between border-b border-surface-700/40 px-6 py-4">
           <h2 id="modal-title" className="text-lg font-semibold text-ink">{title}</h2>
@@ -94,7 +94,7 @@ const Modal = ({
             </Button>
           )}
         </div>
-        <div className="px-6 py-4 max-h-[70vh] overflow-y-auto">
+        <div className="px-6 py-4 min-h-0 flex-1 overflow-y-auto">
           {children}
         </div>
         {footer && (
