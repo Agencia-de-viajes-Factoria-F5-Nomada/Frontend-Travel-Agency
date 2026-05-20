@@ -20,6 +20,7 @@ export const PUBLIC_NAV = [
   { label: 'Destinos',        to: '/destinations',           icon: MapPinned },
   { label: 'Ofertas',         to: PUBLIC_PATHS.OFFERS,       icon: Tag },
   { label: 'Mi Perfil',       to: PUBLIC_PATHS.PROFILE,      icon: UserCircle },
+  { label: 'Panel',           to: ADMIN_PATHS.DASHBOARD,     icon: LayoutDashboard, adminOnly: true },
   { label: 'Iniciar sesión',  to: PUBLIC_PATHS.AUTH,         icon: LogIn },
 ]
 

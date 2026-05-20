@@ -31,14 +31,13 @@ const PublicTopbar = () => {
   const [open, setOpen] = useState(false)
 
   const isAuthenticated = authService.isAuthenticated()
-  const primaryNav = PUBLIC_NAV.filter(
-    (item) => {
-      if (item.to === PUBLIC_PATHS.AUTH) return false;
-      if (item.to === ADMIN_PATHS.DASHBOARD) return authService.isAdmin();
-      return true;
-    }
-  )
-  const sessionNav = isAuthenticated ? null : PUBLIC_NAV.find((item) =>
+  const primaryNav = PUBLIC_NAV.filter(item => {
+    if (item.to === PUBLIC_PATHS.AUTH) return false
+    if (item.adminOnly) return authService.isAdmin()
+    return true
+  })
+
+  const sessionNav = isAuthenticated ? null : PUBLIC_NAV.find(item =>
     item.to === PUBLIC_PATHS.AUTH
   )
 
