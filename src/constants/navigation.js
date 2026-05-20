@@ -1,7 +1,6 @@
 import {
   Compass,
   LayoutDashboard,
-  MapPinned,
   Search,
   Ticket,
   Users,
@@ -21,7 +20,6 @@ export const PUBLIC_NAV = [
 export const ADMIN_NAV = [
   { label: 'Panel',       to: ADMIN_PATHS.DASHBOARD,    icon: LayoutDashboard, end: true },
   { label: 'Reservas',    to: ADMIN_PATHS.BOOKINGS,     icon: Ticket },
-  { label: 'Destinos',    to: ADMIN_PATHS.DESTINATIONS, icon: MapPinned },
   { label: 'Usuarios',    to: ADMIN_PATHS.USERS,        icon: Users },
   { label: 'Hoteles',     to: ADMIN_PATHS.HOTELS,       icon: Building2 },
   { label: 'Autobuses',   to: ADMIN_PATHS.BUSES,        icon: Bus },
