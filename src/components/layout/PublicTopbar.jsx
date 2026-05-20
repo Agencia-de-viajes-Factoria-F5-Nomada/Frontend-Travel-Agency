@@ -19,27 +19,14 @@ const buildLinkClass = ({ isActive }) =>
       : 'after:absolute after:inset-x-2 after:bottom-1 after:h-px after:scale-x-0 after:rounded-full after:bg-white/50 after:transition-transform after:duration-300 hover:after:scale-x-100',
   )
 
-const buildAuthLinkClass = ({ isActive }) =>
-  classNames(
-    'inline-flex h-11 items-center gap-2 rounded-full border px-4 text-[0.78rem] font-semibold uppercase tracking-[0.12em] transition-all duration-300',
-    isActive
-      ? 'border-brand-300 bg-white/12 text-white shadow-[0_10px_24px_-18px_rgba(255,255,255,0.75)]'
-      : 'border-white/20 bg-white/[0.03] text-ink-soft hover:border-brand-300/70 hover:bg-white/10 hover:text-white hover:shadow-[0_10px_24px_-18px_rgba(255,255,255,0.75)]',
-  )
-
 const PublicTopbar = () => {
   const [open, setOpen] = useState(false)
 
-  const isAuthenticated = authService.isAuthenticated()
   const primaryNav = PUBLIC_NAV.filter(item => {
     if (item.to === PUBLIC_PATHS.AUTH) return false
     if (item.adminOnly) return authService.isAdmin()
     return true
   })
-
-  const sessionNav = isAuthenticated ? null : PUBLIC_NAV.find(item =>
-    item.to === PUBLIC_PATHS.AUTH
-  )
 
   return (
     <header className="sticky top-0 z-30 border-b border-surface-700/40 bg-gradient-to-b from-brand-100/60 to-surface-950/40 shadow-[0_10px_30px_-22px_rgba(255,255,255,0.35)] backdrop-blur-sm">
@@ -58,13 +45,6 @@ const PublicTopbar = () => {
               </NavLink>
             ))}
           </div>
-
-          {sessionNav ? (
-            <NavLink to={sessionNav.to} end className={buildAuthLinkClass}>
-              <sessionNav.icon className="h-4 w-4" aria-hidden="true" />
-              <span>{sessionNav.label}</span>
-            </NavLink>
-          ) : null}
         </nav>
 
         <Button
@@ -102,18 +82,6 @@ const PublicTopbar = () => {
                 {item.label}
               </NavLink>
             ))}
-
-            {sessionNav ? (
-              <NavLink
-                to={sessionNav.to}
-                end
-                className={buildAuthLinkClass}
-                onClick={() => setOpen(false)}
-              >
-                <sessionNav.icon className="h-4 w-4" aria-hidden="true" />
-                {sessionNav.label}
-              </NavLink>
-            ) : null}
           </nav>
         </div>
       ) : null}
