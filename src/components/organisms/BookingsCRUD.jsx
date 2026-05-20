@@ -5,7 +5,7 @@ import Pagination from '../molecules/Pagination'
 import Button from '../atoms/Button'
 import BookingForm from './BookingForm'
 import { bookingService } from '../../services/BookingService'
-import { travelService } from '../../services/TravelsService'
+import { travelService } from '../../services/travelsService'
 import { userService } from '../../services/usersService'
 import usePagination from '../../hooks/usePagination'
 

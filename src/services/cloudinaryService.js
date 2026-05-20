@@ -1,4 +1,5 @@
-import { API } from '../constants/api';
+import { API } from '../services/api';
+
 const h = () => ({ Authorization: `Bearer ${localStorage.getItem('token')}` });
 
 export const cloudinaryService = {

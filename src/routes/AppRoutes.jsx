@@ -1,31 +1,48 @@
+import { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 
+// Layouts
 import PublicLayout   from '../components/layout/PublicLayout';
 import AdminLayout    from '../components/layout/AdminLayout';
 import PrivateRoute   from '../components/layout/PrivateRoute';
 
-import HomePage             from '../pages/HomePage';
-import DestinationsPage     from '../pages/DestinationsPage';
-import DestinationDetailPage from '../pages/DestinationDetailPage';
-import OffersPage           from '../pages/OffersPage';
-import SearchResultsPage    from '../pages/SearchResultsPage';
-import TravelsPage          from '../pages/TravelsPage';
-import CheckoutPage         from '../pages/CheckoutPage';
-import AuthPage             from '../pages/AuthPage';
-import EntitiesPage          from '../pages/EntitiesPage';
-import PersonalAreaPage     from '../pages/PersonalAreaPage';
-import LegalPage            from '../pages/LegalPage';
-import NotFoundPage         from '../pages/NotFoundPage';
+// Páginas públicas
+const HomePage              = lazy(() => import('../pages/HomePage'));
+const DestinationsPage      = lazy(() => import('../pages/DestinationsPage'));
+const DestinationDetailPage = lazy(() => import('../pages/DestinationDetailPage'));
+const OffersPage            = lazy(() => import('../pages/OffersPage'));
+const SearchResultsPage     = lazy(() => import('../pages/SearchResultsPage'));
+const CheckoutPage          = lazy(() => import('../pages/CheckoutPage'));
+const AuthPage              = lazy(() => import('../pages/AuthPage'));
+const ProfilePage           = lazy(() => import('../pages/ProfilePage'));
+const PersonalAreaPage      = lazy(() => import('../pages/PersonalAreaPage'));
+const LegalPage             = lazy(() => import('../pages/LegalPage'));
+const NotFoundPage          = lazy(() => import('../pages/NotFoundPage'));
+const TravelsPage           = lazy(() => import('../pages/TravelsPage'));
+const EntitiesPage          = lazy(() => import('../pages/EntitiesPage'));
+const EntityTable           = lazy(() => import('../components/organisms/EntityTable'));
 
 // Páginas admin
-import DashboardPage        from '../pages/DashboardPage';
+const DashboardPage        = lazy(() => import('../pages/DashboardPage'));
+const UsersPage            = lazy(() => import('../pages/UsersPage'));
 
-// CRUD generico (reemplaza los CRUDs individuales)
-import EntityTable       from '../components/organisms/EntityTable';
+// CRUDs admin
+const HotelsCRUD           = lazy(() => import('../components/organisms/HotelsCRUD'));
+const BusesCRUD            = lazy(() => import('../components/organisms/BusesCRUD'));
+const DriversCRUD          = lazy(() => import('../components/organisms/DriversCRUD'));
+const TravelsCRUD          = lazy(() => import('../components/organisms/TravelsCRUD'));
+const BookingsCRUD         = lazy(() => import('../components/organisms/BookingsCRUD'));
+
+const Loader = () => (
+  <div className="flex h-screen items-center justify-center text-brand-200">
+    Cargando...
+  </div>
+);
 
 export default function AppRoutes() {
   return (
-    <Routes>
+    <Suspense fallback={<Loader />}>
+      <Routes>
 
       {/* ── Rutas públicas ── */}
       <Route element={<PublicLayout />}>
@@ -39,6 +56,8 @@ export default function AppRoutes() {
         <Route path="/legal/:slug"         element={<LegalPage />} />
         <Route path="/profile"             element={<PrivateRoute><EntitiesPage /></PrivateRoute>} />
         <Route path="/personal/:section"   element={<PrivateRoute><PersonalAreaPage /></PrivateRoute>} />
+        <Route path="/auth"                element={<AuthPage />} />
+        <Route path="/dashboard"           element={<DashboardPage />} />
         <Route path="/checkout"            element={
           <PrivateRoute><CheckoutPage /></PrivateRoute>
         } />
@@ -62,9 +81,10 @@ export default function AppRoutes() {
         <Route path="trip-segments"        element={<EntityTable entityType="trip-segments" />} />
       </Route>
 
-      {/* ── 404 ── */}
-      <Route path="*" element={<NotFoundPage />} />
+        {/* ── 404 ── */}
+        <Route path="*" element={<NotFoundPage />} />
 
-    </Routes>
+      </Routes>
+    </Suspense>
   );
 }

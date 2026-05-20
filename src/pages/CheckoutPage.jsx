@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { ArrowLeft, ArrowRight, Check, Plus, Trash2 } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Check, Minus, Plus, Trash2 } from 'lucide-react'
 import Button from '../components/atoms/Button'
 import Card from '../components/atoms/Card'
 import Input from '../components/atoms/Input'
@@ -72,6 +72,7 @@ const CheckoutPage = () => {
   const [step, setStep]             = useState(1)
   const [typeBoard, setTypeBoard]   = useState(initialBoard ?? 'HALF')
   const [isGroup, setIsGroup]       = useState(false)
+  const [numPassengers, setNumPassengers] = useState(1)
   const [passengers, setPassengers] = useState([{ ...EMPTY_PASSENGER }])
   const [quote, setQuote]           = useState(null)
   const [booking, setBooking]       = useState(null)
@@ -87,8 +88,17 @@ const CheckoutPage = () => {
     )
   }
 
-  const addPassenger    = () => setPassengers(p => [...p, { ...EMPTY_PASSENGER }])
-  const removePassenger = (i) => setPassengers(p => p.filter((_, idx) => idx !== i))
+  const handleNumPassengersChange = (n) => {
+    const newNum = Math.max(1, Math.min(20, n))
+    setNumPassengers(newNum)
+    setPassengers(prev => {
+      if (newNum > prev.length) {
+        return [...prev, ...Array(newNum - prev.length).fill(null).map(() => ({ ...EMPTY_PASSENGER }))]
+      }
+      return prev.slice(0, newNum)
+    })
+  }
+
   const changePassenger = (i, field, value) =>
     setPassengers(p => p.map((pass, idx) => idx === i ? { ...pass, [field]: value } : pass))
 
@@ -181,24 +191,41 @@ const CheckoutPage = () => {
 
           {step === 1 && (
             <div className="mt-8 space-y-4">
-              <div className="flex items-center justify-between">
-                <h2 className="font-semibold text-white">Pasajeros</h2>
-                <button onClick={addPassenger}
-                  className="flex items-center gap-1 text-sm font-medium"
-                  style={{ color: '#4A8FA8' }}>
-                  <Plus className="h-4 w-4" /> Añadir pasajero
-                </button>
+
+              {/* ── Selector número de personas ── */}
+              <div className="rounded-xl border border-surface-600 p-4">
+                <p className="text-sm font-medium text-white mb-3">¿Cuántas personas viajan?</p>
+                <div className="flex items-center gap-4">
+                  <button
+                    type="button"
+                    onClick={() => handleNumPassengersChange(numPassengers - 1)}
+                    disabled={numPassengers <= 1}
+                    className="grid h-9 w-9 place-items-center rounded-full border border-surface-600 text-ink-soft hover:border-brand-500 hover:text-white disabled:opacity-30 transition-colors"
+                  >
+                    <Minus className="h-4 w-4" />
+                  </button>
+                  <span className="text-2xl font-bold text-white w-8 text-center">{numPassengers}</span>
+                  <button
+                    type="button"
+                    onClick={() => handleNumPassengersChange(numPassengers + 1)}
+                    disabled={numPassengers >= 20}
+                    className="grid h-9 w-9 place-items-center rounded-full border border-surface-600 text-ink-soft hover:border-brand-500 hover:text-white disabled:opacity-30 transition-colors"
+                  >
+                    <Plus className="h-4 w-4" />
+                  </button>
+                  <span className="text-sm text-ink-muted">
+                    {numPassengers === 1 ? '1 persona' : `${numPassengers} personas`}
+                  </span>
+                </div>
               </div>
+
+              {/* ── Formularios de pasajeros ── */}
+              <h2 className="font-semibold text-white">Datos de los pasajeros</h2>
 
               {passengers.map((p, i) => (
                 <div key={i} className="rounded-xl border border-surface-600 p-4 space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium text-white">Pasajero {i + 1}</span>
-                    {i > 0 && (
-                      <button onClick={() => removePassenger(i)}>
-                        <Trash2 className="h-4 w-4 text-red-400" />
-                      </button>
-                    )}
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <Input label="Nombre" value={p.name}

@@ -4,7 +4,7 @@ import Button from '../components/atoms/Button'
 import Card from '../components/atoms/Card'
 import PageHeader from '../components/atoms/PageHeader'
 import DestinationCard from '../components/organisms/DestinationCard'
-import { travelService } from '../services/TravelsService'
+import { travelService } from '../services/travelsService'
 
 const DestinationsPage = () => {
   const [travels, setTravels]   = useState([])

@@ -6,7 +6,7 @@ import PageHeader from '../components/atoms/PageHeader'
 import StatCard from '../components/organisms/StatCard'
 import StatusPill from '../components/organisms/StatusPill'
 import { ADMIN_PATHS } from '../constants/paths'
-import { API } from '../constants/api'
+import { API } from '../services/api'
 import { formatCurrency } from '../utils/formatters'
 
 const DashboardPage = () => {

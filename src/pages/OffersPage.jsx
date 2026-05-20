@@ -5,7 +5,7 @@ import Select from '../components/atoms/Select'
 import DestinationCard from '../components/organisms/DestinationCard'
 import PageHeader from '../components/atoms/PageHeader'
 import FiltersCard from '../components/molecules/FiltersCard'
-import { travelService } from '../services/TravelsService'
+import { travelService } from '../services/travelsService'
 import { PUBLIC_PATHS } from '../constants/paths'
 
 const sortOptions = [

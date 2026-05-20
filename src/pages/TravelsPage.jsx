@@ -4,7 +4,7 @@ import Select from '../components/atoms/Select'
 import DestinationCard from '../components/organisms/DestinationCard'
 import TravelSearch from '../components/molecules/TravelSearch'
 import FiltersCard from '../components/molecules/FiltersCard'
-import { travelService } from '../services/TravelsService'
+import { travelService } from '../services/travelsService'
 
 const POPULAR = ['Londres', 'París', 'Roma', 'Tokio']
 
