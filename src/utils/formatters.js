@@ -5,3 +5,9 @@ const currencyFormatter = new Intl.NumberFormat('es-ES', {
 })
 
 export const formatCurrency = (value) => currencyFormatter.format(value)
+
+export const formatDate = (dateStr) => {
+  if (!dateStr) return ''
+  const [year, month, day] = dateStr.split('-')
+  return `${day}/${month}/${year}`
+}

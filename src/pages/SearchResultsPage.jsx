@@ -1,115 +1,171 @@
-import { SlidersHorizontal } from 'lucide-react'
-import Button from '../components/ui/Button'
-import Card from '../components/ui/Card'
-import DestinationCard from '../components/common/DestinationCard'
-import PageHeader from '../components/ui/PageHeader'
-import { FEATURED_DESTINATIONS, BUSES } from '../constants/mockData'
+import { useState, useEffect, useMemo } from 'react'
+import { useSearchParams } from 'react-router-dom'
+import { SlidersHorizontal, MapPin, Tag, Globe } from 'lucide-react'
+import Button from '../components/atoms/Button'
+import Card from '../components/atoms/Card'
+import DestinationCard from '../components/organisms/DestinationCard'
+import PageHeader from '../components/atoms/PageHeader'
+import { travelService } from '../services/travelsService'
+import { formatDate } from '../utils/formatters'
 
-const FILTERS = [
-  { label: 'Playa', count: 24 },
-  { label: 'Ciudad', count: 38 },
-  { label: 'Montaña', count: 17 },
-  { label: 'Aventura', count: 12 },
-  { label: 'Cultura', count: 21 },
-  { label: 'Familia', count: 30 },
-]
+const normalize = (str) =>
+  str?.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase() ?? ''
 
-const SearchResultsPage = () => (
-  <div className="container-page py-12">
-    <PageHeader
-      eyebrow="Búsqueda"
-      title="Viajes disponibles"
-      description={`${FEATURED_DESTINATIONS.length} destinos encontrados · ordenados por relevancia`}
-      actions={
-        <Button variant="secondary" size="md">
-          <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
-          Ordenar
-        </Button>
-      }
-    />
+const SearchResultsPage = () => {
+  const [searchParams]          = useSearchParams()
+  const [travels, setTravels]   = useState([])
+  const [loading, setLoading]   = useState(true)
+  const [error, setError]       = useState(null)
+  const [onlyOffers, setOnlyOffers] = useState(searchParams.get('onlyOffers') === 'true')
+  const [search, setSearch]     = useState(searchParams.get('destiny') ?? '')
 
-    <div className="mt-8 grid gap-8 lg:grid-cols-[280px_1fr]">
-      <Card as="aside" aria-label="Filtros" className="h-fit p-6">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-muted">
-          Filtros
-        </h2>
-        
-        {/* Filtros de tipo de destino */}
-        <div className="mt-4">
-          <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-ink-muted">
-            Tipo de destino
-          </p>
-          <div className="flex flex-col gap-2">
-            {FILTERS.map((filter) => (
-              <label
-                key={filter.label}
-                className="flex items-center justify-between rounded-lg px-2 py-2 text-sm text-ink-soft hover:bg-surface-700"
-              >
-                <span className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    className="h-4 w-4 rounded border-surface-600 bg-surface-900 text-brand-500 focus:ring-brand-500"
-                  />
-                  {filter.label}
-                </span>
-                <span className="text-xs text-ink-muted">{filter.count}</span>
-              </label>
+  const startDateParam = searchParams.get('startDate') ?? ''
+  const endDateParam   = searchParams.get('endDate') ?? ''
+
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+
+  useEffect(() => {
+    travelService.getAvailable()
+      .then(data => setTravels(data))
+      .catch(e => setError(e.message))
+      .finally(() => setLoading(false))
+  }, [])
+
+  const filtered = useMemo(() => travels.filter(t => {
+    const matchFuture = new Date(t.startDate) >= today
+    const matchDestiny = !search ||
+      normalize(t.destiny).includes(normalize(search)) ||
+      normalize(t.hotelCity).includes(normalize(search))
+    const matchOffer = onlyOffers ? t.sale === true : true
+    const matchStartDate = !startDateParam || new Date(t.startDate) >= new Date(startDateParam)
+    const matchEndDate = !endDateParam || new Date(t.endDate) <= new Date(endDateParam)
+    return matchFuture && matchDestiny && matchOffer && matchStartDate && matchEndDate
+  }), [travels, search, onlyOffers, startDateParam, endDateParam])
+
+  return (
+    <div className="container-page py-12">
+      <PageHeader
+        eyebrow="Búsqueda"
+        title="Viajes disponibles"
+        description={`${filtered.length} destinos encontrados`}
+        actions={
+          <Button variant="secondary" size="md">
+            <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
+            Ordenar
+          </Button>
+        }
+      />
+
+      {/* ── Toggle Todos / Ofertas ── */}
+      <div className="mt-6 flex gap-2">
+        <button
+          onClick={() => setOnlyOffers(false)}
+          style={{
+            padding: '8px 20px',
+            borderRadius: 20,
+            border: '1.5px solid',
+            borderColor: !onlyOffers ? '#4A8FA8' : 'rgba(74,143,168,0.3)',
+            background: !onlyOffers ? '#4A8FA8' : 'transparent',
+            color: !onlyOffers ? '#DAEEF7' : '#7AAFC0',
+            fontSize: 13,
+            fontWeight: 500,
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 6,
+          }}>
+          <Globe size={14} /> Todos los viajes
+        </button>
+        <button
+          onClick={() => setOnlyOffers(true)}
+          style={{
+            padding: '8px 20px',
+            borderRadius: 20,
+            border: '1.5px solid',
+            borderColor: onlyOffers ? '#4A8FA8' : 'rgba(74,143,168,0.3)',
+            background: onlyOffers ? '#4A8FA8' : 'transparent',
+            color: onlyOffers ? '#DAEEF7' : '#7AAFC0',
+            fontSize: 13,
+            fontWeight: 500,
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 6,
+          }}>
+          <Tag size={14} /> Solo ofertas
+        </button>
+      </div>
+
+      {error && (
+        <div className="mt-4 rounded-lg bg-red-50 p-4 text-red-700">{error}</div>
+      )}
+
+      <div className="mt-6 grid gap-8 lg:grid-cols-[280px_1fr]">
+
+        <Card as="aside" aria-label="Filtros" className="h-fit p-6">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-muted">Filtros</h2>
+
+          <div className="mt-4">
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink-muted">Viaje</p>
+            <div className="flex items-center gap-2 rounded-xl border border-surface-600 bg-surface-900 px-3">
+              <MapPin className="h-4 w-4 text-brand-400" aria-hidden="true" />
+              <input
+                type="text"
+                placeholder="Viaje"
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                className="h-10 w-full bg-transparent text-sm text-ink placeholder:text-ink-muted focus:outline-none"
+              />
+            </div>
+          </div>
+
+          {startDateParam && (
+            <div className="mt-4 rounded-lg bg-surface-800 p-3 text-xs text-ink-muted">
+              📅 Salida desde: <span className="text-white">{formatDate(startDateParam)}</span>
+              {endDateParam && <> · Vuelta hasta: <span className="text-white">{formatDate(endDateParam)}</span></>}
+            </div>
+          )}
+
+          <Button
+            variant="ghost"
+            size="sm"
+            fullWidth
+            className="mt-6"
+            onClick={() => { setSearch(''); setOnlyOffers(false) }}
+          >
+            Limpiar filtros
+          </Button>
+        </Card>
+
+        {loading ? (
+          <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="h-64 animate-pulse rounded-2xl bg-surface-800" />
             ))}
           </div>
-        </div>
-
-        {/* Filtros de autobuses */}
-        <div className="mt-6 border-t border-surface-700 pt-6">
-          <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-ink-muted">
-            Autobús disponible
-          </p>
-          <div className="flex flex-col gap-2">
-            {BUSES.map((bus) => (
-              <label
-                key={bus.id}
-                className="flex flex-col rounded-lg px-2 py-2 text-sm text-ink-soft hover:bg-surface-700"
-              >
-                <span className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    className="h-4 w-4 rounded border-surface-600 bg-surface-900 text-brand-500 focus:ring-brand-500"
-                  />
-                  <span className="font-medium">{bus.name}</span>
-                </span>
-                <span className="ml-6 text-xs text-ink-muted">{bus.seats} asientos · {bus.amenities}</span>
-              </label>
+        ) : filtered.length === 0 ? (
+          <div className="flex flex-col items-center justify-center gap-3 py-20 text-center">
+            <MapPin className="h-10 w-10 text-brand-400" />
+            <p className="text-lg font-semibold text-white">Sin resultados</p>
+            <p className="text-sm text-ink-muted">Prueba con otro destino o quita los filtros</p>
+          </div>
+        ) : (
+          <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+            {filtered.map(travel => (
+              <DestinationCard
+                key={travel.id}
+                destination={travel}
+                featured
+                showOfferPrice={travel.sale === true}
+              />
             ))}
           </div>
-        </div>
+        )}
 
-        {/* Rango de precio */}
-        <div className="mt-6 border-t border-surface-700 pt-6">
-          <p className="text-sm font-semibold uppercase tracking-wide text-ink-muted">
-            Rango de precio
-          </p>
-          <input
-            type="range"
-            min="500"
-            max="5000"
-            defaultValue="2500"
-            aria-label="Precio máximo"
-            className="mt-3 w-full accent-brand-500"
-          />
-          <p className="mt-1 text-xs text-ink-muted">Hasta €2.500</p>
-        </div>
-
-        <Button fullWidth className="mt-6">
-          Aplicar filtros
-        </Button>
-      </Card>
-
-      <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-        {FEATURED_DESTINATIONS.map((destination) => (
-          <DestinationCard key={destination.id} destination={destination} />
-        ))}
       </div>
     </div>
-  </div>
-)
+  )
+}
 
 export default SearchResultsPage
