@@ -64,8 +64,7 @@ const HomePage = () => {
         })
         await authService.login(form.email, form.password)
       }
-      const u = authService.getUser()
-      navigate(u?.role === 'ADMIN' || u?.rol === 'ADMIN' ? '/admin' : '/profile')
+      window.location.reload()
     } catch (e) {
       setError(e.message)
     } finally {
