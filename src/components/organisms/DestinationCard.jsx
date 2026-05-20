@@ -56,6 +56,8 @@ const DestinationCard = ({ destination, showOfferPrice, boardType = 'half', feat
     <Card
       as={Link}
       to={travelPath}
+      target="_blank"
+      rel="noopener noreferrer"
       className="block overflow-hidden transition-transform duration-200 hover:-translate-y-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
     >
       <div className="relative block h-48 w-full overflow-hidden group">
