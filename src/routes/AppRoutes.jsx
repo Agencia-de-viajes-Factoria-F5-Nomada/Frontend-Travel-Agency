@@ -50,6 +50,7 @@ export default function AppRoutes() {
         <Route path="/home"               element={<HomePage />} />
         <Route path="/destinations"        element={<DestinationsPage />} />
         <Route path="/destinations/:id"    element={<DestinationDetailPage />} />
+        <Route path="/travels/:id"         element={<DestinationDetailPage />} />
         <Route path="/offers"              element={<OffersPage />} />
         <Route path="/search"              element={<SearchResultsPage />} />
         <Route path="/travels"             element={<TravelsPage />} />

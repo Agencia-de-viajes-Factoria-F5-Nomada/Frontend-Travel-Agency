@@ -4,7 +4,7 @@ import Badge from '../atoms/Badge'
 import Button from '../atoms/Button'
 import Card from '../atoms/Card'
 import { classNames } from '../../utils/classNames'
-import { buildDestinationPath } from '../../constants/paths'
+import { buildTravelPath } from '../../constants/paths'
 import { formatCurrency } from '../../utils/formatters'
 import { getDestinationFallbackImage, getDestinationImage } from '../../utils/destinationImages'
 
@@ -50,16 +50,15 @@ const DestinationCard = ({ destination, showOfferPrice, boardType = 'half', feat
     : null
 
   const displayPrice = discountedPrice ?? basePrice
-  const destPath = buildDestinationPath(destination.id)
+  const travelPath = buildTravelPath(destination.id)
 
   return (
-    <Card className="overflow-hidden transition-transform duration-200 hover:-translate-y-1">
-      <Link
-        to={destPath}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="relative block h-48 w-full overflow-hidden group"
-      >
+    <Card
+      as={Link}
+      to={travelPath}
+      className="block overflow-hidden transition-transform duration-200 hover:-translate-y-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
+    >
+      <div className="relative block h-48 w-full overflow-hidden group">
         {image ? (
           <img
             src={image}
@@ -96,7 +95,7 @@ const DestinationCard = ({ destination, showOfferPrice, boardType = 'half', feat
             </span>
           )}
         </div>
-      </Link>
+      </div>
       <div className="flex flex-col gap-4 p-5">
         <div className="flex items-start justify-between gap-3">
           <div>
@@ -133,7 +132,7 @@ const DestinationCard = ({ destination, showOfferPrice, boardType = 'half', feat
               {BOARD_LABELS[boardType] || BOARD_LABELS.half}
             </p>
           </div>
-          <Button to={destPath} size="sm" target="_blank" rel="noopener noreferrer">
+          <Button as="span" size="sm">
             Ver
           </Button>
         </div>
