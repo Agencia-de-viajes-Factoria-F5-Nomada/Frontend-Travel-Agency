@@ -64,6 +64,11 @@ const DestinationDetailPage = () => {
   const fullBoard = hotel?.fullBoardPrice ?? travel?.fullBoardPrice
   const price = typeBoard === 'HALF_BOARD' ? halfBoard : fullBoard
 
+  const isOffer = travel.sale === true
+  const discountPct = isOffer && travel.discountPercentage ? travel.discountPercentage : 0
+  const originalPrice = discountPct > 0 ? Math.round(price / (1 - discountPct / 100)) : null
+  const discountedPrice = discountPct > 0 ? price : null
+
   const isPast = travel.startDate && new Date(travel.startDate) < new Date()
   const isFull = travel.availablePlaces === 0
   const image = getDestinationImage(travel)
@@ -105,10 +110,17 @@ const DestinationDetailPage = () => {
               </div>
             )}
             {travel.sale && (
-              <span className="absolute left-4 top-4 rounded-full px-3 py-1 text-sm font-bold text-white"
-                style={{ background: '#4A8FA8' }}>
-                EN OFERTA
-              </span>
+              <div className="absolute left-4 top-4 flex gap-2">
+                <span className="rounded-full px-3 py-1 text-sm font-bold text-white"
+                  style={{ background: '#4A8FA8' }}>
+                  EN OFERTA
+                </span>
+                {discountPct > 0 && (
+                  <span className="rounded-full bg-red-500 px-3 py-1 text-sm font-bold text-white">
+                    -{discountPct}%
+                  </span>
+                )}
+              </div>
             )}
           </div>
 
@@ -167,7 +179,14 @@ const DestinationDetailPage = () => {
                   style={{ borderColor: typeBoard === 'HALF_BOARD' ? '#4A8FA8' : 'transparent',
                            background: typeBoard === 'HALF_BOARD' ? '#DAEEF7' : '' }}>
                   <span className="text-sm font-medium" style={{ color: '#1A3A5C' }}>Media pensión</span>
-                  <span className="font-bold" style={{ color: '#1A3A5C' }}>{halfBoard}€/persona</span>
+                  <div className="flex items-center gap-2">
+                    {isOffer && discountPct > 0 && (
+                      <span className="text-xs line-through" style={{ color: '#9CA3AF' }}>
+                        {Math.round(halfBoard / (1 - discountPct / 100))}€
+                      </span>
+                    )}
+                    <span className="font-bold" style={{ color: '#1A3A5C' }}>{halfBoard}€/persona</span>
+                  </div>
                   <input type="radio" name="typeBoard" value="HALF_BOARD"
                     checked={typeBoard === 'HALF_BOARD'}
                     onChange={() => setTypeBoard('HALF_BOARD')}
@@ -177,7 +196,14 @@ const DestinationDetailPage = () => {
                   style={{ borderColor: typeBoard === 'FULL_BOARD' ? '#4A8FA8' : 'transparent',
                            background: typeBoard === 'FULL_BOARD' ? '#DAEEF7' : '' }}>
                   <span className="text-sm font-medium" style={{ color: '#1A3A5C' }}>Pensión completa</span>
-                  <span className="font-bold" style={{ color: '#1A3A5C' }}>{fullBoard}€/persona</span>
+                  <div className="flex items-center gap-2">
+                    {isOffer && discountPct > 0 && (
+                      <span className="text-xs line-through" style={{ color: '#9CA3AF' }}>
+                        {Math.round(fullBoard / (1 - discountPct / 100))}€
+                      </span>
+                    )}
+                    <span className="font-bold" style={{ color: '#1A3A5C' }}>{fullBoard}€/persona</span>
+                  </div>
                   <input type="radio" name="typeBoard" value="FULL_BOARD"
                     checked={typeBoard === 'FULL_BOARD'}
                     onChange={() => setTypeBoard('FULL_BOARD')}
@@ -190,7 +216,13 @@ const DestinationDetailPage = () => {
             {price && (
               <div className="mt-4 rounded-xl p-4 text-center" style={{ background: '#DAEEF7' }}>
                 <p className="text-xs text-ink-muted">Precio por persona</p>
+                {originalPrice && (
+                  <p className="text-sm line-through" style={{ color: '#9CA3AF' }}>{originalPrice}€</p>
+                )}
                 <p className="text-3xl font-bold" style={{ color: '#1A3A5C' }}>{price}€</p>
+                {discountPct > 0 && (
+                  <p className="mt-1 text-xs font-semibold text-red-500">-{discountPct}% de descuento aplicado</p>
+                )}
               </div>
             )}
 
