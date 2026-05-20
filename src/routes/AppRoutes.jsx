@@ -42,6 +42,7 @@ export default function AppRoutes() {
         <Route path="/search"              element={<SearchResultsPage />} />
         <Route path="/auth"                element={<AuthPage />} />
         <Route path="/legal/:slug"         element={<LegalPage />} />
+        <Route path="/dashboard"           element={<DashboardPage />} />
         <Route path="/profile"             element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
         <Route path="/personal/:section"   element={<PrivateRoute><PersonalAreaPage /></PrivateRoute>} />
         <Route path="/checkout"            element={
