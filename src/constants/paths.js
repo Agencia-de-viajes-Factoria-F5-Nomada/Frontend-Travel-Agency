@@ -2,6 +2,7 @@ export const PUBLIC_PATHS = {
   HOME:        '/',
   SEARCH:      '/search',
   DESTINATION: '/destinations/:id',
+  TRAVEL:      '/travels/:id',
   CHECKOUT:    '/checkout',
   PROFILE:     '/profile',
   ENTITIES:    '/profile',
@@ -29,3 +30,4 @@ export const ADMIN_PATHS = {
 };
 
 export const buildDestinationPath = (id) => `/destinations/${id}`;
+export const buildTravelPath = (id) => `/travels/${id}`;
