@@ -9,8 +9,12 @@
     height: 100%;
   }
 
+  html {
+    overflow-y: scroll;
+    scrollbar-gutter: stable;
+  }
+
   body {
-    /* Fondo suave en degradado usando la paleta brand (azure) definida en tailwind.config.js */
     @apply bg-gradient-to-b from-brand-100 via-brand-200 to-brand-500 text-ink font-sans antialiased;
   }
 
@@ -24,12 +28,10 @@
     @apply mx-auto w-full max-w-page px-4 sm:px-6 lg:px-8;
   }
 
-  /* Componentes globales de diseño */
   .card {
     @apply rounded-card border border-surface-700/40 bg-gradient-to-b from-brand-100/60 to-surface-950/40 p-4 shadow-card backdrop-blur;
   }
 
-  /* Hero card: variante más prominente para la sección principal */
   .hero-card {
     @apply rounded-card border border-surface-700/40 bg-gradient-to-b from-brand-100/60 to-surface-950/40 p-6 shadow-2xl backdrop-blur;
     transition: transform 240ms ease, box-shadow 240ms ease;
@@ -71,25 +73,21 @@
     @apply text-sm text-ink-muted mb-6;
   }
 
-  /* Clase utilitaria para botones para facilitar uso fuera del componente React */
   .btn {
     @apply inline-flex items-center justify-center gap-2 rounded-card font-semibold transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed;
   }
 
-  /* Hero illustration utilities */
   .hero-illustration {
     @apply pointer-events-none select-none absolute right-0 top-0 w-[48%] max-w-[520px] opacity-90 -translate-y-6;
     animation: float-anim 8s ease-in-out infinite;
   }
 
-  /* Thumbnail (LQIP) styles: blur-up and fade transition */
   .hero-thumb {
     filter: blur(6px);
     transform-origin: right top;
     transition: filter 600ms ease, opacity 600ms ease, transform 600ms ease;
   }
 
-  /* Full illustration appearence */
   .hero-full {
     opacity: 0;
     transform: translateY(-6px) scale(1.02);
@@ -100,8 +98,6 @@
     opacity: 1;
     transform: translateY(0) scale(1);
   }
-
-  /* When full illustration loads we can remove blur by adding a class via JS if needed. Keep transition fallback. */
 
   @keyframes float-anim {
     0% { transform: translateY(-6px); opacity: 0.92 }

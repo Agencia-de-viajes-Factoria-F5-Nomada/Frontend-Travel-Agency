@@ -47,7 +47,7 @@ export default function TravelsCRUD() {
     10
   )
 
-  useEffect(() => { load() }, [load])
+  useEffect(() => { load() }, [])
 
   const change = (e) => {
     const { name, value, type, checked } = e.target

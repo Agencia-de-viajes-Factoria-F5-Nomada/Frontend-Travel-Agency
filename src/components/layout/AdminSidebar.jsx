@@ -30,7 +30,7 @@ const AdminSidebar = ({ open, onNavigate }) => {
     <aside
       aria-label="Navegación de administración"
       className={classNames(
-        'fixed inset-y-0 left-0 z-30 flex w-72 flex-col border-r border-brand-500/30 bg-surface-900 px-4 py-6 transition-transform duration-200 lg:static lg:translate-x-0',
+        'fixed inset-y-0 left-0 z-30 flex w-72 shrink-0 flex-col border-r border-brand-500/30 bg-surface-900 px-4 py-6 transition-transform duration-200 lg:static lg:translate-x-0',
         open ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
       )}
     >

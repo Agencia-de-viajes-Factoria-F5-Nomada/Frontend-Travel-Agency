@@ -33,7 +33,7 @@ export default function BusesCRUD() {
     10
   )
 
-  useEffect(() => { load() }, [load])
+  useEffect(() => { load() }, [])
 
   const change = (e) => {
     const { name, value, type, checked } = e.target

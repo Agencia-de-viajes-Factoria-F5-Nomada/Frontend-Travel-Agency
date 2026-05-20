@@ -36,7 +36,7 @@ export default function HotelsCRUD() {
     10
   )
 
-  useEffect(() => { load() }, [load])
+  useEffect(() => { load() }, [])
 
   const change = (e) => {
     const { name, value, type, checked } = e.target
@@ -112,31 +112,11 @@ export default function HotelsCRUD() {
     { key: 'name', label: 'Nombre' },
     { key: 'city', label: 'Ciudad' },
     { key: 'country', label: 'País' },
-    {
-      key: 'stars',
-      label: 'Estrellas',
-      render: (val) => '⭐'.repeat(val)
-    },
-    {
-      key: 'capacity',
-      label: 'Plazas',
-      render: (_, row) => `${row.availablePlaces}/${row.capacity}`
-    },
-    {
-      key: 'halfBoardPrice',
-      label: 'MP',
-      render: (val) => `${val}€`
-    },
-    {
-      key: 'fullBoardPrice',
-      label: 'PC',
-      render: (val) => `${val}€`
-    },
-    {
-      key: 'active',
-      label: 'Activo',
-      render: (val) => val ? '✅' : '❌'
-    },
+    { key: 'stars', label: 'Estrellas', render: (val) => '⭐'.repeat(val) },
+    { key: 'capacity', label: 'Plazas', render: (_, row) => `${row.availablePlaces}/${row.capacity}` },
+    { key: 'halfBoardPrice', label: 'MP', render: (val) => `${val}€` },
+    { key: 'fullBoardPrice', label: 'PC', render: (val) => `${val}€` },
+    { key: 'active', label: 'Activo', render: (val) => val ? '✅' : '❌' },
     {
       key: 'actions',
       label: '',

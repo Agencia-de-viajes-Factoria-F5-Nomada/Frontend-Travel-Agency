@@ -3,7 +3,6 @@ import {
   LayoutDashboard,
   MapPinned,
   Search,
-  Tag,
   Ticket,
   Users,
   Bus,
@@ -16,7 +15,6 @@ import { ADMIN_PATHS, PUBLIC_PATHS } from './paths'
 export const PUBLIC_NAV = [
   { label: 'Inicio',  to: PUBLIC_PATHS.HOME,      icon: Compass },
   { label: 'Buscar',  to: PUBLIC_PATHS.SEARCH,    icon: Search },
-  { label: 'Ofertas', to: PUBLIC_PATHS.OFFERS,    icon: Tag },
   { label: 'Panel',   to: PUBLIC_PATHS.DASHBOARD, icon: LayoutDashboard },
 ]
 

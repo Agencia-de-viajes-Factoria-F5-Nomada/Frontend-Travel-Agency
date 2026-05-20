@@ -32,7 +32,7 @@ export default function BookingsCRUD() {
     load()
     travelService.getAvailable().then(setTravels).catch(() => {})
     userService.getAll().then(data => setUsers(data.content ?? data)).catch(() => {})
-  }, [load])
+  }, [])
 
   const handleChange = (e) => {
     const { name, value } = e.target

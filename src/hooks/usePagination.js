@@ -8,7 +8,7 @@ export default function usePagination(fetchFn, initialPage = 0, initialSize = 10
   const [totalElements, setTotalElements] = useState(0)
   const [size, setSize] = useState(initialSize)
 
-  const load = useCallback(async (pageNum = 0, pageSize = size) => {
+  const load = useCallback(async (pageNum = 0, pageSize = initialSize) => {
     setLoading(true)
     try {
       const result = await fetchFn(pageNum, pageSize)
@@ -20,7 +20,7 @@ export default function usePagination(fetchFn, initialPage = 0, initialSize = 10
     } finally {
       setLoading(false)
     }
-  }, [fetchFn, size])
+  }, [fetchFn, initialSize])
 
   const changePage = useCallback((newPage) => {
     load(newPage)
