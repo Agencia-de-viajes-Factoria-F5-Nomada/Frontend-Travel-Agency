@@ -1,17 +1,14 @@
 import { useState, useEffect } from 'react'
-import { ArrowRight, MapPin, Search, Users, Calendar, LogIn, UserPlus } from 'lucide-react'
+import { ArrowRight, LogIn, UserPlus } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import Button from '../components/atoms/Button'
 import Card from '../components/atoms/Card'
 import Input from '../components/atoms/Input'
 import DestinationCard from '../components/organisms/DestinationCard'
 import { travelService } from '../services/TravelsService'
-import { PUBLIC_PATHS } from '../constants/paths'
 import { authService } from '../services/authService'
 import { apiClient } from '../services/api'
 import { classNames } from '../utils/classNames'
-
-const POPULAR = ['Londres', 'París', 'Roma', 'Tokio']
 
 const TABS = [
   { id: 'signin', label: 'Iniciar sesión', icon: LogIn },
@@ -21,7 +18,6 @@ const TABS = [
 const HomePage = () => {
   const [travels, setTravels] = useState([])
   const [loading, setLoading] = useState(true)
-  const [search, setSearch] = useState({ destiny: '', startDate: '', endDate: '', passengers: 2 })
   const [active, setActive] = useState('signin')
   const [authLoading, setAuthLoading] = useState(false)
   const [error, setError] = useState(null)
@@ -70,16 +66,6 @@ const HomePage = () => {
     } finally {
       setAuthLoading(false)
     }
-  }
-
-  const handleSearch = (e) => {
-    e.preventDefault()
-    const params = new URLSearchParams()
-    if (search.destiny) params.set('destiny', search.destiny)
-    if (search.startDate) params.set('startDate', search.startDate)
-    if (search.endDate) params.set('endDate', search.endDate)
-    if (search.passengers) params.set('passengers', search.passengers)
-    navigate(`${PUBLIC_PATHS.SEARCH}?${params.toString()}`)
   }
 
   return (
@@ -182,81 +168,6 @@ const HomePage = () => {
               ))}
             </div>
           )}
-        </section>
-      )}
-
-      {/* ── BUSCADOR — solo si está logueado ── */}
-      {isLoggedIn && (
-        <section style={{ background: '#122840' }} className="flex flex-col items-center px-6 py-12">
-          <h2 style={{ color: '#DAEEF7' }} className="text-2xl font-medium mb-6">¿A dónde quieres ir?</h2>
-          <form onSubmit={handleSearch}
-            style={{ background: 'rgba(218,238,247,0.06)', border: '1.5px solid #4A8FA8', borderRadius: 16, padding: '1rem', width: '100%', maxWidth: 860 }}
-            className="flex flex-col lg:flex-row items-center gap-0">
-
-            <div className="flex flex-col flex-[2] w-full px-3 py-1 lg:border-r" style={{ borderColor: 'rgba(74,143,168,0.3)' }}>
-              <span style={{ fontSize: 10, color: '#4A8FA8', letterSpacing: '0.1em' }} className="uppercase mb-1">Destino</span>
-              <div className="flex items-center gap-2">
-                <MapPin size={15} style={{ color: '#4A8FA8', flexShrink: 0 }} />
-                <input type="text" placeholder="¿A dónde?" value={search.destiny}
-                  onChange={e => setSearch(s => ({ ...s, destiny: e.target.value }))}
-                  style={{ background: 'transparent', border: 'none', outline: 'none', color: '#DAEEF7', fontSize: 14, width: '100%' }}
-                  className="placeholder:text-white/25" />
-              </div>
-            </div>
-
-            <div className="flex flex-col flex-1 w-full px-3 py-1 lg:border-r" style={{ borderColor: 'rgba(74,143,168,0.3)' }}>
-              <span style={{ fontSize: 10, color: '#4A8FA8', letterSpacing: '0.1em' }} className="uppercase mb-1">Salida</span>
-              <div className="flex items-center gap-2">
-                <Calendar size={15} style={{ color: '#4A8FA8', flexShrink: 0 }} />
-                <input type="date" value={search.startDate}
-                  onChange={e => setSearch(s => ({ ...s, startDate: e.target.value }))}
-                  style={{ colorScheme: 'dark', background: 'transparent', border: 'none', outline: 'none', color: search.startDate ? '#DAEEF7' : 'rgba(218,238,247,0.25)', fontSize: 13, width: '100%' }} />
-              </div>
-            </div>
-
-            <div className="flex flex-col flex-1 w-full px-3 py-1 lg:border-r" style={{ borderColor: 'rgba(74,143,168,0.3)' }}>
-              <span style={{ fontSize: 10, color: '#4A8FA8', letterSpacing: '0.1em' }} className="uppercase mb-1">Vuelta</span>
-              <div className="flex items-center gap-2">
-                <Calendar size={15} style={{ color: '#4A8FA8', flexShrink: 0 }} />
-                <input type="date" value={search.endDate}
-                  onChange={e => setSearch(s => ({ ...s, endDate: e.target.value }))}
-                  style={{ colorScheme: 'dark', background: 'transparent', border: 'none', outline: 'none', color: search.endDate ? '#DAEEF7' : 'rgba(218,238,247,0.25)', fontSize: 13, width: '100%' }} />
-              </div>
-            </div>
-
-            <div className="flex flex-col flex-1 w-full px-3 py-1 lg:border-r" style={{ borderColor: 'rgba(74,143,168,0.3)' }}>
-              <span style={{ fontSize: 10, color: '#4A8FA8', letterSpacing: '0.1em' }} className="uppercase mb-1">Viajeros</span>
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2">
-                  <Users size={15} style={{ color: '#4A8FA8' }} />
-                  <span style={{ fontSize: 13, color: 'rgba(218,238,247,0.7)' }}>{search.passengers}</span>
-                </div>
-                <div className="flex gap-2">
-                  <button type="button" onClick={() => setSearch(s => ({ ...s, passengers: Math.max(1, s.passengers - 1) }))}
-                    style={{ width: 20, height: 20, borderRadius: '50%', border: '0.5px solid rgba(74,143,168,0.4)', background: 'transparent', color: '#7AAFC0', fontSize: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>−</button>
-                  <button type="button" onClick={() => setSearch(s => ({ ...s, passengers: Math.min(20, s.passengers + 1) }))}
-                    style={{ width: 20, height: 20, borderRadius: '50%', border: '0.5px solid rgba(74,143,168,0.4)', background: 'transparent', color: '#7AAFC0', fontSize: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+</button>
-                </div>
-              </div>
-            </div>
-
-            <div className="pl-3 w-full lg:w-auto mt-3 lg:mt-0">
-              <button type="submit"
-                style={{ background: '#4A8FA8', color: '#DAEEF7', border: 'none', borderRadius: 10, padding: '10px 22px', fontSize: 14, fontWeight: 500, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8, whiteSpace: 'nowrap', width: '100%', justifyContent: 'center' }}>
-                <Search size={15} /> Buscar
-              </button>
-            </div>
-          </form>
-
-          <div className="flex items-center gap-2 mt-4 flex-wrap justify-center">
-            <span style={{ fontSize: 11, color: '#7AAFC0' }}>Populares:</span>
-            {POPULAR.map(p => (
-              <button key={p} type="button" onClick={() => setSearch(s => ({ ...s, destiny: p }))}
-                style={{ fontSize: 11, color: '#7AAFC0', border: '0.5px solid rgba(74,143,168,0.3)', borderRadius: 20, padding: '2px 12px', background: 'transparent', cursor: 'pointer' }}>
-                {p}
-              </button>
-            ))}
-          </div>
         </section>
       )}
     </>
