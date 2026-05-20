@@ -14,6 +14,18 @@ export default defineConfig({
     globals: true,
     setupFiles: './src/test/setup.js',
     include: ['src/**/*.test.{js,jsx}'],
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'html'],
+      include: ['src/**/*.{js,jsx}'],
+      exclude: [
+        'src/**/*.test.{js,jsx}',
+        'src/test/setup.js',
+        'src/main.jsx',
+        'src/routes/**',
+        'src/constants/**',
+      ],
+    },
   },
   server: {
     proxy: {

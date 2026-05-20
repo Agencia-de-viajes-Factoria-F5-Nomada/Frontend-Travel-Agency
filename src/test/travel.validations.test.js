@@ -1,56 +1,69 @@
 import { describe, it, expect } from 'vitest'
 
-// Lógica extraída de DestinationDetailPage
-const isPastTravel = (startDate) => {
-  if (!startDate) return false
-  return new Date(startDate) < new Date()
-}
+describe('travel validations', () => {
+  const validateTravelForm = (form) => {
+    const errors = {}
+    if (!form.destiny) errors.destiny = 'El destino es requerido'
+    if (!form.startDate) errors.startDate = 'La fecha de inicio es requerida'
+    if (!form.endDate) errors.endDate = 'La fecha de fin es requerida'
+    if (form.startDate && form.endDate && new Date(form.startDate) > new Date(form.endDate)) {
+      errors.endDate = 'La fecha de fin debe ser posterior a la de inicio'
+    }
+    if (!form.price || form.price <= 0) errors.price = 'El precio debe ser mayor a 0'
+    if (!form.availableSeats || form.availableSeats < 1) errors.availableSeats = 'Al menos 1 plaza disponible'
+    return errors
+  }
 
-const isFullTravel = (availablePlaces) => availablePlaces === 0
-
-describe('Validación: viaje pasado', () => {
-  it('detecta un viaje con fecha pasada', () => {
-    expect(isPastTravel('2020-01-01')).toBe(true)
+  it('retorna errores para formulario vacío', () => {
+    const errors = validateTravelForm({})
+    expect(errors.destiny).toBe('El destino es requerido')
+    expect(errors.startDate).toBe('La fecha de inicio es requerida')
+    expect(errors.endDate).toBe('La fecha de fin es requerida')
+    expect(errors.price).toBe('El precio debe ser mayor a 0')
+    expect(errors.availableSeats).toBe('Al menos 1 plaza disponible')
   })
 
-  it('no bloquea un viaje con fecha futura', () => {
-    expect(isPastTravel('2099-12-31')).toBe(false)
+  it('valida que la fecha de fin sea posterior a la de inicio', () => {
+    const errors = validateTravelForm({
+      destiny: 'París',
+      startDate: '2026-12-01',
+      endDate: '2026-11-01',
+      price: 500,
+      availableSeats: 10,
+    })
+    expect(errors.endDate).toBe('La fecha de fin debe ser posterior a la de inicio')
   })
 
-  it('no bloquea si no hay fecha', () => {
-    expect(isPastTravel(null)).toBe(false)
-    expect(isPastTravel(undefined)).toBe(false)
-  })
-})
-
-describe('Validación: viaje completo', () => {
-  it('detecta un viaje sin plazas disponibles', () => {
-    expect(isFullTravel(0)).toBe(true)
-  })
-
-  it('no bloquea si hay plazas disponibles', () => {
-    expect(isFullTravel(10)).toBe(false)
-    expect(isFullTravel(1)).toBe(false)
-  })
-})
-
-describe('Combinación: botón de reserva deshabilitado', () => {
-  const isBookingDisabled = (travel) =>
-    isPastTravel(travel.startDate) || isFullTravel(travel.availablePlaces)
-
-  it('deshabilita si el viaje es pasado', () => {
-    expect(isBookingDisabled({ startDate: '2020-01-01', availablePlaces: 10 })).toBe(true)
+  it('retorna objeto vacío para formulario válido', () => {
+    const errors = validateTravelForm({
+      destiny: 'París',
+      startDate: '2026-06-01',
+      endDate: '2026-06-15',
+      price: 500,
+      availableSeats: 10,
+    })
+    expect(Object.keys(errors).length).toBe(0)
   })
 
-  it('deshabilita si no hay plazas', () => {
-    expect(isBookingDisabled({ startDate: '2099-12-31', availablePlaces: 0 })).toBe(true)
+  it('valida precio mayor a 0', () => {
+    const errors = validateTravelForm({
+      destiny: 'París',
+      startDate: '2026-06-01',
+      endDate: '2026-06-15',
+      price: 0,
+      availableSeats: 10,
+    })
+    expect(errors.price).toBe('El precio debe ser mayor a 0')
   })
 
-  it('deshabilita si es pasado y sin plazas', () => {
-    expect(isBookingDisabled({ startDate: '2020-01-01', availablePlaces: 0 })).toBe(true)
-  })
-
-  it('habilita si hay plazas y la fecha es futura', () => {
-    expect(isBookingDisabled({ startDate: '2099-12-31', availablePlaces: 5 })).toBe(false)
+  it('valida plazas disponibles mínimas', () => {
+    const errors = validateTravelForm({
+      destiny: 'París',
+      startDate: '2026-06-01',
+      endDate: '2026-06-15',
+      price: 500,
+      availableSeats: 0,
+    })
+    expect(errors.availableSeats).toBe('Al menos 1 plaza disponible')
   })
 })

@@ -26,7 +26,7 @@ describe('Card', () => {
   it('aplica clases base de tarjeta', () => {
     const { container } = render(<Card>Test</Card>)
     expect(container.firstChild).toHaveClass('rounded-card')
-    expect(container.firstChild).toHaveClass('border')
+    expect(container.firstChild).toHaveClass('border-[1.5px]')
   })
 
   it('acepta className personalizado', () => {

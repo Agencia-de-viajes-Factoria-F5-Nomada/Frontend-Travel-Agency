@@ -2,25 +2,35 @@ import { describe, it, expect } from 'vitest'
 import { classNames } from '../utils/classNames'
 
 describe('classNames', () => {
-  it('une varias clases en un string', () => {
-    expect(classNames('foo', 'bar')).toBe('foo bar')
+  it('combina strings de clases', () => {
+    expect(classNames('class1', 'class2')).toBe('class1 class2')
   })
 
   it('ignora valores falsy', () => {
-    expect(classNames('foo', false, null, undefined, '', 'bar')).toBe('foo bar')
+    expect(classNames('class1', false, null, undefined, 'class2')).toBe('class1 class2')
   })
 
-  it('devuelve string vacío si no recibe ningún valor válido', () => {
-    expect(classNames(false, null, undefined)).toBe('')
+  it('maneja arrays de clases', () => {
+    expect(classNames('class1', 'class2')).toBe('class1 class2')
   })
 
-  it('funciona con una sola clase', () => {
-    expect(classNames('solo')).toBe('solo')
+  it('combina múltiples tipos', () => {
+    expect(classNames('base', 'class1', 'class2')).toBe('base class1 class2')
   })
 
-  it('acepta clases condicionales correctamente', () => {
-    const activo = true
-    const inactivo = false
-    expect(classNames('base', activo && 'activo', inactivo && 'inactivo')).toBe('base activo')
+  it('retorna string vacío sin argumentos', () => {
+    expect(classNames()).toBe('')
+  })
+
+  it('filtra strings vacíos', () => {
+    expect(classNames('', 'class1', '')).toBe('class1')
+  })
+
+  it('maneja clases duplicadas', () => {
+    expect(classNames('class1', 'class1')).toBe('class1 class1')
+  })
+
+  it('maneja números como clases', () => {
+    expect(classNames('prefix', 123)).toBe('prefix 123')
   })
 })

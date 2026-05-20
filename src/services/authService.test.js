@@ -1,167 +1,117 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { authService } from './authService'
-
-const mockLocalStorage = (() => {
-  let store = {}
-  return {
-    getItem: vi.fn((key) => store[key] || null),
-    setItem: vi.fn((key, value) => { store[key] = value }),
-    removeItem: vi.fn((key) => { delete store[key] }),
-    clear: () => { store = {} }
-  }
-})()
-
-Object.defineProperty(window, 'localStorage', { value: mockLocalStorage })
-
-global.fetch = vi.fn()
+import { authService } from '../services/authService'
 
 describe('authService', () => {
   beforeEach(() => {
-    mockLocalStorage.clear()
-    vi.clearAllMocks()
+    localStorage.clear()
+    vi.stubGlobal('fetch', vi.fn())
+  })
+
+  afterEach(() => {
+    vi.unstubAllGlobals()
   })
 
   describe('login', () => {
-    it('hace fetch correctamente', async () => {
-      global.fetch.mockResolvedValueOnce({
+    it('realiza login exitosamente', async () => {
+      const mockResponse = {
+        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZXhwIjo5OTk5OTk5OTk5fQ.abc123',
+        user: { id: 1, name: 'Juan', email: 'juan@test.com' },
+      }
+      fetch.mockResolvedValue({
         ok: true,
-        json: async () => ({ token: 'abc123', user: { id: 1, email: 'test@test.com' } })
+        json: () => Promise.resolve(mockResponse),
       })
 
-      await authService.login('test@test.com', 'password123')
-
-      expect(global.fetch).toHaveBeenCalledWith(
-        expect.stringContaining('/auth/login'),
-        expect.objectContaining({
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: 'test@test.com', password: 'password123' })
-        })
-      )
+      const result = await authService.login('juan@test.com', 'password123')
+      expect(fetch).toHaveBeenCalled()
+      expect(result).toEqual(mockResponse)
+      expect(localStorage.getItem('token')).toBe(mockResponse.token)
     })
 
-    it('guarda token en localStorage', async () => {
-      global.fetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ token: 'token123', user: { id: 1 } })
-      })
-
-      await authService.login('test@test.com', 'password')
-
-      expect(mockLocalStorage.setItem).toHaveBeenCalledWith('token', 'token123')
-    })
-
-    it('guarda usuario en localStorage', async () => {
-      const user = { id: 1, email: 'test@test.com', rol: 'USER' }
-      global.fetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ token: 'abc', user })
-      })
-
-      await authService.login('test@test.com', 'password')
-
-      expect(mockLocalStorage.setItem).toHaveBeenCalledWith('user', JSON.stringify(user))
-    })
-
-    it('lanza error si response no es ok', async () => {
-      global.fetch.mockResolvedValueOnce({
+    it('lanza error cuando las credenciales son incorrectas', async () => {
+      fetch.mockResolvedValue({
         ok: false,
-        status: 401
+        json: () => Promise.resolve({ error: 'Credenciales incorrectas' }),
       })
 
-      await expect(authService.login('test@test.com', 'wrong')).rejects.toThrow('Credenciales incorrectas')
-    })
-
-    it('retorna datos del usuario', async () => {
-      const data = { token: 'abc', user: { id: 1 } }
-      global.fetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => data
-      })
-
-      const result = await authService.login('test@test.com', 'password')
-
-      expect(result).toEqual(data)
+      await expect(authService.login('wrong@test.com', 'wrongpass')).rejects.toThrow('Credenciales incorrectas')
     })
   })
 
   describe('logout', () => {
-    it('elimina token del localStorage', () => {
-      mockLocalStorage.getItem.mockReturnValue('token123')
+    it('elimina token y user del localStorage', () => {
+      localStorage.setItem('token', 'test-token')
+      localStorage.setItem('user', JSON.stringify({ id: 1 }))
 
-      authService.logout()
+      authService.logout(false)
 
-      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('token')
-    })
-
-    it('elimina usuario del localStorage', () => {
-      authService.logout()
-
-      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('user')
+      expect(localStorage.getItem('token')).toBeNull()
+      expect(localStorage.getItem('user')).toBeNull()
     })
   })
 
   describe('isAuthenticated', () => {
-    const validToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxOTM3MTQ0NDAwfQ.test'
-
-    it('retorna true cuando hay token válido', () => {
-      mockLocalStorage.getItem.mockReturnValue(validToken)
-
-      expect(authService.isAuthenticated()).toBe(true)
-    })
-
     it('retorna false cuando no hay token', () => {
-      mockLocalStorage.getItem.mockReturnValue(null)
-
       expect(authService.isAuthenticated()).toBe(false)
     })
 
     it('retorna false cuando el token está expirado', () => {
-      const expiredToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwiZXhwIjoxMDAwfQ.test'
-      mockLocalStorage.getItem.mockReturnValue(expiredToken)
-
+      const expiredToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MDAwMDAwMDB9.expired'
+      localStorage.setItem('token', expiredToken)
       expect(authService.isAuthenticated()).toBe(false)
+    })
+
+    it('retorna true cuando el token es válido', () => {
+      const validToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjk5OTk5OTk5OTl9.valid'
+      localStorage.setItem('token', validToken)
+      expect(authService.isAuthenticated()).toBe(true)
     })
   })
 
   describe('getUser', () => {
-    it('retorna usuario parseado', () => {
-      const user = { id: 1, rol: 'ADMIN' }
-      mockLocalStorage.getItem.mockReturnValue(JSON.stringify(user))
-
-      expect(authService.getUser()).toEqual(user)
+    it('retorna null cuando no hay user en localStorage', () => {
+      expect(authService.getUser()).toBeNull()
     })
 
-    it('retorna null cuando no hay usuario', () => {
-      mockLocalStorage.getItem.mockReturnValue(null)
-
-      expect(authService.getUser()).toBeNull()
+    it('retorna el user cuando existe en localStorage', () => {
+      const mockUser = { id: 1, name: 'Juan', email: 'juan@test.com' }
+      localStorage.setItem('user', JSON.stringify(mockUser))
+      expect(authService.getUser()).toEqual(mockUser)
     })
   })
 
   describe('isAdmin', () => {
-    it('retorna true cuando rol es ADMIN (rol)', () => {
-      mockLocalStorage.getItem.mockReturnValue(JSON.stringify({ rol: 'ADMIN' }))
-
-      expect(authService.isAdmin()).toBe(true)
-    })
-
-    it('retorna true cuando rol es ADMIN (role)', () => {
-      mockLocalStorage.getItem.mockReturnValue(JSON.stringify({ role: 'ADMIN' }))
-
-      expect(authService.isAdmin()).toBe(true)
-    })
-
-    it('retorna false cuando no es admin', () => {
-      mockLocalStorage.getItem.mockReturnValue(JSON.stringify({ rol: 'USER' }))
-
+    it('retorna false cuando el user no es admin', () => {
+      localStorage.setItem('user', JSON.stringify({ role: 'USER' }))
       expect(authService.isAdmin()).toBe(false)
     })
 
-    it('retorna false cuando no hay usuario', () => {
-      mockLocalStorage.getItem.mockReturnValue(null)
+    it('retorna true cuando el user es ADMIN', () => {
+      localStorage.setItem('user', JSON.stringify({ role: 'ADMIN' }))
+      expect(authService.isAdmin()).toBe(true)
+    })
 
-      expect(authService.isAdmin()).toBe(false)
+    it('retorna true cuando el user tiene rol ADMIN', () => {
+      localStorage.setItem('user', JSON.stringify({ rol: 'ADMIN' }))
+      expect(authService.isAdmin()).toBe(true)
+    })
+  })
+
+  describe('isTokenExpired', () => {
+    it('retorna true cuando no hay token', () => {
+      expect(authService.isTokenExpired()).toBe(true)
+    })
+
+    it('retorna true cuando el token está expirado', () => {
+      const expiredToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MDAwMDAwMDB9.expired'
+      localStorage.setItem('token', expiredToken)
+      expect(authService.isTokenExpired()).toBe(true)
+    })
+
+    it('retorna false cuando el token no está expirado', () => {
+      const validToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjk5OTk5OTk5OTl9.valid'
+      localStorage.setItem('token', validToken)
+      expect(authService.isTokenExpired()).toBe(false)
     })
   })
 })

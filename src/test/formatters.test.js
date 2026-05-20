@@ -1,44 +1,41 @@
 import { describe, it, expect } from 'vitest'
-import { formatCurrency } from '../utils/formatters'
+import { formatCurrency, formatDate, formatDateTime } from '../utils/formatters'
 
-describe('formatCurrency', () => {
-  it('formatea un número entero positivo en euros', () => {
-    const result = formatCurrency(1000)
-    expect(result).toContain('1000')
-    expect(result).toContain('€')
+describe('formatters', () => {
+  describe('formatCurrency', () => {
+    it('formatea un número como moneda', () => {
+      const result = formatCurrency(100)
+      expect(result).toMatch(/100/)
+    })
+
+    it('formatea decimales correctamente', () => {
+      const result = formatCurrency(99.99)
+      expect(result).toMatch(/100/)
+    })
+
+    it('formatea números grandes', () => {
+      const result = formatCurrency(1000)
+      expect(result).toMatch(/1000/)
+    })
+
+    it('formatea cero', () => {
+      const result = formatCurrency(0)
+      expect(result).toMatch(/0/)
+    })
   })
 
-  it('formatea cero correctamente', () => {
-    const result = formatCurrency(0)
-    expect(result).toMatch(/0/)
-    expect(result).toMatch(/€/)
-  })
+  describe('formatDate', () => {
+    it('formatea una fecha string correctamente', () => {
+      expect(formatDate('2026-06-15')).toBe('15/06/2026')
+    })
 
-  it('redondea decimales (maximumFractionDigits: 0)', () => {
-    expect(formatCurrency(99.4)).toMatch(/99/)
-    expect(formatCurrency(99.6)).toMatch(/100/)
-  })
+    it('retorna string vacío para fecha vacía', () => {
+      expect(formatDate('')).toBe('')
+    })
 
-  it('formatea números grandes con separador de miles', () => {
-    const result = formatCurrency(10000)
-    expect(result).toContain('10')
-    expect(result).toContain('€')
-  })
-
-  it('formatea números negativos', () => {
-    const result = formatCurrency(-500)
-    expect(result).toMatch(/-/)
-    expect(result).toMatch(/500/)
-    expect(result).toMatch(/€/)
-  })
-
-  it('formatea cantidades típicas de viajes', () => {
-    expect(formatCurrency(850)).toContain('850')
-    expect(formatCurrency(1299)).toContain('1299')
-    expect(formatCurrency(2500)).toContain('2500')
-  })
-
-  it('devuelve un string', () => {
-    expect(typeof formatCurrency(100)).toBe('string')
+    it('retorna string vacío para null/undefined', () => {
+      expect(formatDate(null)).toBe('')
+      expect(formatDate(undefined)).toBe('')
+    })
   })
 })

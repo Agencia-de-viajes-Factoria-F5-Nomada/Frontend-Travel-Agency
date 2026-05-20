@@ -1,33 +1,37 @@
-import { render, screen, fireEvent } from '@testing-library/react'
-import { describe, it, expect, vi } from 'vitest'
+import { render, screen } from '@testing-library/react'
+import { describe, it, expect } from 'vitest'
 import Input from '../components/atoms/Input'
 
 describe('Input', () => {
-  it('renderiza el label cuando se le pasa', () => {
-    render(<Input label="Nombre" />)
-    expect(screen.getByText('Nombre')).toBeInTheDocument()
+  it('renderiza correctamente', () => {
+    render(<Input label="Nombre" placeholder="Tu nombre" />)
+    expect(screen.getByLabelText('Nombre')).toBeInTheDocument()
   })
 
-  it('no renderiza label si no se le pasa', () => {
-    render(<Input placeholder="Escribe aquí" />)
-    expect(screen.queryByRole('heading')).not.toBeInTheDocument()
+  it('muestra el placeholder', () => {
+    render(<Input placeholder="Buscar..." />)
+    expect(screen.getByPlaceholderText('Buscar...')).toBeInTheDocument()
   })
 
-  it('llama a onChange al escribir', () => {
-    const handleChange = vi.fn()
-    render(<Input label="Email" onChange={handleChange} />)
-    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'test@mail.com' } })
-    expect(handleChange).toHaveBeenCalledTimes(1)
+  it('aplica el tipo de input correctamente', () => {
+    render(<Input type="email" label="Email" />)
+    const input = screen.getByLabelText('Email')
+    expect(input).toHaveAttribute('type', 'email')
   })
 
-  it('muestra el hint cuando se le pasa', () => {
-    render(<Input label="DNI" hint="Formato: 12345678A" />)
-    expect(screen.getByText('Formato: 12345678A')).toBeInTheDocument()
+  it('muestra el hint cuando se proporciona', () => {
+    render(<Input label="Contraseña" hint="Mínimo 8 caracteres" />)
+    expect(screen.getByText('Mínimo 8 caracteres')).toBeInTheDocument()
   })
 
-  it('acepta el tipo password', () => {
-    render(<Input label="Contraseña" type="password" />)
-    const input = document.querySelector('input[type="password"]')
-    expect(input).toBeInTheDocument()
+  it('aplica className personalizado', () => {
+    render(<Input className="custom-class" />)
+    expect(screen.getByRole('textbox')).toHaveClass('custom-class')
+  })
+
+  it('aplica id personalizado', () => {
+    render(<Input id="test-id" label="Test" />)
+    const input = screen.getByLabelText('Test')
+    expect(input).toHaveAttribute('id', 'test-id')
   })
 })
