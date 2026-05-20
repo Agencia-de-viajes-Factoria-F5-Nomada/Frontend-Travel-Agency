@@ -10,6 +10,7 @@ import { travelService } from '../../services/TravelsService'
 import { hotelService } from '../../services/HotelService'
 import { busService } from '../../services/BusService'
 import usePagination from '../../hooks/usePagination'
+import { formatDate } from '../../utils/formatters'
 
 const EMPTY_FORM = {
   destiny: '',
@@ -113,8 +114,8 @@ export default function TravelsCRUD() {
 
   const columns = [
     { key: 'destiny', label: 'Destino' },
-    { key: 'startDate', label: 'Fecha inicio' },
-    { key: 'endDate', label: 'Fecha fin' },
+    { key: 'startDate', label: 'Fecha inicio', render: (v) => formatDate(v) },
+    { key: 'endDate', label: 'Fecha fin', render: (v) => formatDate(v) },
     { key: 'availablePlaces', label: 'Plazas' },
     { key: 'hotelId', label: 'Hotel', render: (val) => getHotelName(val) },
     { key: 'busId', label: 'Bus', render: (val) => val ? getBusPlate(val) : '—' },

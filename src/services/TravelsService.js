@@ -35,6 +35,7 @@ const enrichWithHotel = (travel, hotelMap) => {
     hotelCountry:   hotel.country || '',
     hotelStars:     hotel.stars   || 0,
     halfBoardPrice: hotel.halfBoardPrice || hotel.half_board_price || 0,
+    fullBoardPrice: hotel.fullBoardPrice || hotel.full_board_price || 0,
   }
 }
 

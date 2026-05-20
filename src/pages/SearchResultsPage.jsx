@@ -6,6 +6,7 @@ import Card from '../components/atoms/Card'
 import DestinationCard from '../components/organisms/DestinationCard'
 import PageHeader from '../components/atoms/PageHeader'
 import { travelService } from '../services/TravelsService'
+import { formatDate } from '../utils/formatters'
 
 const normalize = (str) =>
   str?.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase() ?? ''
@@ -121,8 +122,8 @@ const SearchResultsPage = () => {
 
           {startDateParam && (
             <div className="mt-4 rounded-lg bg-surface-800 p-3 text-xs text-ink-muted">
-              📅 Salida desde: <span className="text-white">{startDateParam}</span>
-              {endDateParam && <> · Vuelta hasta: <span className="text-white">{endDateParam}</span></>}
+              📅 Salida desde: <span className="text-white">{formatDate(startDateParam)}</span>
+              {endDateParam && <> · Vuelta hasta: <span className="text-white">{formatDate(endDateParam)}</span></>}
             </div>
           )}
 

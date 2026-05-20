@@ -5,9 +5,11 @@ import Button from '../components/atoms/Button'
 import Card from '../components/atoms/Card'
 import Input from '../components/atoms/Input'
 import PageHeader from '../components/atoms/PageHeader'
-import { bookingService } from '../services/BookingService'
+import { bookingService } from '../services/bookingService'
+import { userService } from '../services/usersService'
 import { authService } from '../services/authService'
 import { classNames } from '../utils/classNames'
+import { formatDate } from '../utils/formatters'
 
 const STEPS = [
   { id: 1, label: 'Pasajeros' },
@@ -16,7 +18,7 @@ const STEPS = [
   { id: 4, label: 'Confirmado' },
 ]
 
-const EMPTY_PASSENGER = { name: '', surname: '', birthDate: '' }
+const EMPTY_PASSENGER = { name: '', surname: '', birthDate: '', email: '', dni: '', passport: '' }
 
 const calculateAge = (birthDate) => {
   if (!birthDate) return null
@@ -93,8 +95,10 @@ const CheckoutPage = () => {
   const hasMinor   = passengers.some(p => p.birthDate && calculateAge(p.birthDate) < 12)
   const hasAdult   = passengers.some(p => p.birthDate && calculateAge(p.birthDate) >= 12)
   const minorError = hasMinor && !hasAdult
-  const allFilled  = passengers.every(p => p.name.trim() && p.surname.trim() && p.birthDate)
 
+  const allFilled = passengers.every(p => p.name.trim() && p.surname.trim() && p.birthDate && p.email.trim())
+
+  // ── Cotización ────────────────────────────────────
   const handleQuote = async () => {
     if (minorError) { setError('Un menor necesita al menos un adulto en el grupo.'); return }
     setLoading(true)
@@ -114,8 +118,8 @@ const CheckoutPage = () => {
       })
       setQuote(result)
       setStep(2)
-    } catch (e) {
-      setError(e.message)
+    } catch (error) {
+      setError(error.response?.data?.error || error.response?.data?.message || error.message)
     } finally {
       setLoading(false)
     }
@@ -125,17 +129,35 @@ const CheckoutPage = () => {
     setLoading(true)
     setError(null)
     try {
-      const result = await bookingService.create({
+      const user = authService.getUser()
+
+      const customerIds = []
+      for (const p of passengers) {
+        const age = calculateAge(p.birthDate)
+        const newUser = await userService.create({
+          name: p.name,
+          surname: p.surname,
+          email: p.email,
+          dni: p.dni || undefined,
+          passport: p.passport || undefined,
+          age,
+          tutorId: age < 18 ? user?.id : undefined,
+        })
+        customerIds.push(newUser.id)
+      }
+
+      const result = await bookingService.confirm({
         travelId,
         typeBoard,
         isGroup,
-        customerIds: [1],
-        boughtDate: new Date().toISOString(),
+        totalPrice: quote.totalPrice,
+        customerIds,
+        employeeId: user?.employeeId ?? null,
       })
       setBooking(result)
       setStep(4)
     } catch (e) {
-      setError(e.message)
+      setError(e.response?.data?.error || e.response?.data?.message || e.message)
     } finally {
       setLoading(false)
     }
@@ -206,6 +228,16 @@ const CheckoutPage = () => {
                       </p>
                     )}
                   </div>
+                  <Input label="Correo electrónico" type="email" value={p.email}
+                    onChange={e => changePassenger(i, 'email', e.target.value)} required />
+                  <div className="grid grid-cols-2 gap-3">
+                    <Input label="DNI (opcional)" value={p.dni}
+                      placeholder="12345678Z"
+                      onChange={e => changePassenger(i, 'dni', e.target.value)} />
+                    <Input label="Pasaporte (opcional)" value={p.passport}
+                      placeholder="AAA123456"
+                      onChange={e => changePassenger(i, 'passport', e.target.value)} />
+                  </div>
                 </div>
               ))}
 
@@ -224,7 +256,8 @@ const CheckoutPage = () => {
                   ].map(o => (
                     <label key={o.value}
                       className="flex items-center gap-2 rounded-lg p-3 cursor-pointer border"
-                      style={{ borderColor: typeBoard === o.value ? '#4A8FA8' : 'transparent', background: typeBoard === o.value ? '#DAEEF7' : '' }}>
+                      style={{ borderColor: typeBoard === o.value ? '#4A8FA8' : 'transparent',
+                                background:   typeBoard === o.value ? '#DAEEF7' : '' }}>
                       <input type="radio" name="typeBoard" value={o.value}
                         checked={typeBoard === o.value}
                         onChange={() => setTypeBoard(o.value)} />
@@ -296,7 +329,7 @@ const CheckoutPage = () => {
                 </li>
                 <li className="flex justify-between px-4 py-3">
                   <span className="text-ink-soft">Fechas</span>
-                  <span className="text-white">{travel?.startDate} → {travel?.endDate}</span>
+                  <span className="text-white">{formatDate(travel?.startDate)} → {formatDate(travel?.endDate)}</span>
                 </li>
                 <li className="flex justify-between px-4 py-3">
                   <span className="text-ink-soft">Pensión</span>
@@ -355,11 +388,11 @@ const CheckoutPage = () => {
             </li>
             <li className="flex justify-between text-ink-soft">
               <span>Salida</span>
-              <span className="text-white">{travel?.startDate ?? '—'}</span>
+              <span className="text-white">{formatDate(travel?.startDate) ?? '—'}</span>
             </li>
             <li className="flex justify-between text-ink-soft">
               <span>Vuelta</span>
-              <span className="text-white">{travel?.endDate ?? '—'}</span>
+              <span className="text-white">{formatDate(travel?.endDate) ?? '—'}</span>
             </li>
             <li className="flex justify-between text-ink-soft">
               <span>Hotel</span>

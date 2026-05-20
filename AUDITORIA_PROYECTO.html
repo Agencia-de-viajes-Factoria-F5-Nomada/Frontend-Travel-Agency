@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auditoría del Proyecto - Nomada Frontend Travel Agency</title>
+  <style>
+    :root {
+      --color-primary: #1A3A5C;
+      --color-accent: #4A8FA8;
+      --color-bg: #f0f4f8;
+      --color-surface: #ffffff;
+      --color-text: #1a1a2e;
+      --color-text-muted: #5a6a7a;
+      --color-border: #e2e8f0;
+      --color-success: #16a34a;
+      --color-warning: #d97706;
+      --color-danger: #dc2626;
+      --color-info: #2563eb;
+      --radius: 8px;
+      --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+      --shadow-lg: 0 4px 14px rgba(0,0,0,0.1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--color-bg);
+      color: var(--color-text);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
+      color: white;
+      padding: 3rem 2rem;
+      margin-bottom: 2rem;
+      border-radius: 0 0 var(--radius) var(--radius);
+    }
+
+    header h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
+    header p { opacity: 0.85; font-size: 0.95rem; }
+
+    .meta {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .meta span {
+      background: rgba(255,255,255,0.15);
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+    }
+
+    h2 {
+      font-size: 1.4rem;
+      color: var(--color-primary);
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--color-accent);
+    }
+
+    h3 {
+      font-size: 1.1rem;
+      color: var(--color-primary);
+      margin: 1.5rem 0 0.75rem;
+    }
+
+    p { margin-bottom: 1rem; color: var(--color-text-muted); }
+
+    .card {
+      background: var(--color-surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 0.9rem;
+    }
+
+    th {
+      background: var(--color-primary);
+      color: white;
+      padding: 0.75rem 1rem;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    th:first-child { border-radius: var(--radius) 0 0 0; }
+    th:last-child { border-radius: 0 var(--radius) 0 0; }
+
+    td {
+      padding: 0.65rem 1rem;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    tr:hover { background: #f8fafc; }
+
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .badge-success { background: #dcfce7; color: var(--color-success); }
+    .badge-warning { background: #fef3c7; color: var(--color-warning); }
+    .badge-danger { background: #fee2e2; color: var(--color-danger); }
+    .badge-info { background: #dbeafe; color: var(--color-info); }
+
+    .severity-high { color: var(--color-danger); font-weight: 700; }
+    .severity-medium { color: var(--color-warning); font-weight: 700; }
+    .severity-low { color: var(--color-info); font-weight: 700; }
+
+    .tree {
+      font-family: 'Courier New', monospace;
+      font-size: 0.85rem;
+      background: #1e293b;
+      color: #e2e8f0;
+      padding: 1.25rem;
+      border-radius: var(--radius);
+      overflow-x: auto;
+      line-height: 1.8;
+    }
+
+    .tree .dir { color: #60a5fa; }
+    .tree .file { color: #a5b4fc; }
+    .tree .comment { color: #6b7280; }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    .summary-item {
+      background: var(--color-surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1.25rem;
+      text-align: center;
+    }
+
+    .summary-item .number {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--color-accent);
+    }
+
+    .summary-item .label {
+      font-size: 0.85rem;
+      color: var(--color-text-muted);
+      margin-top: 0.25rem;
+    }
+
+    .veredicto {
+      background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+      color: white;
+      padding: 2rem;
+      border-radius: var(--radius);
+      margin-top: 2rem;
+    }
+
+    .veredicto h3 { color: white; margin-top: 0; }
+    .veredicto p { color: rgba(255,255,255,0.85); }
+    .veredicto ul { color: rgba(255,255,255,0.85); padding-left: 1.5rem; }
+    .veredicto li { margin-bottom: 0.5rem; }
+
+    .pros-cons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin: 1.5rem 0;
+    }
+
+    .pros, .cons {
+      padding: 1.25rem;
+      border-radius: var(--radius);
+    }
+
+    .pros { background: #f0fdf4; border-left: 4px solid var(--color-success); }
+    .cons { background: #fef2f2; border-left: 4px solid var(--color-danger); }
+
+    .pros h4 { color: var(--color-success); margin-bottom: 0.5rem; }
+    .cons h4 { color: var(--color-danger); margin-bottom: 0.5rem; }
+
+    .pros ul, .cons ul { padding-left: 1.25rem; }
+    .pros li, .cons li { margin-bottom: 0.35rem; font-size: 0.9rem; }
+
+    code {
+      background: #f1f5f9;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.85em;
+      color: var(--color-danger);
+    }
+
+    pre code {
+      background: none;
+      padding: 0;
+      color: inherit;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--color-text-muted);
+      font-size: 0.85rem;
+      border-top: 1px solid var(--color-border);
+      margin-top: 3rem;
+    }
+
+    @media (max-width: 640px) {
+      .container { padding: 1rem; }
+      header { padding: 2rem 1rem; }
+      header h1 { font-size: 1.4rem; }
+      .pros-cons { grid-template-columns: 1fr; }
+      table { font-size: 0.8rem; }
+      th, td { padding: 0.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="container" style="padding: 0;">
+    <h1>Auditoría del Proyecto</h1>
+    <p>Nomada - Frontend Travel Agency</p>
+    <div class="meta">
+      <span>19 de mayo de 2026</span>
+      <span>Stakeholder: Carla</span>
+      <span>Frontend-Travel-Agency</span>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- 1. Resumen Ejecutivo -->
+  <h2>1. Resumen Ejecutivo</h2>
+  <div class="card">
+    <p>El proyecto <strong>Nomada</strong> es un frontend desarrollado en <strong>React 19 + Vite 8</strong> para una agencia de viajes. La aplicación se divide en dos áreas principales: una parte pública (búsqueda de destinos, ofertas, checkout) y un panel de administración (gestión de reservas, hoteles, autobuses, conductores, viajes y usuarios).</p>
+    <p>La arquitectura sigue el patrón <strong>Atomic Design</strong> y utiliza <strong>Tailwind CSS</strong> para los estilos. Los datos se consumen de un backend REST en <code>http://localhost:8080</code>.</p>
+  </div>
+
+  <div class="summary-grid">
+    <div class="summary-item">
+      <div class="number">14</div>
+      <div class="label">Páginas</div>
+    </div>
+    <div class="summary-item">
+      <div class="number">~40</div>
+      <div class="label">Componentes</div>
+    </div>
+    <div class="summary-item">
+      <div class="number">13</div>
+      <div class="label">Servicios</div>
+    </div>
+    <div class="summary-item">
+      <div class="number">~20</div>
+      <div class="label">Rutas</div>
+    </div>
+    <div class="summary-item">
+      <div class="number">13</div>
+      <div class="label">Tests Unitarios</div>
+    </div>
+    <div class="summary-item">
+      <div class="number">1</div>
+      <div class="label">Test E2E</div>
+    </div>
+  </div>
+
+  <!-- 2. Requisitos Obligatorios -->
+  <h2>2. Requisitos Obligatorios</h2>
+
+  <h3>2.1 Requisitos del Briefing</h3>
+  <div class="card" style="overflow-x: auto;">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Requisito</th>
+          <th>Estado</th>
+          <th>Observaciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>4 entidades: Usuarios, Hoteles, Autobuses, Conductor</td>
+          <td><span class="badge badge-success">Cumplido</span></td>
+          <td>CRUDs implementados en <code>src/components/organisms/</code></td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>CRUD completo para todas las entidades</td>
+          <td><span class="badge badge-success">Cumplido</span></td>
+          <td>HotelsCRUD, BusesCRUD, DriversCRUD, UsersCRUD, TravelsCRUD, BookingsCRUD, EmployeesCRUD, OffersCRUD, TripSegmentsCRUD</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>Front en React</td>
+          <td><span class="badge badge-success">Cumplido</span></td>
+          <td>React 19 + Vite 8 + React Router DOM</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>Frontend responsive</td>
+          <td><span class="badge badge-success">Cumplido</span></td>
+          <td>Tailwind CSS con breakpoints sm/md/lg/xl</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>Manejo de excepciones</td>
+          <td><span class="badge badge-success">Cumplido</span></td>
+          <td>ErrorBoundary, try/catch en servicios, componente Alert</td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td>DTO's</td>
+          <td><span class="badge badge-warning">Parcial</span></td>
+          <td>Se envían payloads pero no hay validación estructurada de DTOs en frontend</td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td>Validaciones</td>
+          <td><span class="badge badge-warning">Parcial</span></td>
+          <td>Validaciones básicas en formularios; faltan validaciones de negocio en checkout</td>
+        </tr>
+        <tr>
+          <td>8</td>
+          <td>Cloudinary</td>
+          <td><span class="badge badge-danger">No integrado</span></td>
+          <td>Servicio creado (<code>cloudinaryService.js</code>) pero <strong>NO se usa en ningún formulario</strong></td>
+        </tr>
+        <tr>
+          <td>9</td>
+          <td>Diseño en Figma</td>
+          <td><span class="badge badge-info">Externo</span></td>
+          <td>No verificable en el código</td>
+        </tr>
+        <tr>
+          <td>10</td>
+          <td>Diagramas en Draw.io</td>
+          <td><span class="badge badge-info">Externo</span></td>
+          <td>No verificable en el código</td>
+        </tr>
+        <tr>
+          <td>11</td>
+          <td>Jira para tareas</td>
+          <td><span class="badge badge-info">Externo</span></td>
+          <td>No verificable en el código</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>2.2 Funcionalidades</h3>
+  <div class="card" style="overflow-x: auto;">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Funcionalidad</th>
+          <th>Estado</th>
+          <th>Observaciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>Vista de viajes en oferta con precio media pensión y pensión completa</td>
+          <td><span class="badge badge-success">Cumplido</span></td>
+          <td><code>OffersPage.jsx</code> + campos halfBoardPrice/fullBoardPrice</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>Compra de plazas con nombres y apellidos de acompañantes</td>
+          <td><span class="badge badge-success">Cumplido</span></td>
+          <td><code>CheckoutPage.jsx</code> permite añadir pasajeros con nombre/apellido/tarifa</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>Tarifa niño, adulto y pensionista</td>
+          <td><span class="badge badge-success">Cumplido</span></td>
+          <td>TARIFA_OPTIONS: ADULT, CHILD, PENSIONER</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>Cliente coge viaje existente con ofertas</td>
+          <td><span class="badge badge-success">Cumplido</span></td>
+          <td>OffersPage y DestinationDetailPage con flujo a checkout</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>Cliente crea su propio viaje personalizado</td>
+          <td><span class="badge badge-danger">No implementado</span></td>
+          <td>No hay flujo visible para "crear viaje personalizado"</td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td>Mail detallado post-compra</td>
+          <td><span class="badge badge-warning">Parcial</span></td>
+          <td>Solo mensaje genérico; no hay evidencia de envío real de email</td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td>Vista de todos los usuarios</td>
+          <td><span class="badge badge-success">Cumplido</span></td>
+          <td>UsersPage + UsersCRUD</td>
+        </tr>
+        <tr>
+          <td>8</td>
+          <td>Dashboard: viajes por año, ganancias, top 3 viajes</td>
+          <td><span class="badge badge-success">Cumplido</span></td>
+          <td>DashboardPage con travelsPerYear, currentYearEarnings, topTravels</td>
+        </tr>
+        <tr>
+          <td>9</td>
+          <td>Descuento IMSERSO/colegio por cantidad</td>
+          <td><span class="badge badge-success">Cumplido</span></td>
+          <td>Checkbox isGroup en CheckoutPage</td>
+        </tr>
+        <tr>
+          <td>10</td>
+          <td>Autobús disponible ida y vuelta</td>
+          <td><span class="badge badge-warning">Parcial</span></td>
+          <td>El bus se asigna al viaje pero no se valida disponibilidad</td>
+        </tr>
+        <tr>
+          <td>11</td>
+          <td>No reservar si autobús o hotel completo</td>
+          <td><span class="badge badge-danger">No implementado</span></td>
+          <td>No hay validación visible en frontend</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>2.3 Criterios de Aceptación</h3>
+  <div class="card" style="overflow-x: auto;">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Criterio</th>
+          <th>Estado</th>
+          <th>Observaciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>Cliente puede comprar viaje para varias personas</td>
+          <td><span class="badge badge-success">Cumplido</span></td>
+          <td>CheckoutPage permite múltiples pasajeros</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>No vender viaje si autobús está completo</td>
+          <td><span class="badge badge-danger">No implementado</span></td>
+          <td>No se verifica capacidad del bus antes de reservar</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>No vender viajes pasados</td>
+          <td><span class="badge badge-danger">No implementado</span></td>
+          <td>No se valida startDate contra fecha actual</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>Menor no viaja sin adulto</td>
+          <td><span class="badge badge-success">Cumplido</span></td>
+          <td>Validación minorError en CheckoutPage</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>Conductor no conduce 2 autobuses al mismo tiempo</td>
+          <td><span class="badge badge-danger">No implementado</span></td>
+          <td>No validado en frontend (responsabilidad del backend)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 3. Problemas de Código -->
+  <h2>3. Problemas de Código Detectados</h2>
+
+  <h3>3.1 Severidad ALTA</h3>
+  <div class="card" style="overflow-x: auto;">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Archivo</th>
+          <th>Línea</th>
+          <th>Problema</th>
+          <th>Impacto</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="severity-high">1</td>
+          <td><code>BusesCRUD.jsx</code></td>
+          <td>36-38</td>
+          <td>Doble <code>useEffect(() => { load() })</code> que causa carga duplicada de datos</td>
+          <td>Rendimiento innecesario, doble petición al backend</td>
+        </tr>
+        <tr>
+          <td class="severity-high">2</td>
+          <td><code>DashboardPage.jsx</code></td>
+          <td>11</td>
+          <td><code>API_BASE</code> hardcodeado en lugar de usar la constante <code>API</code> de <code>constants/api.js</code></td>
+          <td>Inconsistencia, difícil de mantener, no respeta VITE_API_URL</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>3.2 Severidad MEDIA</h3>
+  <div class="card" style="overflow-x: auto;">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Archivo</th>
+          <th>Problema</th>
+          <th>Impacto</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="severity-medium">1</td>
+          <td><code>TravelsService.js</code></td>
+          <td>Usa <code>console.error</code> con emojis en producción</td>
+          <td>Logs poco profesionales, posible exposición de información</td>
+        </tr>
+        <tr>
+          <td class="severity-medium">2</td>
+          <td><code>api.js</code> vs servicios</td>
+          <td>Se creó <code>apiClient</code> con axios pero los servicios usan <code>fetch</code> directamente</td>
+          <td>Inconsistencia arquitectónica, código duplicado para auth</td>
+        </tr>
+        <tr>
+          <td class="severity-medium">3</td>
+          <td><code>CheckoutPage.jsx</code></td>
+          <td>Depende de <code>location.state</code> para recibir datos del viaje</td>
+          <td>Si el usuario refresca pierde el contexto del viaje</td>
+        </tr>
+        <tr>
+          <td class="severity-medium">4</td>
+          <td><code>HotelForm.jsx</code></td>
+          <td>Solo acepta URL de imagen manual, no integra Cloudinary</td>
+          <td>Requisito de Cloudinary sin cumplir</td>
+        </tr>
+        <tr>
+          <td class="severity-medium">5</td>
+          <td><code>BusForm.jsx</code></td>
+          <td>Igual que HotelForm: sin subida de imagen vía Cloudinary</td>
+          <td>Requisito de Cloudinary sin cumplir</td>
+        </tr>
+        <tr>
+          <td class="severity-medium">6</td>
+          <td><code>DriverForm.jsx</code></td>
+          <td>Igual que HotelForm: sin subida de imagen vía Cloudinary</td>
+          <td>Requisito de Cloudinary sin cumplir</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>3.3 Severidad BAJA</h3>
+  <div class="card" style="overflow-x: auto;">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Archivo</th>
+          <th>Problema</th>
+          <th>Impacto</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="severity-low">1</td>
+          <td><code>DriversCRUD.jsx</code></td>
+          <td>Falta campo de experiencia/rating que aparece en mockData</td>
+          <td>Inconsistencia entre mock y CRUD real</td>
+        </tr>
+        <tr>
+          <td class="severity-low">2</td>
+          <td><code>BusService.js</code></td>
+          <td><code>delete</code> no retorna valor explícito</td>
+          <td>Inconsistencia con otros servicios</td>
+        </tr>
+        <tr>
+          <td class="severity-low">3</td>
+          <td><code>authService.js</code></td>
+          <td>Decodificación JWT manual en lugar de usar librería</td>
+          <td>Código más complejo de mantener</td>
+        </tr>
+        <tr>
+          <td class="severity-low">4</td>
+          <td><code>server.js</code></td>
+          <td>Servidor Express incluido en proyecto frontend</td>
+          <td>Mezcla de responsabilidades</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 4. Arquitectura -->
+  <h2>4. Análisis de Arquitectura</h2>
+
+  <h3>4.1 Estructura del Proyecto</h3>
+  <div class="tree">
+src/
+├── <span class="dir">components/</span>
+│   ├── <span class="dir">atoms/</span>          <span class="comment"># Button, Card, Input, Badge, Checkbox, Select</span>
+│   ├── <span class="dir">molecules/</span>      <span class="comment"># Table, Modal, Alert, Pagination, FormField</span>
+│   ├── <span class="dir">organisms/</span>      <span class="comment"># CRUDs, Forms, DestinationCard, StatCard</span>
+│   ├── <span class="dir">layout/</span>         <span class="comment"># PublicLayout, AdminLayout, PrivateRoute</span>
+│   ├── <span class="dir">graphics/</span>       <span class="comment"># Componentes gráficos</span>
+│   └── <span class="file">ErrorBoundary.jsx</span>
+├── <span class="dir">pages/</span>              <span class="comment"># 14 páginas: Home, Offers, Checkout, Dashboard...</span>
+├── <span class="dir">services/</span>           <span class="comment"># 13 servicios: API calls por entidad + auth + cloudinary</span>
+├── <span class="dir">hooks/</span>              <span class="comment"># usePagination, useInView</span>
+├── <span class="dir">constants/</span>          <span class="comment"># API URLs, mockData, paths, navegación</span>
+├── <span class="dir">routes/</span>             <span class="comment"># AppRoutes.jsx con rutas públicas y admin</span>
+├── <span class="dir">utils/</span>              <span class="comment"># formatters, classNames</span>
+├── <span class="dir">test/</span>               <span class="comment"># Setup de Vitest</span>
+├── <span class="dir">assets/</span>             <span class="comment"># Recursos estáticos</span>
+└── <span class="file">main.jsx</span>            <span class="comment"># Punto de entrada</span>
+  </div>
+
+  <h3>4.2 Patrones de Diseño</h3>
+  <div class="card" style="overflow-x: auto;">
+    <table>
+      <thead>
+        <tr>
+          <th>Patrón</th>
+          <th>Uso</th>
+          <th>Evaluación</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Atomic Design</td>
+          <td>atoms → molecules → organisms → pages</td>
+          <td><span class="badge badge-success">Bien implementado</span></td>
+        </tr>
+        <tr>
+          <td>Layout Pattern</td>
+          <td>PublicLayout, AdminLayout con routes anidadas</td>
+          <td><span class="badge badge-success">Correcto</span></td>
+        </tr>
+        <tr>
+          <td>Service Layer</td>
+          <td>Servicios separados por entidad</td>
+          <td><span class="badge badge-success">Bien organizado</span></td>
+        </tr>
+        <tr>
+          <td>Custom Hooks</td>
+          <td>usePagination, useInView</td>
+          <td><span class="badge badge-success">Reutilizables</span></td>
+        </tr>
+        <tr>
+          <td>Protected Routes</td>
+          <td>PrivateRoute con adminOnly</td>
+          <td><span class="badge badge-success">Implementado</span></td>
+        </tr>
+        <tr>
+          <td>Error Boundary</td>
+          <td>Componente class-based</td>
+          <td><span class="badge badge-success">Cubre errores de renderizado</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 5. Servicios -->
+  <h2>5. Análisis de Servicios</h2>
+
+  <div class="card" style="overflow-x: auto;">
+    <table>
+      <thead>
+        <tr>
+          <th>Servicio</th>
+          <th>Métodos</th>
+          <th>CRUD</th>
+          <th>Evaluación</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>HotelService.js</code></td>
+          <td>getAll, getById, getPage, create, update, delete</td>
+          <td><span class="badge badge-success">Completo</span></td>
+          <td>Bien estructurado, maneja paginación</td>
+        </tr>
+        <tr>
+          <td><code>BusService.js</code></td>
+          <td>getAll, getById, getPage, create, update, delete</td>
+          <td><span class="badge badge-success">Completo</span></td>
+          <td>Código compacto en una línea por método</td>
+        </tr>
+        <tr>
+          <td><code>DriverService.js</code></td>
+          <td>getAll, getById, getPage, getActive, create, update, delete</td>
+          <td><span class="badge badge-success">Completo</span></td>
+          <td>Incluye método getActive</td>
+        </tr>
+        <tr>
+          <td><code>UserService.js</code></td>
+          <td>getAll, getById, getPage, getActive, create, update, delete</td>
+          <td><span class="badge badge-success">Completo</span></td>
+          <td>Incluye método getActive</td>
+        </tr>
+        <tr>
+          <td><code>TravelsService.js</code></td>
+          <td>getAll, getAvailable, getById, getFeatured, getOnSale, getPage, create, update, delete</td>
+          <td><span class="badge badge-success">Completo</span></td>
+          <td>Enriquece datos con hotel, bien documentado</td>
+        </tr>
+        <tr>
+          <td><code>BookingService.js</code></td>
+          <td>getAll, getById, getPage, create, update, delete, quote, confirm</td>
+          <td><span class="badge badge-success">Completo</span></td>
+          <td>Métodos extra quote/confirm para checkout</td>
+        </tr>
+        <tr>
+          <td><code>authService.js</code></td>
+          <td>login, logout, isAuthenticated, isTokenExpired, getUser, isAdmin</td>
+          <td><span class="badge badge-success">Completo</span></td>
+          <td>Decodifica JWT manualmente</td>
+        </tr>
+        <tr>
+          <td><code>cloudinaryService.js</code></td>
+          <td>upload, delete</td>
+          <td><span class="badge badge-warning">Sin uso</span></td>
+          <td>Servicio creado pero <strong>sin uso en formularios</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 6. Testing -->
+  <h2>6. Análisis de Testing</h2>
+
+  <h3>6.1 Tests Unitarios Existentes</h3>
+  <div class="card">
+    <table>
+      <thead>
+        <tr>
+          <th>Archivo Test</th>
+          <th>Qué Testea</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><code>Button.test.jsx</code></td><td>Componente Button - Variantes, disabled, children</td></tr>
+        <tr><td><code>Card.test.jsx</code></td><td>Componente Card - Renderizado básico</td></tr>
+        <tr><td><code>Input.test.jsx</code></td><td>Componente Input - Label, value, onChange</td></tr>
+        <tr><td><code>Badge.test.jsx</code></td><td>Componente Badge - Variantes de color</td></tr>
+        <tr><td><code>Checkbox.test.jsx</code></td><td>Componente Checkbox - Checked state</td></tr>
+        <tr><td><code>Select.test.jsx</code></td><td>Componente Select - Options rendering</td></tr>
+        <tr><td><code>Modal.test.jsx</code></td><td>Componente Modal - Open/close</td></tr>
+        <tr><td><code>Alert.test.jsx</code></td><td>Componente Alert - Tipos de alerta</td></tr>
+        <tr><td><code>EmptyState.test.jsx</code></td><td>Componente EmptyState - Mensaje vacío</td></tr>
+        <tr><td><code>useInView.test.js</code></td><td>Hook useInView - Intersection Observer</td></tr>
+        <tr><td><code>formatters.test.js</code></td><td>Utilidad formatCurrency - Formateo de moneda</td></tr>
+        <tr><td><code>classNames.test.js</code></td><td>Utilidad classNames - Combinación de clases</td></tr>
+        <tr><td><code>authService.test.js</code></td><td>Servicio de autenticación - Login, logout, token</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>6.2 Tests Faltantes (Críticos)</h3>
+  <div class="card" style="overflow-x: auto;">
+    <table>
+      <thead>
+        <tr>
+          <th>Categoría</th>
+          <th>Qué Falta</th>
+          <th>Prioridad</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Páginas</td>
+          <td>CheckoutPage, DashboardPage, OffersPage, HomePage</td>
+          <td><span class="badge badge-danger">Alta</span></td>
+        </tr>
+        <tr>
+          <td>CRUDs</td>
+          <td>HotelsCRUD, BusesCRUD, DriversCRUD, TravelsCRUD</td>
+          <td><span class="badge badge-danger">Alta</span></td>
+        </tr>
+        <tr>
+          <td>Formularios</td>
+          <td>HotelForm, BusForm, TravelForm, BookingForm</td>
+          <td><span class="badge badge-warning">Media</span></td>
+        </tr>
+        <tr>
+          <td>Servicios</td>
+          <td>HotelService, BusService, TravelService, BookingService</td>
+          <td><span class="badge badge-warning">Media</span></td>
+        </tr>
+        <tr>
+          <td>E2E</td>
+          <td>Flujo completo: login → buscar → checkout → confirmación</td>
+          <td><span class="badge badge-danger">Alta</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 7. Validaciones de Negocio -->
+  <h2>7. Validaciones de Negocio</h2>
+
+  <h3>7.1 Implementadas</h3>
+  <div class="card" style="overflow-x: auto;">
+    <table>
+      <thead>
+        <tr>
+          <th>Validación</th>
+          <th>Ubicación</th>
+          <th>Implementación</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Menor necesita adulto</td>
+          <td><code>CheckoutPage.jsx:87-89</code></td>
+          <td><code>hasMinor && !hasAdult</code> → muestra error</td>
+        </tr>
+        <tr>
+          <td>Campos requeridos</td>
+          <td>Formularios CRUD</td>
+          <td>Atributo <code>required</code> en inputs HTML</td>
+        </tr>
+        <tr>
+          <td>Conversión de tipos</td>
+          <td>CRUDs handleSubmit</td>
+          <td><code>Number(form.field)</code> antes de enviar</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>7.2 NO Implementadas</h3>
+  <div class="card" style="overflow-x: auto;">
+    <table>
+      <thead>
+        <tr>
+          <th>Validación</th>
+          <th>Dónde Debería Estar</th>
+          <th>Consecuencia</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>No reservar si autobús completo</td>
+          <td><code>CheckoutPage.jsx</code> antes de cotizar</td>
+          <td>Podría venderse plaza inexistente</td>
+        </tr>
+        <tr>
+          <td>No reservar si hotel completo</td>
+          <td><code>CheckoutPage.jsx</code> antes de cotizar</td>
+          <td>Podría venderse plaza inexistente</td>
+        </tr>
+        <tr>
+          <td>No vender viajes pasados</td>
+          <td><code>CheckoutPage.jsx</code> y <code>TravelsCRUD.jsx</code></td>
+          <td>Podrían reservarse viajes ya ocurridos</td>
+        </tr>
+        <tr>
+          <td>Conductor no en 2 autobuses</td>
+          <td>Backend (no frontend)</td>
+          <td>Overbooking de conductores</td>
+        </tr>
+        <tr>
+          <td>Validación de email</td>
+          <td><code>AuthPage.jsx</code></td>
+          <td>Emails inválidos aceptados</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 8. Seguridad -->
+  <h2>8. Seguridad</h2>
+  <div class="card" style="overflow-x: auto;">
+    <table>
+      <thead>
+        <tr>
+          <th>Aspecto</th>
+          <th>Estado</th>
+          <th>Detalle</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Token JWT en localStorage</td>
+          <td><span class="badge badge-warning">Funcional</span></td>
+          <td>Funcional pero vulnerable a XSS</td>
+        </tr>
+        <tr>
+          <td>Interceptores de expiración</td>
+          <td><span class="badge badge-success">Implementado</span></td>
+          <td><code>api.js</code> redirige a /auth si 401</td>
+        </tr>
+        <tr>
+          <td>Rutas protegidas</td>
+          <td><span class="badge badge-success">Implementado</span></td>
+          <td>PrivateRoute con adminOnly</td>
+        </tr>
+        <tr>
+          <td>Decodificación JWT</td>
+          <td><span class="badge badge-warning">Manual</span></td>
+          <td>Sin librería especializada</td>
+        </tr>
+        <tr>
+          <td>Variables de entorno</td>
+          <td><span class="badge badge-success">Correcto</span></td>
+          <td>.env.example con VITE_API_URL</td>
+        </tr>
+        <tr>
+          <td>Secrets expuestos</td>
+          <td><span class="badge badge-success">Seguro</span></td>
+          <td>No se detectan secrets en el código</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 9. Recomendaciones -->
+  <h2>9. Recomendaciones Prioritarias</h2>
+
+  <h3>9.1 Críticas (Antes de Entrega)</h3>
+  <div class="card">
+    <ol style="padding-left: 1.5rem; color: var(--color-text-muted);">
+      <li style="margin-bottom: 0.75rem;">
+        <strong>Integrar Cloudinary en formularios</strong><br>
+        Modificar <code>HotelForm.jsx</code>, <code>BusForm.jsx</code>, <code>DriverForm.jsx</code> y <code>TravelForm.jsx</code> para incluir un botón de subida de imagen que use <code>cloudinaryService.upload()</code>. Mostrar preview de la imagen subida.
+      </li>
+      <li style="margin-bottom: 0.75rem;">
+        <strong>Agregar validaciones de negocio en CheckoutPage</strong><br>
+        Verificar <code>availablePlaces >= pasajerosSeleccionados</code> antes de cotizar. Verificar <code>startDate > hoy</code> antes de permitir reserva. Mostrar mensaje claro si hotel o bus están completos.
+      </li>
+      <li style="margin-bottom: 0.75rem;">
+        <strong>Eliminar doble useEffect en BusesCRUD</strong><br>
+        Quitar la línea 38: <code>useEffect(() => { load() }, [])</code>
+      </li>
+      <li style="margin-bottom: 0.75rem;">
+        <strong>Usar constante API en DashboardPage</strong><br>
+        Reemplazar <code>const API_BASE = 'http://localhost:8080/api'</code> por <code>import { API } from '../constants/api'</code>
+      </li>
+    </ol>
+  </div>
+
+  <h3>9.2 Importantes</h3>
+  <div class="card">
+    <ol style="padding-left: 1.5rem; color: var(--color-text-muted);">
+      <li style="margin-bottom: 0.75rem;">
+        <strong>Unificar cliente HTTP</strong><br>
+        Opción A: Usar <code>apiClient</code> (axios) en todos los servicios. Opción B: Eliminar <code>apiClient</code> y mover la lógica de interceptor 401 a un helper compartido.
+      </li>
+      <li style="margin-bottom: 0.75rem;">
+        <strong>Persistir estado de checkout</strong><br>
+        Usar URL params (<code>/checkout?travelId=123</code>) en lugar de <code>location.state</code>. O implementar un Context para el estado del checkout.
+      </li>
+      <li style="margin-bottom: 0.75rem;">
+        <strong>Ampliar cobertura de tests</strong><br>
+        Tests de integración para CheckoutPage. Tests de CRUDs principales. Tests E2E del flujo completo.
+      </li>
+      <li style="margin-bottom: 0.75rem;">
+        <strong>Limpiar console.error con emojis</strong><br>
+        Reemplazar <code>console.error('❌ Error...')</code> por logging estructurado o eliminar en producción.
+      </li>
+    </ol>
+  </div>
+
+  <h3>9.3 Mejoras Opcionales</h3>
+  <div class="card">
+    <ul style="padding-left: 1.5rem; color: var(--color-text-muted);">
+      <li>Usar librería <code>jwt-decode</code> en lugar de decodificación manual</li>
+      <li>Agregar validación de email con regex en AuthPage</li>
+      <li>Agregar campo de experiencia en DriverForm</li>
+      <li>Separar servidor Express (<code>server.js</code>) a repositorio backend independiente</li>
+      <li>Agregar loading states en botones de submit de formularios</li>
+      <li>Implementar debounce en buscadores</li>
+    </ul>
+  </div>
+
+  <!-- 10. Conclusión -->
+  <h2>10. Conclusión</h2>
+
+  <div class="card">
+    <p>El proyecto <strong>Nomada</strong> tiene una <strong>base arquitectónica sólida</strong> con buena separación de responsabilidades, estructura Atomic Design bien implementada y CRUDs funcionales para todas las entidades requeridas.</p>
+  </div>
+
+  <div class="pros-cons">
+    <div class="pros">
+      <h4>Puntos Fuertes</h4>
+      <ul>
+        <li>Arquitectura limpia y bien organizada</li>
+        <li>CRUDs completos para todas las entidades</li>
+        <li>Componentes reutilizables con Atomic Design</li>
+        <li>Responsive design con Tailwind CSS</li>
+        <li>Tests unitarios para componentes base</li>
+        <li>Manejo de autenticación con JWT</li>
+      </ul>
+    </div>
+    <div class="cons">
+      <h4>Puntos Débiles</h4>
+      <ul>
+        <li><strong>Cloudinary sin integrar</strong> en formularios (requisito obligatorio)</li>
+        <li><strong>Validaciones de negocio faltantes</strong> en checkout</li>
+        <li><strong>Inconsistencia de cliente HTTP</strong> (axios configurado pero no usado)</li>
+        <li><strong>Cobertura de tests insuficiente</strong> para páginas y flujos críticos</li>
+        <li><strong>Checkout frágil</strong> dependiente de location.state</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="veredicto">
+    <h3>Veredicto</h3>
+    <p>El proyecto está en un <strong>estado funcional pero incompleto</strong> respecto a los requisitos del briefing. Con las correcciones prioritarias señaladas (Cloudinary, validaciones de negocio, limpieza de código duplicado), el proyecto puede cumplir con todos los criterios de aceptación para la entrega final.</p>
+  </div>
+
+</div>
+
+<footer>
+  <p>Auditoría generada el 19 de mayo de 2026 &middot; Nomada Frontend Travel Agency</p>
+</footer>
+
+</body>
+</html>

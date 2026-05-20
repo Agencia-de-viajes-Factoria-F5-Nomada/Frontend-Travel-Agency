@@ -1,5 +1,6 @@
 import FormField from '../molecules/FormField'
 import CheckboxField from '../molecules/CheckboxField'
+import ImageUpload from '../molecules/ImageUpload'
 
 export default function DriverForm({ form, onChange, initialData }) {
   return (
@@ -18,13 +19,11 @@ export default function DriverForm({ form, onChange, initialData }) {
         placeholder="Ej: DRV-2024-001"
       />
 
-      <FormField
-        label="URL imagen"
+      <ImageUpload
+        label="Imagen del conductor"
         name="imageUrl"
-        type="url"
         value={form.imageUrl}
         onChange={onChange}
-        placeholder="https://..."
       />
 
       <CheckboxField
