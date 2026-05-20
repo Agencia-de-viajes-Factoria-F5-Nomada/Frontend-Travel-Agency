@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom'
 import { Mail } from 'lucide-react'
-import BrandMark from './BrandMark'
 import { PUBLIC_PATHS } from '../../constants/paths'
 
 const IconInstagram = () => (
@@ -35,9 +34,6 @@ const Footer = () => (
 
       {/* Single compact row */}
       <div className="flex flex-wrap items-center justify-between gap-x-8 gap-y-3">
-
-        {/* Brand */}
-        <BrandMark />
 
         {/* Contact + socials */}
         <div className="flex items-center gap-4">
