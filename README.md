@@ -1,232 +1,1264 @@
-# Nomada - Frontend Travel Agency
+Facundo
+w1o2facg_48575
+En línea
 
-Aplicacion frontend para una agencia de viajes. El proyecto permite explorar destinos, consultar ofertas, simular un proceso de reserva, ver el perfil del usuario y acceder a una zona de administracion con reservas, destinos y usuarios.
 
-El objetivo principal es mostrar una experiencia completa de una agencia de viajes usando React, rutas separadas para cliente y administrador, componentes reutilizables y una interfaz visual construida con Tailwind CSS.
 
-## Tecnologias Usadas
 
-- React 19
-- Vite 8
-- React Router DOM
-- Tailwind CSS
-- Lucide React para iconos
-- ESLint
 
-## Como Ejecutar el Proyecto
+Mensaje directo
 
-Instalar dependencias:
+maria perez
+mariaperez_95320
+Buscar mariaperez_95320
 
-```bash
-npm install
+Chat de maria perez
+20 de mayo de 2026
+
+maria perez — 21:18miércoles, 20 de mayo de 2026 21:18
+pero la reserva entera ya funciona
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Responder
+Reenviar
+Más
+
+Facundo [OBSD], Etiqueta de servidor: OBSDOBSD — 21:18miércoles, 20 de mayo de 2026 21:18
+Creo que por ahora solo tengo en el back, lo del front como todavia no funciona no lo he comiteado
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Editar
+Reenviar
+Más
+[21:18]miércoles, 20 de mayo de 2026 21:18
+Si, ahora solo falla el correo
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Editar
+Reenviar
+Más
+
+maria perez — 21:18miércoles, 20 de mayo de 2026 21:18
+ok
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Responder
+Reenviar
+Más
+
+Facundo [OBSD], Etiqueta de servidor: OBSDOBSD — 21:18miércoles, 20 de mayo de 2026 21:18
+Mientras el pasaporte se ponga bien llega al final
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Editar
+Reenviar
+Más
+
+maria perez — 21:20miércoles, 20 de mayo de 2026 21:20
+vale. a mi no me va pero aun no has mergeado no
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Responder
+Reenviar
+Más
+
+maria perez — 21:31miércoles, 20 de mayo de 2026 21:31
+a mi no me ccarga me dice que es un aerror de back asi que si a ti te crga y a mi no yo no le toco
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Responder
+Reenviar
+Más
+
+Facundo [OBSD], Etiqueta de servidor: OBSDOBSD — 21:47miércoles, 20 de mayo de 2026 21:47
+Tengo los correos
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Editar
+Reenviar
+Más
+
+maria perez — 21:47miércoles, 20 de mayo de 2026 21:47
+genial
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Responder
+Reenviar
+Más
+[21:48]miércoles, 20 de mayo de 2026 21:48
+sube y yo bajo jajaj
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Responder
+Reenviar
+Más
+
+Facundo [OBSD], Etiqueta de servidor: OBSDOBSD — 21:48miércoles, 20 de mayo de 2026 21:48
+Cambiaste el readme?
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Editar
+Reenviar
+Más
+
+maria perez — 21:49miércoles, 20 de mayo de 2026 21:49
+mira la web habia que hacer algo que era muy visible pero no se que es, creo que es la pagina principal para que no dejara creae
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Responder
+Reenviar
+Más
+[21:49]miércoles, 20 de mayo de 2026 21:49
+estoy con el readme
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Responder
+Reenviar
+Más
+[21:49]miércoles, 20 de mayo de 2026 21:49
+y lo de los 5000
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Responder
+Reenviar
+Más
+[21:49]miércoles, 20 de mayo de 2026 21:49
+yo creo que eso es lo unico que vamos a cambiar ya
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Responder
+Reenviar
+Más
+
+Facundo [OBSD], Etiqueta de servidor: OBSDOBSD — 21:50miércoles, 20 de mayo de 2026 21:50
+Voy a ponerme a comprobar cada esquina para que no se nos escape nada
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Editar
+Reenviar
+Más
+
+maria perez — 21:50miércoles, 20 de mayo de 2026 21:50
+k
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Responder
+Reenviar
+Más
+[21:50]miércoles, 20 de mayo de 2026 21:50
+ok
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Responder
+Reenviar
+Más
+[21:51]miércoles, 20 de mayo de 2026 21:51
+estoy generando unas daylly y habra que mirar el jira
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Responder
+Reenviar
+Más
+[21:51]miércoles, 20 de mayo de 2026 21:51
+yo creo que lo podemos dejar asi
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Responder
+Reenviar
+Más
+
+Facundo [OBSD], Etiqueta de servidor: OBSDOBSD — 21:51miércoles, 20 de mayo de 2026 21:51
+El jira miralo pero sino podemos verlo mañana. Voy a revisar todo para que no se nos escape nada y terminamos
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Editar
+Reenviar
+Más
+[21:52]miércoles, 20 de mayo de 2026 21:52
+En lo que estuviste trabajando lo subiste a dev?
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Editar
+Reenviar
+Más
+
+maria perez — 21:52miércoles, 20 de mayo de 2026 21:52
+menos el readme
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Responder
+Reenviar
+Más
+[21:52]miércoles, 20 de mayo de 2026 21:52
+el jira hay que entregarlo tambien
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Responder
+Reenviar
+Más
+
+Facundo [OBSD], Etiqueta de servidor: OBSDOBSD — 21:52miércoles, 20 de mayo de 2026 21:52
+Vale, voy a bajarlo todo y me pongo a ello
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Editar
+Reenviar
+Más
+[21:52]miércoles, 20 de mayo de 2026 21:52
+Hoy?
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Editar
+Reenviar
+Más
+[21:53]miércoles, 20 de mayo de 2026 21:53
+Entregable:
+Repositorio de Github (enlace),
+Documento de Dailys,
+Captura de pantalla del Front pagina principal,
+Captura del figma,
+Captura del Draw.IO BBDD,
+Diagrama de Flujo,
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Editar
+Reenviar
+Más
+
+maria perez — 21:53miércoles, 20 de mayo de 2026 21:53
+figma
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Responder
+Reenviar
+Más
+[21:53]miércoles, 20 de mayo de 2026 21:53
+vale
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Responder
+Reenviar
+Más
+[21:55]miércoles, 20 de mayo de 2026 21:55
+
+diagramaDeFlujo.drawio
+29.50 KB
+Descargar
+
+Diagrama base de datos Agenci viaje
+78.46 KB
+Descargar
+
+daily.pdf
+18.75 KB
+Descargar
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Responder
+Reenviar
+Más
+
+Facundo [OBSD], Etiqueta de servidor: OBSDOBSD — 21:59miércoles, 20 de mayo de 2026 21:59
+La query? Habias dicho que la habias modificado
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Editar
+Reenviar
+Más
+
+maria perez — 21:59miércoles, 20 de mayo de 2026 21:59
+no
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Responder
+Reenviar
+Más
+[22:00]miércoles, 20 de mayo de 2026 22:00
+no me salio bien y peto asi que me quede con l antigua
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Responder
+Reenviar
+Más
+[22:00]miércoles, 20 de mayo de 2026 22:00
+subo en un momento el readme
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Responder
+Reenviar
+Más
+[22:00]miércoles, 20 de mayo de 2026 22:00
+lo estoy completando un poco
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Responder
+Reenviar
+Más
+
+Facundo [OBSD], Etiqueta de servidor: OBSDOBSD — 22:01miércoles, 20 de mayo de 2026 22:01
+Vale, la amplio yo, lo dejare en una terminal separada o por gemini
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Editar
+Reenviar
+Más
+
+maria perez — 22:02miércoles, 20 de mayo de 2026 22:02
+el tuyo o el mio?
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Responder
+Reenviar
+Más
+[22:02]miércoles, 20 de mayo de 2026 22:02
+el mio esta con claude
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Responder
+Reenviar
+Más
+[22:02]miércoles, 20 de mayo de 2026 22:02
+te pase lo que tienes que entregar, diagrams y daily
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Responder
+Reenviar
+Más
+
+Facundo [OBSD], Etiqueta de servidor: OBSDOBSD — 22:02miércoles, 20 de mayo de 2026 22:02
+Me refiero a la query
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Editar
+Reenviar
+Más
+[22:02]miércoles, 20 de mayo de 2026 22:02
+Vale
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Editar
+Reenviar
+Más
+
+maria perez — 22:02miércoles, 20 de mayo de 2026 22:02
+si
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Responder
+Reenviar
+Más
+[22:02]miércoles, 20 de mayo de 2026 22:02
+por favor
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Responder
+Reenviar
+Más
+[22:02]miércoles, 20 de mayo de 2026 22:02
+tu me pasa a mi el figma
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Responder
+Reenviar
+Más
+
+Facundo [OBSD], Etiqueta de servidor: OBSDOBSD — 22:03miércoles, 20 de mayo de 2026 22:03
+Tenemos hasta el 22 para enviar
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Editar
+Reenviar
+Más
+[22:03]miércoles, 20 de mayo de 2026 22:03
+Asi que podemos enviarlo mañana
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Editar
+Reenviar
+Más
+
+maria perez — 22:03miércoles, 20 de mayo de 2026 22:03
+el que
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Responder
+Reenviar
+Más
+
+Facundo [OBSD], Etiqueta de servidor: OBSDOBSD — 22:03miércoles, 20 de mayo de 2026 22:03
+El punto es que los repositorios tienen que estar listos ahoy
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Editar
+Reenviar
+Más
+
+maria perez — 22:03miércoles, 20 de mayo de 2026 22:03
+los tenemos que mandar hoy solo los repos
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Responder
+Reenviar
+Más
+
+Facundo [OBSD], Etiqueta de servidor: OBSDOBSD — 22:03miércoles, 20 de mayo de 2026 22:03
+Los enlaces podemos subirlos mañana
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Editar
+Reenviar
+Más
+[22:03]miércoles, 20 de mayo de 2026 22:03
+Exacto, los repos hoy
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Editar
+Reenviar
+Más
+
+maria perez — 22:04miércoles, 20 de mayo de 2026 22:04
+da igual ya los tienes , subelos tambien y nos lo quitamos de encima
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Responder
+Reenviar
+Más
+
+Facundo [OBSD], Etiqueta de servidor: OBSDOBSD — 22:04miércoles, 20 de mayo de 2026 22:04
+Vale. Voy a revisarlo todo y lo envio
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Editar
+Reenviar
+Más
+
+maria perez — 22:05miércoles, 20 de mayo de 2026 22:05
+ok
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Responder
+Reenviar
+Más
+[22:05]miércoles, 20 de mayo de 2026 22:05
+ahora mergeo el readme
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Responder
+Reenviar
+Más
+[22:05]miércoles, 20 de mayo de 2026 22:05
+pero mando lo que tienes tu que mi forn no va
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Responder
+Reenviar
+Más
+[22:07]miércoles, 20 de mayo de 2026 22:07
+te paso mi readme
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Responder
+Reenviar
+Más
+
+Facundo [OBSD], Etiqueta de servidor: OBSDOBSD — 22:09miércoles, 20 de mayo de 2026 22:09
+Vale, pasamelo y lo pegamos, después mañana si no conseguimos que te funcione lo clonamos entero otra vez y ya está
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Editar
+Reenviar
+Más
+NUEVO
+
+maria perez — 22:10miércoles, 20 de mayo de 2026 22:10
+# 🧭 NÓMADA — Frontend
+
+> Plataforma web para una agencia de viajes terrestre y aérea con foco en Europa. Permite explorar destinos, realizar reservas, solicitar viajes personalizados y administrar entidades internas desde un panel de gestión dedicado.
+
+---
+
+Expandir (465 líneas)
+message.txt
+message.txt (16 KB)
+16 KB
+:heart:
+Haz clic para reaccionar
+:joy:
+Haz clic para reaccionar
+:thumbsup:
+Haz clic para reaccionar
+Añadir reacción
+Responder
+Reenviar
+Más
+[22:10]miércoles, 20 de mayo de 2026 22:10
+pasame los enlaces de tus repos y el figma,
+
+Enviar mensaje a @maria perez
+﻿
+¡Mejora a tus amigos! Regálales increíbles ventajas de chat con Nitro.
+Enviar GIF
+maria perez está escribiendo...
+Perfil de maria perez
+
+maria perez
+mariaperez_95320
+Miembro desde
+7 nov 2025
+Servidores en común — 2
+Amigos en común — 4
+Ver perfil completo
+# 🧭 NÓMADA — Frontend
+
+> Plataforma web para una agencia de viajes terrestre y aérea con foco en Europa. Permite explorar destinos, realizar reservas, solicitar viajes personalizados y administrar entidades internas desde un panel de gestión dedicado.
+
+---
+
+## 📋 Índice
+
+- [Descripción](#descripción)
+- [Stack tecnológico](#stack-tecnológico)
+- [Arquitectura](#arquitectura)
+- [Estructura del proyecto](#estructura-del-proyecto)
+- [Rutas](#rutas)
+- [Servicios de API](#servicios-de-api)
+- [Autenticación](#autenticación)
+- [Flujo de reserva](#flujo-de-reserva)
+- [Viaje personalizado](#viaje-personalizado)
+- [Panel de administración](#panel-de-administración)
+- [Variables de entorno](#variables-de-entorno)
+- [Instalación y ejecución](#instalación-y-ejecución)
+- [Scripts disponibles](#scripts-disponibles)
+- [Build de producción](#build-de-producción)
+- [Convenciones de desarrollo](#convenciones-de-desarrollo)
+- [Estado del proyecto](#estado-del-proyecto)
+- [Autores](#autores)
+
+---
+
+## Descripción
+
+NÓMADA es una aplicación web administrativa interna orientada a digitalizar la operativa de una agencia de viajes. Está pensada para ser utilizada por el personal de la agencia, con dos perfiles de acceso diferenciados:
+
+- **Usuario autenticado** — puede buscar viajes, consultar detalles y ofertas, realizar reservas y solicitar viajes personalizados.
+- **Administrador** — tiene acceso al panel de gestión para administrar viajes, hoteles, autobuses, conductores, reservas, usuarios, empleados, ofertas y segmentos de viaje.
+
+El frontend consume una API REST desarrollada con Spring Boot y MySQL, con gestión de imágenes a través de Cloudinary.
+
+---
+
+## Stack tecnológico
+
+| Tecnología | Versión | Uso |
+|---|---|---|
+| React | 19 | Construcción de interfaces |
+| Vite | 8 | Servidor de desarrollo y build |
+| React Router DOM | — | Enrutado SPA |
+| Tailwind CSS | — | Sistema de estilos utility-first |
+| Axios | — | Cliente HTTP para consumir la API REST |
+| Lucide React | — | Librería de iconos |
+| JWT | — | Autenticación basada en token |
+| Express | — | Servidor local auxiliar |
+| ESLint | — | Análisis estático de código |
+| Playwright | — | Tests end-to-end |
+
+---
+
+## Arquitectura
+
+El frontend sigue una separación clara por responsabilidades, inspirada en **Atomic Design**:
+
+```
+src/
+├── assets/         # Recursos estáticos (imágenes, fuentes)
+├── components/     # Componentes reutilizables organizados por nivel
+│   ├── atoms/      # Elementos base: Button, Input, Card, Badge, Select
+│   ├── molecules/  # Composiciones: filtros, buscadores, alertas
+│   ├── organisms/  # Bloques funcionales: tablas, formularios CRUD, tarjetas
+│   └── layout/     # Layouts públicos y privados
+├── constants/      # Constantes de navegación y rutas (paths.js, navigation.js)
+├── hooks/          # Hooks personalizados
+├── pages/          # Vistas completas de la aplicación
+├── routes/         # Definición centralizada de rutas (AppRoutes.jsx)
+├── services/       # Capa de comunicación con la API
+├── test/           # Tests unitarios y de integración
+└── utils/          # Funciones auxiliares (formatters, classNames, etc.)
 ```
 
-Iniciar entorno de desarrollo:
+### Principios aplicados
+
+- Las páginas no construyen URLs ni llaman directamente a Axios — eso es responsabilidad de la capa de servicios.
+- Los componentes de `atoms` son agnósticos al dominio; los de `organisms` tienen contexto de negocio.
+- Las rutas protegidas se envuelven con `PrivateRoute`, que redirige a login si no hay sesión activa.
+- Los estados locales se gestionan con hooks de React; no se usa estado global externo salvo lo estrictamente necesario.
+
+---
+
+## Estructura del proyecto
+
+```
+NÓMADA Frontend
+├── public/
+├── src/
+│   ├── assets/
+│   ├── components/
+│   │   ├── atoms/
+│   │   │   ├── Button.jsx
+│   │   │   ├── Card.jsx
+│   │   │   ├── Input.jsx
+│   │   │   ├── Badge.jsx
+│   │   │   └── Select.jsx
+│   │   ├── molecules/
+│   │   ├── organisms/
+│   │   │   └── DestinationCard.jsx
+│   │   └── layout/
+│   ├── constants/
+│   │   ├── paths.js
+│   │   └── navigation.js
+│   ├── hooks/
+│   ├── pages/
+│   │   └── HomePage.jsx
+│   ├── routes/
+│   │   └── AppRoutes.jsx
+│   ├── services/
+│   │   ├── api.js
+│   │   ├── authService.js
+│   │   ├── TravelsService.js
+│   │   ├── BookingService.js
+│   │   ├── HotelService.js
+│   │   ├── BusService.js
+│   │   ├── DriverService.js
+│   │   ├── UsersService.js
+│   │   ├── offersService.js
+│   │   ├── tripSegmentsService.js
+│   │   ├── employeesService.js
+│   │   └── cloudinaryService.js
+│   ├── test/
+│   └── utils/
+│       ├── classNames.js
+│       └── formatters.js
+├── server.js
+├── package.json
+├── vite.config.js
+├── tailwind.config.js
+├── .env.example
+└── README.md
+```
+
+---
+
+## Rutas
+
+### Públicas / autenticadas
+
+| Ruta | Descripción |
+|---|---|
+| `/` | Página de inicio con login/registro y destinos destacados |
+| `/home` | Página de inicio |
+| `/destinations` | Catálogo de destinos disponibles |
+| `/destinations/:id` | Detalle de un destino |
+| `/travels` | Listado de viajes |
+| `/travels/:id` | Detalle de un viaje |
+| `/offers` | Viajes en oferta |
+| `/search` | Resultados de búsqueda con filtros |
+| `/auth` | Login y registro |
+
+### Privadas (requieren sesión)
+
+| Ruta | Descripción |
+|---|---|
+| `/profile` | Perfil del usuario |
+| `/personal/:section` | Área personal del usuario |
+| `/checkout` | Proceso de reserva (pasajeros → precio → confirmar) |
+| `/checkout/custom` | Solicitud de viaje personalizado |
+
+### Administrativas (requieren rol admin)
+
+| Ruta | Descripción |
+|---|---|
+| `/admin` | Panel de administración |
+| `/admin/travels` | Gestión de viajes |
+| `/admin/hotels` | Gestión de hoteles |
+| `/admin/bookings` | Gestión de reservas |
+| `/admin/users` | Gestión de usuarios |
+| `/admin/buses` | Gestión de autobuses |
+| `/admin/drivers` | Gestión de conductores |
+
+---
+
+## Servicios de API
+
+Toda la comunicación con el backend está centralizada en `src/services`. Las páginas importan el servicio correspondiente en lugar de construir peticiones directamente.
+
+```js
+// Ejemplo de uso en una página
+import { travelService } from '../services/TravelsService'
+
+const data = await travelService.getFeatured()
+```
+
+### Servicios disponibles
+
+| Archivo | Responsabilidad |
+|---|---|
+| `api.js` | Instancia base de Axios con interceptores y base URL |
+| `authService.js` | Login, registro, logout, persistencia de sesión y JWT |
+| `TravelsService.js` | Listado, detalle, búsqueda y featured de viajes |
+| `BookingService.js` | Creación, consulta y quote de reservas |
+| `HotelService.js` | CRUD de hoteles |
+| `BusService.js` | CRUD de autobuses |
+| `DriverService.js` | CRUD de conductores |
+| `UsersService.js` | CRUD de usuarios |
+| `offersService.js` | Consulta y gestión de ofertas |
+| `tripSegmentsService.js` | Segmentos de viaje |
+| `employeesService.js` | Gestión de empleados |
+| `cloudinaryService.js` | Subida de imágenes a Cloudinary |
+
+### Base URL
+
+La URL base del backend se configura mediante variable de entorno:
+
+```
+VITE_API_URL=http://localhost:8080
+```
+
+El cliente Axios la recoge automáticamente al inicializarse.
+
+---
+
+## Autenticación
+
+La aplicación usa autenticación basada en **JWT**. El token se persiste en el cliente y se adjunta automáticamente a las peticiones protegidas mediante un interceptor de Axios.
+
+### Flujo
+
+1. El usuario introduce email y contraseña en el formulario de la home.
+2. `authService.login()` hace POST a `/auth/login` y almacena el token recibido.
+3. Las peticiones a rutas protegidas incluyen el token en el header `Authorization: Bearer <token>`.
+4. `PrivateRoute` verifica si hay sesión activa antes de renderizar una ruta privada; si no la hay, redirige a `/`.
+5. Las rutas administrativas verifican además que el usuario tenga rol de administrador.
+
+### Registro
+
+- Contraseña mínima de 8 caracteres.
+- Debe contener al menos una mayúscula y un número.
+- Tras el registro se hace login automático.
+
+### Validaciones de contraseña (frontend)
+
+```js
+if (form.password.length < 8) { /* error */ }
+if (!/[A-Z]/.test(form.password) || !/[0-9]/.test(form.password)) { /* error */ }
+```
+
+---
+
+## Flujo de reserva
+
+El checkout está dividido en 4 pasos:
+
+```
+1. Pasajeros  →  2. Precio  →  3. Confirmar  →  4. Confirmado
+```
+
+### Paso 1 — Pasajeros
+- Selección del número de pasajeros.
+- Introducción de datos personales de cada pasajero: nombre, apellido, fecha de nacimiento, DNI o pasaporte.
+- Validación de menores: deben ir acompañados de un adulto tutor.
+
+### Paso 2 — Precio
+- Cálculo del precio total mediante el endpoint `GET /api/bookings/quote`.
+- Desglose por tipo de pensión (media pensión / pensión completa).
+- Precio con IVA incluido.
+
+### Paso 3 — Confirmar
+- Resumen completo de la reserva.
+- Confirmación mediante `POST /api/bookings`.
+
+### Paso 4 — Confirmado
+- Vista de confirmación con los datos de la reserva.
+- Opción de volver al catálogo.
+
+---
+
+## Viaje personalizado
+
+La ruta `/checkout/custom` permite al usuario enviar una solicitud de viaje a medida con los siguientes campos:
+
+| Campo | Descripción |
+|---|---|
+| Destino | Destino o idea de viaje |
+| Ciudad de salida | Punto de partida |
+| Fechas | Salida y vuelta aproximadas |
+| Viajeros | Número de personas |
+| Presupuesto | Por persona |
+| Tipo de experiencia | Playa, aventura, ruta, cultura, gastronomía, naturaleza |
+| Ritmo | Relajado, equilibrado o intenso |
+| Alojamiento | Tipo preferido |
+| Servicios | Avión, hotel, actividades |
+| Imprescindibles | Lo que no puede faltar |
+| A evitar | Aspectos que no se desean |
+
+La solicitud se envía al backend para que el equipo prepare una propuesta personalizada.
+
+---
+
+## Panel de administración
+
+El área `/admin` está protegida y reservada a usuarios con rol de administrador. Desde aquí se pueden gestionar todas las entidades operativas de la agencia:
+
+- **Viajes** — crear, editar, activar/desactivar viajes.
+- **Hoteles** — CRUD completo con imagen (Cloudinary), estrellas, capacidad y precios.
+- **Autobuses** — gestión de flota con capacidad, matrícula y servicios (wifi, AC, USB, baño).
+- **Conductores** — alta, edición y control de licencia activa.
+- **Reservas** — listado y detalle de todas las reservas.
+- **Usuarios** — listado y gestión de usuarios registrados.
+- **Empleados** — gestión del personal de la agencia.
+- **Ofertas** — porcentajes de descuento y fechas de vigencia.
+- **Segmentos de viaje** — etapas o tramos que componen un viaje.
+
+---
+
+## Variables de entorno
+
+Crea un archivo `.env` en la raíz del proyecto a partir del ejemplo:
+
+```bash
+cp .env.example .env
+```
+
+| Variable | Descripción | Ejemplo |
+|---|---|---|
+| `VITE_API_URL` | URL base del backend | `http://localhost:8080` |
+
+> El backend debe estar corriendo antes de levantar el frontend en modo desarrollo.
+
+---
+
+## Instalación y ejecución
+
+### Requisitos previos
+
+- Node.js 18 o superior
+- npm 9 o superior
+- Backend de NÓMADA corriendo en `http://localhost:8080`
+
+### Instalación
+
+```bash
+git clone https://github.com/Agencia-de-viajes-Factoria-F5-Nomada/Frontend-Travel-Agency.git
+cd Frontend-Travel-Agency
+npm install
+cp .env.example .env
+```
+
+### Desarrollo
+
+Levantar solo el frontend:
 
 ```bash
 npm run dev
 ```
 
-Generar build de produccion:
+Levantar frontend y backend en paralelo:
+
+```bash
+npm run dev:full
+```
+
+| Servicio | URL por defecto |
+|---|---|
+| Frontend | `http://localhost:5173` |
+| Backend / API | `http://localhost:8080` |
+
+> El puerto del frontend puede cambiar automáticamente si el `5173` está ocupado.
+
+---
+
+## Scripts disponibles
+
+| Script | Descripción |
+|---|---|
+| `npm run dev` | Inicia Vite en modo desarrollo |
+| `npm run build` | Genera la build de producción en `/dist` |
+| `npm run preview` | Sirve la build generada localmente |
+| `npm run lint` | Ejecuta ESLint sobre el código fuente |
+| `npm run server` | Inicia el servidor Express auxiliar |
+| `npm run dev:full` | Ejecuta frontend y backend en paralelo |
+| `npm run e2e:install` | Instala dependencias de Playwright |
+| `npm run e2e:test` | Ejecuta los tests end-to-end |
+
+---
+
+## Build de producción
 
 ```bash
 npm run build
 ```
 
-Previsualizar el build:
+El resultado se genera en la carpeta `dist/`. Para previsualizar antes de desplegar:
 
 ```bash
 npm run preview
 ```
 
-## Estructura del Proyecto
+---
 
-```text
-src/
-  components/
-    common/        Componentes reutilizables del dominio de viajes
-    layout/        Layouts, barras de navegacion, sidebar y logo
-    ui/            Componentes base de interfaz
-  constants/       Rutas, navegacion y datos mock
-  pages/           Paginas principales de la aplicacion
-  routes/          Configuracion de rutas
-  utils/           Funciones auxiliares
-```
+## Convenciones de desarrollo
 
-## Componentes Principales
+### Componentes
 
-### Layout
+- `atoms/` — elementos sin lógica de negocio: `Button`, `Input`, `Card`, `Badge`, `Select`.
+- `molecules/` — composiciones pequeñas reutilizables: filtros, buscadores, alertas.
+- `organisms/` — bloques con lógica de presentación: tablas CRUD, tarjetas de destino, formularios de reserva.
+- `pages/` — vistas completas que orquestan organisms y consumen servicios.
 
-- `PublicLayout`: estructura general de la parte publica. Incluye `PublicTopbar`, contenido principal y `Footer`.
-- `AdminLayout`: estructura del panel de administracion. Incluye `AdminSidebar`, `AdminTopbar` y un overlay responsive para el menu movil.
-- `PublicTopbar`: navegacion publica con enlaces a Inicio, Buscar, Ofertas, Mi perfil e Iniciar sesion.
-- `AdminSidebar`: menu lateral del area admin con accesos a Panel, Reservas, Destinos y Usuarios.
-- `AdminTopbar`: barra superior del panel admin con buscador y usuario.
-- `BrandMark`: logo de la aplicacion usando el asset `public/nomada-logo-symbol.png`.
-- `Footer`: pie de pagina de la parte publica.
+### Servicios
 
-### UI Base
+- Todas las llamadas HTTP van en `src/services`.
+- Las páginas nunca construyen URLs directamente.
+- La lógica de transformación de datos vive junto al servicio correspondiente.
 
-- `Button`: boton reutilizable con variantes `primary`, `secondary`, `ghost` y `danger`.
-- `Card`: contenedor reutilizable para tarjetas.
-- `Input`: campo de formulario reutilizable con label, hint y estilos de foco.
-- `Badge`: etiqueta visual para destacar estados o categorias.
-- `PageHeader`: encabezado reutilizable para paginas con titulo, descripcion y acciones.
+### Estilos
 
-### Componentes del Dominio
+- Se usa Tailwind CSS como sistema principal.
+- Se reutilizan los colores y tokens ya definidos en `tailwind.config.js` (`brand-500`, `surface-*`, `ink-*`).
+- No se introducen estilos globales innecesarios.
+- Las clases condicionales se gestionan con la utilidad `classNames()`.
 
-- `DestinationCard`: tarjeta de destino con imagen, pais, precio, rating y enlace al detalle.
-- `BookingFormModal`: modal para crear una nueva reserva desde el perfil.
-- `StatCard`: tarjeta de estadistica para el dashboard admin.
-- `StatusPill`: indicador visual para estados de reservas.
+### Rutas
 
-## Paginas
+- Todas las rutas se definen en `src/routes/AppRoutes.jsx`.
+- Las rutas privadas se envuelven con `<PrivateRoute>`.
+- Las rutas administrativas requieren rol de administrador.
+- Las constantes de rutas se centralizan en `src/constants/paths.js`.
 
-### Parte Publica
+### Git
 
-- `HomePage`: pagina inicial con hero, buscador rapido y destinos destacados.
-- `SearchResultsPage`: listado de resultados con filtros de tipo de viaje, bus y precio.
-- `DestinationDetailPage`: detalle de un destino con imagen, precio, highlights e itinerario.
-- `CheckoutPage`: flujo de reserva por pasos.
-- `ProfilePage`: perfil del usuario, reservas y creacion de nueva reserva mediante modal.
-- `OffersPage`: destinos con descuento.
-- `AuthPage`: pantalla de inicio de sesion y registro.
-- `NotFoundPage`: pagina para rutas no encontradas.
+- Ramas por funcionalidad: `feat/nombre`, `fix/nombre`, `chore/nombre`.
+- Un PR por funcionalidad; se hace merge a `dev` antes de pasar a `main`.
 
-### Panel Admin
+---
 
-- `DashboardPage`: resumen con metricas, reservas recientes y acciones rapidas.
-- `BookingsPage`: tabla de reservas con buscador y estados.
-- `DestinationsPage`: gestion visual de destinos disponibles.
-- `UsersPage`: listado de usuarios.
+## Estado del proyecto
 
-## Como Funciona
+El frontend está en desarrollo activo. Las funcionalidades principales están implementadas:
 
-La aplicacion se divide en dos areas principales:
+- ✅ Navegación pública y autenticación
+- ✅ Catálogo de viajes y detalle
+- ✅ Búsqueda y filtros
+- ✅ Flujo de reserva completo (pasajeros → precio → confirmación)
+- ✅ Solicitud de viaje personalizado
+- ✅ Área personal y perfil de usuario
+- ✅ Panel de administración (viajes, hoteles, autobuses, conductores, reservas, usuarios, ofertas)
+- ✅ Integración con Cloudinary para imágenes
+- ✅ Autenticación JWT con rutas protegidas
 
-- Area publica: enfocada en el usuario final que busca destinos, revisa ofertas, consulta detalles y simula reservas.
-- Area admin: enfocada en la gestion interna de reservas, destinos y usuarios.
+### Próximas mejoras
 
-React Router define dos layouts distintos. Las rutas publicas usan `PublicLayout`; las rutas que comienzan por `/admin` usan `AdminLayout`.
+- [ ] Ampliar cobertura de tests unitarios y E2E
+- [ ] Conectar la vista de viaje personalizado con recomendaciones de viajes existentes
+- [ ] Añadir filtrado avanzado en el panel de reservas
+- [ ] Añadir capturas de pantalla de las principales vistas en este README
 
-Los datos se cargan desde `src/constants/mockData.js`. Esto permite presentar la aplicacion sin depender de un backend real. Los destinos, reservas, usuarios, buses, conductores y pasos del checkout estan centralizados en ese archivo.
+---
 
-El sistema visual se controla principalmente desde `tailwind.config.js`, donde se definen los colores `brand`, `surface`, `ink`, estados, sombras y radios. Los componentes usan clases Tailwind basadas en esos tokens para mantener una identidad visual consistente.
+## Autores
 
-## Flujo de Navegacion
+Desarrollado por **Maria Perez** y **Facundo Garavaglia** como parte del proyecto NÓMADA en el contexto formativo de **Factoría F5**.
 
-```mermaid
-flowchart TD
-  A[Usuario entra a Nomada] --> B[HomePage]
-  B --> C[Buscar destinos]
-  B --> D[Ofertas]
-  B --> E[Mi perfil]
-  C --> F[Resultados de busqueda]
-  F --> G[Detalle del destino]
-  G --> H[Checkout]
-  E --> I[Reservas del usuario]
-  E --> J[Crear nueva reserva]
-  J --> I
-  B --> K[Iniciar sesion]
-```
+El proyecto tiene enfoque en desarrollo web moderno, arquitectura de componentes, integración frontend-backend y construcción de una experiencia real de producto.
 
-## Diagrama de Rutas
+---
 
-```mermaid
-flowchart LR
-  AppRoutes --> PublicLayout
-  AppRoutes --> AdminLayout
-
-  PublicLayout --> Home[/ /]
-  PublicLayout --> Search[/search/]
-  PublicLayout --> Destination[/destinations/:id/]
-  PublicLayout --> Checkout[/checkout/]
-  PublicLayout --> Profile[/profile/]
-  PublicLayout --> Offers[/offers/]
-  PublicLayout --> Auth[/auth/]
-  PublicLayout --> NotFound[*]
-
-  AdminLayout --> Dashboard[/admin/]
-  AdminLayout --> Bookings[/admin/bookings/]
-  AdminLayout --> Destinations[/admin/destinations/]
-  AdminLayout --> Users[/admin/users/]
-```
-
-## Diagrama de Componentes
-
-```mermaid
-flowchart TD
-  App[App / main.jsx] --> Routes[AppRoutes]
-
-  Routes --> PublicLayout
-  PublicLayout --> PublicTopbar
-  PublicLayout --> PublicPages[Paginas Publicas]
-  PublicLayout --> Footer
-
-  Routes --> AdminLayout
-  AdminLayout --> AdminSidebar
-  AdminLayout --> AdminTopbar
-  AdminLayout --> AdminPages[Paginas Admin]
-
-  PublicPages --> DestinationCard
-  PublicPages --> BookingFormModal
-  PublicPages --> Button
-  PublicPages --> Card
-  PublicPages --> Input
-  PublicPages --> Badge
-
-  AdminPages --> StatCard
-  AdminPages --> StatusPill
-  AdminPages --> PageHeader
-  AdminPages --> Button
-  AdminPages --> Card
-```
-
-## Datos Mock
-
-El archivo `src/constants/mockData.js` contiene:
-
-- `FEATURED_DESTINATIONS`: destinos destacados con precio, imagen, rating y etiqueta.
-- `BOOKINGS`: reservas de ejemplo.
-- `USERS`: usuarios de ejemplo.
-- `CHECKOUT_STEPS`: pasos del proceso de reserva.
-- `BUSES`: buses disponibles para filtros.
-- `DRIVERS`: conductores de ejemplo.
-
-Estos datos permiten simular una experiencia real sin configurar una API externa.
-
-## Personalizacion Visual
-
-La identidad visual se configura desde `tailwind.config.js`:
-
-- `brand`: colores principales para botones, enlaces activos, iconos y elementos destacados.
-- `surface`: fondos, paneles, inputs y bordes.
-- `ink`: colores de texto.
-- `status`: colores para estados como confirmado, pendiente, aviso e informacion.
-- `boxShadow`: sombras reutilizables para tarjetas y foco.
-
-El logo principal esta en:
-
-```text
-public/nomada-logo-symbol.png
-```
-
-## Puntos Para la Presentacion
-
-- El proyecto esta separado entre experiencia publica y panel de administracion.
-- Los layouts evitan repetir estructura en cada pagina.
-- Los componentes UI (`Button`, `Card`, `Input`, `Badge`) ayudan a mantener consistencia.
-- Los datos mock permiten presentar el flujo completo sin backend.
-- Tailwind centraliza la identidad visual mediante tokens de color.
-- React Router organiza la navegacion y permite rutas anidadas.
-- El perfil incluye una interaccion real con estado local: crear una reserva desde un modal.
-
-## Scripts Disponibles
-
-```bash
-npm run dev      # Ejecuta el servidor de desarrollo
-npm run build    # Crea el build de produccion
-npm run preview  # Previsualiza el build
-npm run lint     # Ejecuta ESLint
-```
-
+*Agencia de Viajes NÓMADA · Factoría F5 · 2026*
