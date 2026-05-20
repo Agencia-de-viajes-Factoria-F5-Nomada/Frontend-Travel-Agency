@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { ArrowLeft, ArrowRight, Check, Minus, Plus, Trash2 } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Check, Minus, Plus } from 'lucide-react'
 import Button from '../components/atoms/Button'
 import Card from '../components/atoms/Card'
 import Input from '../components/atoms/Input'
@@ -106,7 +106,9 @@ const CheckoutPage = () => {
   const hasAdult   = passengers.some(p => p.birthDate && calculateAge(p.birthDate) >= 12)
   const minorError = hasMinor && !hasAdult
 
-  const allFilled = passengers.every(p => p.name.trim() && p.surname.trim() && p.birthDate && p.email.trim())
+  const allFilled = passengers.every(p =>
+    p.name.trim() && p.surname.trim() && p.birthDate && p.email.trim() && p.dni.trim() && p.passport.trim()
+  )
 
   const handleQuote = async () => {
     if (minorError) { setError('Un menor necesita al menos un adulto en el grupo.'); return }
@@ -147,8 +149,8 @@ const CheckoutPage = () => {
           name: p.name,
           surname: p.surname,
           email: p.email,
-          dni: p.dni || undefined,
-          passport: p.passport || undefined,
+          dni: p.dni,
+          passport: p.passport,
           age,
           tutorId: age < 18 ? user?.id : undefined,
         })
@@ -193,21 +195,15 @@ const CheckoutPage = () => {
               <div className="rounded-xl border border-surface-600 p-4">
                 <p className="text-sm font-medium text-white mb-3">¿Cuántas personas viajan?</p>
                 <div className="flex items-center gap-4">
-                  <button
-                    type="button"
-                    onClick={() => handleNumPassengersChange(numPassengers - 1)}
+                  <button type="button" onClick={() => handleNumPassengersChange(numPassengers - 1)}
                     disabled={numPassengers <= 1}
-                    className="grid h-9 w-9 place-items-center rounded-full border border-surface-600 text-ink-soft hover:border-brand-500 hover:text-white disabled:opacity-30 transition-colors"
-                  >
+                    className="grid h-9 w-9 place-items-center rounded-full border border-surface-600 text-ink-soft hover:border-brand-500 hover:text-white disabled:opacity-30 transition-colors">
                     <Minus className="h-4 w-4" />
                   </button>
                   <span className="text-2xl font-bold text-white w-8 text-center">{numPassengers}</span>
-                  <button
-                    type="button"
-                    onClick={() => handleNumPassengersChange(numPassengers + 1)}
+                  <button type="button" onClick={() => handleNumPassengersChange(numPassengers + 1)}
                     disabled={numPassengers >= 20}
-                    className="grid h-9 w-9 place-items-center rounded-full border border-surface-600 text-ink-soft hover:border-brand-500 hover:text-white disabled:opacity-30 transition-colors"
-                  >
+                    className="grid h-9 w-9 place-items-center rounded-full border border-surface-600 text-ink-soft hover:border-brand-500 hover:text-white disabled:opacity-30 transition-colors">
                     <Plus className="h-4 w-4" />
                   </button>
                   <span className="text-sm text-ink-muted">
@@ -220,9 +216,7 @@ const CheckoutPage = () => {
 
               {passengers.map((p, i) => (
                 <div key={i} className="rounded-xl border border-surface-600 p-4 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-white">Pasajero {i + 1}</span>
-                  </div>
+                  <span className="text-sm font-medium text-white">Pasajero {i + 1}</span>
                   <div className="grid grid-cols-2 gap-3">
                     <Input label="Nombre" value={p.name}
                       onChange={e => changePassenger(i, 'name', e.target.value)} required />
@@ -230,23 +224,17 @@ const CheckoutPage = () => {
                       onChange={e => changePassenger(i, 'surname', e.target.value)} required />
                   </div>
                   <div>
-                    <label className="text-xs font-medium text-ink-muted">Fecha de nacimiento</label>
-                    <input
-                      type="date"
-                      value={p.birthDate}
+                    <label className="text-xs font-medium text-ink-muted">Fecha de nacimiento *</label>
+                    <input type="date" value={p.birthDate}
                       max={new Date().toISOString().split('T')[0]}
                       onChange={e => changePassenger(i, 'birthDate', e.target.value)}
-                      className="mt-1 w-full rounded-lg border border-surface-600 bg-surface-900 px-3 py-2 text-sm text-ink focus:outline-none"
-                    />
+                      className="mt-1 w-full rounded-lg border border-surface-600 bg-surface-900 px-3 py-2 text-sm text-ink focus:outline-none" />
                     {p.birthDate && (
                       <p className="mt-1 text-xs text-ink-muted">
                         {calculateAge(p.birthDate)} años —{' '}
-                        {calculateAge(p.birthDate) < 2
-                          ? 'Bebé (5% del precio)'
-                          : calculateAge(p.birthDate) < 12
-                          ? 'Niño (60% del precio)'
-                          : calculateAge(p.birthDate) >= 65
-                          ? 'Pensionista (10% descuento)'
+                        {calculateAge(p.birthDate) < 2 ? 'Bebé (5% del precio)'
+                          : calculateAge(p.birthDate) < 12 ? 'Niño (60% del precio)'
+                          : calculateAge(p.birthDate) >= 65 ? 'Pensionista (10% descuento)'
                           : 'Adulto (precio completo)'}
                       </p>
                     )}
@@ -254,12 +242,14 @@ const CheckoutPage = () => {
                   <Input label="Correo electrónico" type="email" value={p.email}
                     onChange={e => changePassenger(i, 'email', e.target.value)} required />
                   <div className="grid grid-cols-2 gap-3">
-                    <Input label="DNI (opcional)" value={p.dni}
+                    <Input label="DNI *" value={p.dni}
                       placeholder="12345678Z"
-                      onChange={e => changePassenger(i, 'dni', e.target.value)} />
-                    <Input label="Pasaporte (opcional)" value={p.passport}
+                      onChange={e => changePassenger(i, 'dni', e.target.value)}
+                      required />
+                    <Input label="Pasaporte *" value={p.passport}
                       placeholder="AAA123456"
-                      onChange={e => changePassenger(i, 'passport', e.target.value)} />
+                      onChange={e => changePassenger(i, 'passport', e.target.value)}
+                      required />
                   </div>
                 </div>
               ))}
@@ -381,14 +371,12 @@ const CheckoutPage = () => {
 
           {step === 4 && (
             <div className="mt-8 flex flex-col items-center gap-4 py-6 text-center">
-              <span className="grid h-16 w-16 place-items-center rounded-full"
-                style={{ background: '#DAEEF7' }}>
+              <span className="grid h-16 w-16 place-items-center rounded-full" style={{ background: '#DAEEF7' }}>
                 <Check className="h-8 w-8" style={{ color: '#1A3A5C' }} />
               </span>
               <h2 className="text-2xl font-semibold text-white">¡Reserva confirmada!</h2>
               <p className="max-w-md text-sm text-ink-muted">
-                Hemos enviado la confirmación a tu correo. Puedes gestionar este viaje
-                desde tu perfil cuando quieras.
+                Hemos enviado la confirmación a tu correo. Puedes gestionar este viaje desde tu perfil cuando quieras.
               </p>
               {booking?.bookingId && (
                 <p className="text-sm text-ink-muted">
