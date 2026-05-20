@@ -13,6 +13,7 @@ const DestinationDetailPage = lazy(() => import('../pages/DestinationDetailPage'
 const OffersPage            = lazy(() => import('../pages/OffersPage'));
 const SearchResultsPage     = lazy(() => import('../pages/SearchResultsPage'));
 const CheckoutPage          = lazy(() => import('../pages/CheckoutPage'));
+const CustomTripPage        = lazy(() => import('../pages/CustomTripPage'));
 const AuthPage              = lazy(() => import('../pages/AuthPage'));
 const ProfilePage           = lazy(() => import('../pages/ProfilePage'));
 const PersonalAreaPage      = lazy(() => import('../pages/PersonalAreaPage'));
@@ -59,6 +60,7 @@ export default function AppRoutes() {
         <Route path="/personal/:section"   element={<PrivateRoute><PersonalAreaPage /></PrivateRoute>} />
         <Route path="/auth"                element={<AuthPage />} />
         <Route path="/dashboard"           element={<DashboardPage />} />
+        <Route path="/checkout/custom"     element={<PrivateRoute><CustomTripPage /></PrivateRoute>} />
         <Route path="/checkout"            element={
           <PrivateRoute><CheckoutPage /></PrivateRoute>
         } />
