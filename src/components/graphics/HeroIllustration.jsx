@@ -2,13 +2,13 @@ import React from 'react'
 
 export default function HeroIllustration({
   className = '',
-  gradientFrom = '#4C91B5',
-  gradientTo = '#064E6A',
+  gradientFrom = '#4A8FA8',
+  gradientTo = '#042a3f',
   gradientFromOpacity = 0.18,
   gradientToOpacity = 0.06,
-  circleColor = '#6FAECC',
+  circleColor = '#7AAFC0',
   circleOpacity = 0.12,
-  smallCircleColor = '#2A4F68',
+  smallCircleColor = '#0b4860',
   smallCircleOpacity = 0.06,
   onLoad,
   ...rest

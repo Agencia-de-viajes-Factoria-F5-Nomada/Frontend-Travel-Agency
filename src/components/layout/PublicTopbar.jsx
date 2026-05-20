@@ -29,7 +29,7 @@ const PublicTopbar = () => {
   })
 
   return (
-    <header className="sticky top-0 z-30 border-b border-surface-700/40 bg-gradient-to-b from-brand-100/60 to-surface-950/40 shadow-[0_10px_30px_-22px_rgba(255,255,255,0.35)] backdrop-blur-sm">
+    <header className="sticky top-0 z-30 border-b border-surface-700/40 bg-accent-dark shadow-[0_10px_30px_-22px_rgba(255,255,255,0.35)]">
       <div className="container-page flex h-16 items-center justify-between gap-4">
         <BrandMark />
 
@@ -67,7 +67,7 @@ const PublicTopbar = () => {
       {open ? (
         <div
           id="public-mobile-nav"
-          className="border-t border-surface-700/40 bg-gradient-to-b from-brand-100/70 to-surface-950/95 shadow-xl backdrop-blur-sm md:hidden"
+          className="border-t border-surface-700/40 bg-accent-dark shadow-xl md:hidden"
         >
           <nav aria-label="Principal movil" className="container-page grid gap-1 py-4">
             {primaryNav.map((item) => (

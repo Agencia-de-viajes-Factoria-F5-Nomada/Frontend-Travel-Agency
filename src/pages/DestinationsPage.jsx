@@ -8,6 +8,7 @@ import FiltersCard from '../components/molecules/FiltersCard'
 import { travelService } from '../services/travelsService'
 import { bookingService } from '../services/BookingService'
 import { authService } from '../services/authService'
+import { getCountriesForContinents } from '../constants/continents'
 
 const TABS = [
   { id: 'search', label: 'Viaje' },
@@ -38,6 +39,7 @@ const DestinationsPage = () => {
 
   const [priceRange, setPriceRange]           = useState({ min: 0, max: 5000 })
   const [selectedRegions, setSelectedRegions] = useState([])
+  const [selectedContinents, setSelectedContinents] = useState([])
   const [durationRange, setDurationRange]     = useState(null)
   const [starFilter, setStarFilter]           = useState([])
   const [availabilityOnly, setAvailabilityOnly] = useState(false)
@@ -63,6 +65,7 @@ const DestinationsPage = () => {
   const handleClearFilters = () => {
     setPriceRange({ min: 0, max: 5000 })
     setSelectedRegions([])
+    setSelectedContinents([])
     setDurationRange(null)
     setStarFilter([])
     setAvailabilityOnly(false)
@@ -75,6 +78,8 @@ const DestinationsPage = () => {
   today.setHours(0, 0, 0, 0)
 
   const filtered = useMemo(() => {
+    const continentCountries = getCountriesForContinents(selectedContinents)
+
     let result = travels.filter(t => {
       const matchesSearch = (t.destiny || t.name || '').toLowerCase().includes(search.destiny.toLowerCase())
       const isFuture = t.startDate ? new Date(t.startDate) >= today : true
@@ -82,6 +87,10 @@ const DestinationsPage = () => {
         ? (t.fullBoardPrice || t.halfBoardPrice || 0)
         : (t.halfBoardPrice || t.price || 0)
       const matchPrice = price >= priceRange.min && price <= priceRange.max
+
+      const country = t.hotelCountry || t.country
+      const matchContinent = continentCountries.length === 0 || continentCountries.includes(country)
+
       const matchRegion = selectedRegions.length === 0 ||
         selectedRegions.includes(t.hotelCountry) || selectedRegions.includes(t.country)
       let matchDuration = true
@@ -93,7 +102,7 @@ const DestinationsPage = () => {
       const matchStars = starFilter.length === 0 || (stars && starFilter.includes(stars))
       const matchAvailability = !availabilityOnly || (t.availablePlaces && t.availablePlaces > 0)
       const matchDiscount = !minDiscount || (t.discountPercentage && t.discountPercentage >= minDiscount)
-      return matchesSearch && isFuture && matchPrice && matchRegion &&
+      return matchesSearch && isFuture && matchPrice && matchContinent && matchRegion &&
              matchDuration && matchStars && matchAvailability && matchDiscount
     })
 
@@ -108,7 +117,7 @@ const DestinationsPage = () => {
     }
 
     return result
-  }, [travels, search.destiny, priceRange, selectedRegions, durationRange,
+  }, [travels, search.destiny, priceRange, selectedRegions, selectedContinents, durationRange,
       starFilter, availabilityOnly, minDiscount, boardType, sortBy])
 
   const handleSearch = (e) => {
@@ -292,6 +301,8 @@ const DestinationsPage = () => {
           regions={regions}
           selectedRegions={selectedRegions}
           setSelectedRegions={setSelectedRegions}
+          selectedContinents={selectedContinents}
+          setSelectedContinents={setSelectedContinents}
           durationRange={durationRange}
           setDurationRange={setDurationRange}
           starFilter={starFilter}

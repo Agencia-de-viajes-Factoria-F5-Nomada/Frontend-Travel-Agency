@@ -1,6 +1,7 @@
 import { SlidersHorizontal, Star } from 'lucide-react'
 import Card from '../atoms/Card'
 import Button from '../atoms/Button'
+import { CONTINENTS, getCountriesForContinents } from '../../constants/continents'
 
 const DURATION_OPTIONS = [
   { label: '1-3 dias', min: 1, max: 3 },
@@ -11,39 +12,11 @@ const DURATION_OPTIONS = [
 
 const DISCOUNT_OPTIONS = [5, 10, 15, 20]
 
-const ALL_COUNTRIES = [
-  'Afganistán','Albania','Alemania','Andorra','Angola','Arabia Saudí','Argelia','Argentina',
-  'Armenia','Australia','Austria','Azerbaiyán','Bahamas','Bangladés','Bélgica','Belice',
-  'Benín','Bielorrusia','Bolivia','Bosnia y Herzegovina','Botsuana','Brasil','Bulgaria',
-  'Burkina Faso','Burundi','Bután','Cabo Verde','Camboya','Camerún','Canadá','Catar',
-  'Chad','Chile','China','Chipre','Colombia','Comoras','Corea del Norte','Corea del Sur',
-  'Costa Rica','Costa de Marfil','Croacia','Cuba','Dinamarca','Dominica','Ecuador','Egipto',
-  'El Salvador','Emiratos Árabes Unidos','Eritrea','Eslovaquia','Eslovenia','España',
-  'Estados Unidos','Estonia','Etiopía','Filipinas','Finlandia','Fiyi','Francia','Gabón',
-  'Gambia','Georgia','Ghana','Granada','Grecia','Guatemala','Guinea','Guinea-Bisáu',
-  'Guinea Ecuatorial','Guyana','Haití','Honduras','Hungría','India','Indonesia','Irak',
-  'Irán','Irlanda','Islandia','Islas Marshall','Islas Salomón','Israel','Italia','Jamaica',
-  'Japón','Jordania','Kazajistán','Kenia','Kirguistán','Kiribati','Kuwait','Laos','Lesoto',
-  'Letonia','Líbano','Liberia','Libia','Liechtenstein','Lituania','Luxemburgo','Macedonia',
-  'Madagascar','Malasia','Malaui','Maldivas','Malí','Malta','Marruecos','Mauricio',
-  'Mauritania','México','Micronesia','Moldavia','Mónaco','Mongolia','Montenegro',
-  'Mozambique','Myanmar','Namibia','Nauru','Nepal','Nicaragua','Níger','Nigeria','Noruega',
-  'Nueva Zelanda','Omán','Países Bajos','Pakistán','Palaos','Panamá','Papúa Nueva Guinea',
-  'Paraguay','Perú','Polonia','Portugal','Reino Unido','República Centroafricana',
-  'República Checa','República del Congo','República Democrática del Congo',
-  'República Dominicana','Ruanda','Rumanía','Rusia','Samoa','San Cristóbal y Nieves',
-  'San Marino','San Vicente y las Granadinas','Santa Lucía','Santo Tomé y Príncipe',
-  'Senegal','Serbia','Seychelles','Sierra Leona','Singapur','Siria','Somalia','Sri Lanka',
-  'Suazilandia','Sudáfrica','Sudán','Sudán del Sur','Suecia','Suiza','Surinam','Tailandia',
-  'Tanzania','Timor Oriental','Togo','Tonga','Trinidad y Tobago','Túnez','Turkmenistán',
-  'Turquía','Tuvalu','Ucrania','Uganda','Uruguay','Uzbekistán','Vanuatu','Venezuela',
-  'Vietnam','Yemen','Yibuti','Zambia','Zimbabue',
-]
-
 const FiltersCard = ({
   priceRange, setPriceRange,
   onlyOffers, setOnlyOffers,
   regions, selectedRegions, setSelectedRegions,
+  selectedContinents, setSelectedContinents,
   durationRange, setDurationRange,
   starFilter, setStarFilter,
   availabilityOnly, setAvailabilityOnly,
@@ -52,9 +25,19 @@ const FiltersCard = ({
   onClearFilters,
 }) => {
 
-  const countryList = (regions && regions.length > 0)
-    ? [...new Set([...ALL_COUNTRIES, ...regions])].sort()
-    : ALL_COUNTRIES
+  const continentCountries = getCountriesForContinents(selectedContinents)
+  const countryList = regions && regions.length > 0 ? regions : []
+
+  const filteredCountries = continentCountries.length > 0
+    ? countryList.filter(c => continentCountries.includes(c))
+    : countryList
+
+  const toggleContinent = (continentName) => {
+    if (!setSelectedContinents) return
+    setSelectedContinents(prev =>
+      prev.includes(continentName) ? prev.filter(c => c !== continentName) : [...prev, continentName]
+    )
+  }
 
   const toggleRegion = (region) => {
     if (!setSelectedRegions) return
@@ -129,22 +112,47 @@ const FiltersCard = ({
         </div>
       </div>
 
+      {/* ── Continentes ── */}
+      {setSelectedContinents && (
+        <div className="mb-6 border-t border-surface-700 pt-6">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-ink-muted">
+            Continente
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {CONTINENTS.map(continent => {
+              const isActive = selectedContinents?.includes(continent.name)
+              return (
+                <button key={continent.name} type="button" onClick={() => toggleContinent(continent.name)}
+                  className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors
+                    ${isActive ? 'bg-brand-500 text-white' : 'bg-surface-700 text-ink-soft hover:bg-surface-600'}`}>
+                  {continent.emoji} {continent.name}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+      )}
+
 {/* ── País ── */}
 {setSelectedRegions && (
   <div className="mb-6 border-t border-surface-700 pt-6">
     <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-ink-muted">
-      País
+      País {selectedContinents?.length > 0 && `(${selectedContinents.length} continente(s))`}
     </p>
     <div className="space-y-2 pr-1 overflow-y-auto" style={{ maxHeight: '260px' }}>
-      {countryList.map(region => (
-        <label key={region} className="flex items-center gap-3 cursor-pointer">
-          <input type="checkbox"
-            checked={selectedRegions?.includes(region) ?? false}
-            onChange={() => toggleRegion(region)}
-            className="h-4 w-4 rounded accent-brand-500" />
-          <span className="text-sm text-ink-soft">{region}</span>
-        </label>
-      ))}
+      {filteredCountries.length === 0 ? (
+        <p className="text-xs text-ink-muted italic">No hay países disponibles para los continentes seleccionados</p>
+      ) : (
+        filteredCountries.map(region => (
+          <label key={region} className="flex items-center gap-3 cursor-pointer">
+            <input type="checkbox"
+              checked={selectedRegions?.includes(region) ?? false}
+              onChange={() => toggleRegion(region)}
+              className="h-4 w-4 rounded accent-brand-500" />
+            <span className="text-sm text-ink-soft">{region}</span>
+          </label>
+        ))
+      )}
     </div>
     {selectedRegions?.length > 0 && (
       <p className="mt-2 text-xs text-brand-400">{selectedRegions.length} país(es) seleccionado(s)</p>

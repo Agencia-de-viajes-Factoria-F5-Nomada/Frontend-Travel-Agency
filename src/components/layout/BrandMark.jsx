@@ -17,7 +17,7 @@ const BrandMark = ({ to = PUBLIC_PATHS.HOME }) => (
       <circle cx="55" cy="60" r="42" fill="none" stroke="white" strokeWidth="1.5"/>
       <path d="M13 52 Q35 42 55 44 Q75 42 97 52" fill="none" stroke="white" strokeWidth="1.5"/>
       <path d="M16 68 Q36 60 55 62 Q74 60 94 68" fill="none" stroke="white" strokeWidth="1.5"/>
-      <circle cx="70" cy="38" r="7" fill="#5fcfff"/>
+      <circle cx="70" cy="38" r="7" className="fill-brand-400"/>
       <line x1="115" y1="15" x2="115" y2="105" stroke="white" strokeWidth="1.5"/>
       <text x="145" y="42" fontFamily="serif" fontSize="32" fontWeight="700" fill="white" letterSpacing="1">NÓ</text>
       <text x="145" y="75" fontFamily="serif" fontSize="32" fontWeight="700" fill="white" letterSpacing="1">MA</text>

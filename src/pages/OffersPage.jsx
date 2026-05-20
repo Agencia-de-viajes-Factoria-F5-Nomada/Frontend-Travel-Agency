@@ -7,6 +7,7 @@ import PageHeader from '../components/atoms/PageHeader'
 import FiltersCard from '../components/molecules/FiltersCard'
 import { travelService } from '../services/travelsService'
 import { PUBLIC_PATHS } from '../constants/paths'
+import { getCountriesForContinents } from '../constants/continents'
 
 const sortOptions = [
   { value: 'recommended', label: 'Recomendados' },
@@ -26,6 +27,7 @@ const OffersPage = () => {
 
   // Nuevos filtros
   const [selectedRegions, setSelectedRegions] = useState([])
+  const [selectedContinents, setSelectedContinents] = useState([])
   const [durationRange, setDurationRange] = useState(null)
   const [starFilter, setStarFilter] = useState([])
   const [availabilityOnly, setAvailabilityOnly] = useState(false)
@@ -54,6 +56,7 @@ const OffersPage = () => {
     setSortBy('recommended')
     setPriceRange({ min: 0, max: 5000 })
     setSelectedRegions([])
+    setSelectedContinents([])
     setDurationRange(null)
     setStarFilter([])
     setAvailabilityOnly(false)
@@ -62,18 +65,20 @@ const OffersPage = () => {
   }
 
   const filtered = useMemo(() => {
+    const continentCountries = getCountriesForContinents(selectedContinents)
+
     let result = offers.filter(t => {
       const price = boardType === 'full'
         ? (t.fullBoardPrice || t.halfBoardPrice || 0)
         : (t.halfBoardPrice || t.price || 0)
       const matchPrice = price >= priceRange.min && price <= priceRange.max
 
-      // Region / Pais
-      const matchRegion = selectedRegions.length === 0 ||
-        selectedRegions.includes(t.hotelCountry) ||
-        selectedRegions.includes(t.country)
+      const country = t.hotelCountry || t.country
 
-      // Duracion en dias
+      const matchContinent = continentCountries.length === 0 || continentCountries.includes(country)
+
+      const matchRegion = selectedRegions.length === 0 || selectedRegions.includes(country)
+
       let matchDuration = true
       if (durationRange && t.startDate && t.endDate) {
         const days = Math.ceil(
@@ -82,18 +87,15 @@ const OffersPage = () => {
         matchDuration = days >= durationRange.min && days <= durationRange.max
       }
 
-      // Estrellas del hotel
       const stars = t.hotelStars || t.stars || t.rating
       const matchStars = starFilter.length === 0 || (stars && starFilter.includes(stars))
 
-      // Disponibilidad
       const matchAvailability = !availabilityOnly || (t.availablePlaces && t.availablePlaces > 0)
 
-      // Descuento minimo
       const matchDiscount = !minDiscount ||
         (t.discountPercentage && t.discountPercentage >= minDiscount)
 
-      return matchPrice && matchRegion && matchDuration &&
+      return matchPrice && matchContinent && matchRegion && matchDuration &&
              matchStars && matchAvailability && matchDiscount
     })
 
@@ -113,7 +115,7 @@ const OffersPage = () => {
     }
 
     return result
-  }, [offers, onlyOffers, sortBy, priceRange, selectedRegions, durationRange,
+  }, [offers, onlyOffers, sortBy, priceRange, selectedRegions, selectedContinents, durationRange,
       starFilter, availabilityOnly, minDiscount, boardType])
 
   return (
@@ -150,6 +152,8 @@ const OffersPage = () => {
           regions={regions}
           selectedRegions={selectedRegions}
           setSelectedRegions={setSelectedRegions}
+          selectedContinents={selectedContinents}
+          setSelectedContinents={setSelectedContinents}
           durationRange={durationRange}
           setDurationRange={setDurationRange}
           starFilter={starFilter}

@@ -3,6 +3,7 @@ import { MapPin } from 'lucide-react'
 import DestinationCard from '../components/organisms/DestinationCard'
 import FiltersCard from '../components/molecules/FiltersCard'
 import { travelService } from '../services/travelsService'
+import { getCountriesForContinents } from '../constants/continents'
 
 const TravelsPage = () => {
   const [travels, setTravels] = useState([])
@@ -12,6 +13,7 @@ const TravelsPage = () => {
   const [onlyOffers, setOnlyOffers] = useState(false)
   const [priceRange, setPriceRange] = useState({ min: 0, max: 5000 })
   const [selectedRegions, setSelectedRegions] = useState([])
+  const [selectedContinents, setSelectedContinents] = useState([])
   const [durationRange, setDurationRange] = useState(null)
   const [starFilter, setStarFilter] = useState([])
   const [availabilityOnly, setAvailabilityOnly] = useState(false)
@@ -37,6 +39,7 @@ const TravelsPage = () => {
     setOnlyOffers(false)
     setPriceRange({ min: 0, max: 5000 })
     setSelectedRegions([])
+    setSelectedContinents([])
     setDurationRange(null)
     setStarFilter([])
     setAvailabilityOnly(false)
@@ -47,6 +50,8 @@ const TravelsPage = () => {
     const today = new Date()
     today.setHours(0, 0, 0, 0)
 
+    const continentCountries = getCountriesForContinents(selectedContinents)
+
     let result = travels.filter(t => {
       const matchFuture = new Date(t.startDate) >= today
       const matchOffer = onlyOffers ? t.sale === true : true
@@ -56,9 +61,11 @@ const TravelsPage = () => {
         : (t.halfBoardPrice || t.price || 0)
       const matchPrice = price >= priceRange.min && price <= priceRange.max
 
-      const matchRegion = selectedRegions.length === 0 ||
-        selectedRegions.includes(t.hotelCountry) ||
-        selectedRegions.includes(t.country)
+      const country = t.hotelCountry || t.country
+
+      const matchContinent = continentCountries.length === 0 || continentCountries.includes(country)
+
+      const matchRegion = selectedRegions.length === 0 || selectedRegions.includes(country)
 
       let matchDuration = true
       if (durationRange && t.startDate && t.endDate) {
@@ -74,11 +81,11 @@ const TravelsPage = () => {
       const matchAvailability = !availabilityOnly || (t.availablePlaces && t.availablePlaces > 0)
 
       return matchFuture && matchOffer && matchPrice &&
-             matchRegion && matchDuration && matchStars && matchAvailability
+             matchContinent && matchRegion && matchDuration && matchStars && matchAvailability
     })
 
     return result
-  }, [travels, onlyOffers, priceRange, selectedRegions, durationRange, starFilter, availabilityOnly, boardType])
+  }, [travels, onlyOffers, priceRange, selectedRegions, selectedContinents, durationRange, starFilter, availabilityOnly, boardType])
 
   return (
     <div className="container-page py-12">
@@ -95,6 +102,8 @@ const TravelsPage = () => {
           regions={regions}
           selectedRegions={selectedRegions}
           setSelectedRegions={setSelectedRegions}
+          selectedContinents={selectedContinents}
+          setSelectedContinents={setSelectedContinents}
           durationRange={durationRange}
           setDurationRange={setDurationRange}
           starFilter={starFilter}

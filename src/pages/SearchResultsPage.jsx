@@ -61,38 +61,20 @@ const SearchResultsPage = () => {
       <div className="mt-6 flex gap-2">
         <button
           onClick={() => setOnlyOffers(false)}
-          style={{
-            padding: '8px 20px',
-            borderRadius: 20,
-            border: '1.5px solid',
-            borderColor: !onlyOffers ? '#4A8FA8' : 'rgba(74,143,168,0.3)',
-            background: !onlyOffers ? '#4A8FA8' : 'transparent',
-            color: !onlyOffers ? '#DAEEF7' : '#7AAFC0',
-            fontSize: 13,
-            fontWeight: 500,
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 6,
-          }}>
+          className={`flex cursor-pointer items-center gap-1.5 rounded-full border-[1.5px] px-5 py-2 text-xs font-medium ${
+            !onlyOffers
+              ? 'border-accent bg-accent text-accent-light'
+              : 'border-accent/30 bg-transparent text-accent-muted'
+          }`}>
           <Globe size={14} /> Todos los viajes
         </button>
         <button
           onClick={() => setOnlyOffers(true)}
-          style={{
-            padding: '8px 20px',
-            borderRadius: 20,
-            border: '1.5px solid',
-            borderColor: onlyOffers ? '#4A8FA8' : 'rgba(74,143,168,0.3)',
-            background: onlyOffers ? '#4A8FA8' : 'transparent',
-            color: onlyOffers ? '#DAEEF7' : '#7AAFC0',
-            fontSize: 13,
-            fontWeight: 500,
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 6,
-          }}>
+          className={`flex cursor-pointer items-center gap-1.5 rounded-full border-[1.5px] px-5 py-2 text-xs font-medium ${
+            onlyOffers
+              ? 'border-accent bg-accent text-accent-light'
+              : 'border-accent/30 bg-transparent text-accent-muted'
+          }`}>
           <Tag size={14} /> Solo ofertas
         </button>
       </div>
