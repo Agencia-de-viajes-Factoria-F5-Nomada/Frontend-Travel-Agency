@@ -18,22 +18,32 @@ const GRADIENTS = [
 
 const cardGradient = (id = 0) => GRADIENTS[id % GRADIENTS.length]
 
+const MIN_DISCOUNT = 15
+const MAX_DISCOUNT = 30
+const PRICE_MIN = 100
+const PRICE_MAX = 500
+
+const calculateDiscount = (price) => {
+  const clamped = Math.min(Math.max(price, PRICE_MIN), PRICE_MAX)
+  const ratio = (clamped - PRICE_MIN) / (PRICE_MAX - PRICE_MIN)
+  return Math.round(MIN_DISCOUNT + ratio * (MAX_DISCOUNT - MIN_DISCOUNT))
+}
+
 const DestinationCard = ({ destination, showOfferPrice = false, featured = false }) => {
   const [isFavorite, setIsFavorite] = useState(false)
   const image = getDestinationImage(destination) || getDestinationFallbackImage(destination)
   const name    = destination.destiny       || destination.name
   const country = destination.hotelCity     || destination.country
   const price   = destination.halfBoardPrice || destination.price || 0
-
   const rating  = destination.hotelStars    || destination.rating || 0
   const tag     = destination.tag           || (destination.sale ? 'Oferta' : 'Disponible')
 
-  const discountPct = destination.discountPercentage || 0
+  const isOffer = destination.sale === true
+  const discountPct = isOffer && showOfferPrice ? calculateDiscount(price) : 0
 
-  const originalPrice =
-    showOfferPrice && discountPct > 0
-      ? Math.round(price / (1 - discountPct / 100))
-      : null
+  const originalPrice = discountPct > 0
+    ? Math.round(price / (1 - discountPct / 100))
+    : null
 
   return (
     <Card className="overflow-hidden transition-transform duration-200 hover:-translate-y-1">
@@ -58,7 +68,7 @@ const DestinationCard = ({ destination, showOfferPrice = false, featured = false
           <ImageOff className="h-8 w-8 text-brand-300/60" aria-hidden="true" />
           <span className="px-4 text-center text-sm font-medium text-white/70">{name}</span>
         </div>
-        <div className="absolute left-4 top-4">
+        <div className="absolute left-4 top-4 flex gap-2">
           <Badge
             tone="brand"
             className={classNames(
@@ -68,6 +78,11 @@ const DestinationCard = ({ destination, showOfferPrice = false, featured = false
           >
             {tag}
           </Badge>
+          {discountPct > 0 && (
+            <span className="rounded-full bg-red-500 px-2 py-0.5 text-xs font-bold text-white shadow">
+              -{discountPct}%
+            </span>
+          )}
         </div>
         <button
           onClick={(e) => {
@@ -109,11 +124,6 @@ const DestinationCard = ({ destination, showOfferPrice = false, featured = false
               {originalPrice ? (
                 <span className="text-sm font-medium text-ink-muted line-through">
                   {formatCurrency(originalPrice)}
-                </span>
-              ) : null}
-              {originalPrice && discountPct > 0 ? (
-                <span className="rounded-full bg-red-500/20 px-2 py-0.5 text-xs font-bold text-red-400">
-                  -{discountPct}%
                 </span>
               ) : null}
               <span className={classNames(

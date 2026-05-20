@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { SlidersHorizontal, MapPin } from 'lucide-react'
+import { SlidersHorizontal, MapPin, Tag, Globe } from 'lucide-react'
 import Button from '../components/atoms/Button'
 import Card from '../components/atoms/Card'
 import DestinationCard from '../components/organisms/DestinationCard'
@@ -15,7 +15,7 @@ const SearchResultsPage = () => {
   const [travels, setTravels]   = useState([])
   const [loading, setLoading]   = useState(true)
   const [error, setError]       = useState(null)
-  const [onlyOffers, setOnlyOffers] = useState(false)
+  const [onlyOffers, setOnlyOffers] = useState(searchParams.get('onlyOffers') === 'true')
   const [search, setSearch]     = useState(searchParams.get('destiny') ?? '')
 
   const startDateParam = searchParams.get('startDate') ?? ''
@@ -33,19 +33,12 @@ const SearchResultsPage = () => {
 
   const filtered = useMemo(() => travels.filter(t => {
     const matchFuture = new Date(t.startDate) >= today
-
     const matchDestiny = !search ||
       normalize(t.destiny).includes(normalize(search)) ||
       normalize(t.hotelCity).includes(normalize(search))
-
     const matchOffer = onlyOffers ? t.sale === true : true
-
-    const matchStartDate = !startDateParam ||
-      new Date(t.startDate) >= new Date(startDateParam)
-
-    const matchEndDate = !endDateParam ||
-      new Date(t.endDate) <= new Date(endDateParam)
-
+    const matchStartDate = !startDateParam || new Date(t.startDate) >= new Date(startDateParam)
+    const matchEndDate = !endDateParam || new Date(t.endDate) <= new Date(endDateParam)
     return matchFuture && matchDestiny && matchOffer && matchStartDate && matchEndDate
   }), [travels, search, onlyOffers, startDateParam, endDateParam])
 
@@ -63,16 +56,54 @@ const SearchResultsPage = () => {
         }
       />
 
+      {/* ── Toggle Todos / Ofertas ── */}
+      <div className="mt-6 flex gap-2">
+        <button
+          onClick={() => setOnlyOffers(false)}
+          style={{
+            padding: '8px 20px',
+            borderRadius: 20,
+            border: '1.5px solid',
+            borderColor: !onlyOffers ? '#4A8FA8' : 'rgba(74,143,168,0.3)',
+            background: !onlyOffers ? '#4A8FA8' : 'transparent',
+            color: !onlyOffers ? '#DAEEF7' : '#7AAFC0',
+            fontSize: 13,
+            fontWeight: 500,
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 6,
+          }}>
+          <Globe size={14} /> Todos los viajes
+        </button>
+        <button
+          onClick={() => setOnlyOffers(true)}
+          style={{
+            padding: '8px 20px',
+            borderRadius: 20,
+            border: '1.5px solid',
+            borderColor: onlyOffers ? '#4A8FA8' : 'rgba(74,143,168,0.3)',
+            background: onlyOffers ? '#4A8FA8' : 'transparent',
+            color: onlyOffers ? '#DAEEF7' : '#7AAFC0',
+            fontSize: 13,
+            fontWeight: 500,
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 6,
+          }}>
+          <Tag size={14} /> Solo ofertas
+        </button>
+      </div>
+
       {error && (
         <div className="mt-4 rounded-lg bg-red-50 p-4 text-red-700">{error}</div>
       )}
 
-      <div className="mt-8 grid gap-8 lg:grid-cols-[280px_1fr]">
+      <div className="mt-6 grid gap-8 lg:grid-cols-[280px_1fr]">
 
         <Card as="aside" aria-label="Filtros" className="h-fit p-6">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-muted">
-            Filtros
-          </h2>
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-muted">Filtros</h2>
 
           <div className="mt-4">
             <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-ink-muted">Destino</p>
@@ -94,18 +125,6 @@ const SearchResultsPage = () => {
               {endDateParam && <> · Vuelta hasta: <span className="text-white">{endDateParam}</span></>}
             </div>
           )}
-
-          <div className="mt-6 border-t border-surface-700 pt-6">
-            <label className="flex items-center gap-3 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={onlyOffers}
-                onChange={e => setOnlyOffers(e.target.checked)}
-                className="h-4 w-4 rounded"
-              />
-              <span className="text-sm text-ink-soft">Solo viajes en oferta</span>
-            </label>
-          </div>
 
           <Button
             variant="ghost"
@@ -133,7 +152,12 @@ const SearchResultsPage = () => {
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
             {filtered.map(travel => (
-              <DestinationCard key={travel.id} destination={travel} featured />
+              <DestinationCard
+                key={travel.id}
+                destination={travel}
+                featured
+                showOfferPrice={travel.sale === true}
+              />
             ))}
           </div>
         )}
