@@ -28,6 +28,13 @@ export default {
           muted: '#CBD5E1',
           soft: '#E2E8F0',
         },
+        accent: {
+          DEFAULT: '#4A8FA8',
+          light: '#DAEEF7',
+          muted: '#7AAFC0',
+          dark: '#1A3A5C',
+          deep: '#122840',
+        },
         status: {
           confirmed: '#22c55e',
           pending: '#ef4444',

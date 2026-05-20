@@ -102,7 +102,7 @@ const DestinationDetailPage = () => {
             )}
             {travel.sale && (
               <div className="absolute left-4 top-4 flex gap-2">
-                <span className="rounded-full px-3 py-1 text-sm font-bold text-white" style={{ background: '#4A8FA8' }}>
+                <span className="rounded-full bg-accent px-3 py-1 text-sm font-bold text-white">
                   EN OFERTA
                 </span>
                 {discountPct > 0 && (
@@ -159,30 +159,32 @@ const DestinationDetailPage = () => {
             {(hotel || travel.halfBoardPrice) && (
               <div className="mt-4 space-y-2">
                 <p className="text-xs font-semibold uppercase tracking-wide text-ink-muted">Tipo de pensión</p>
-                <label className="flex items-center justify-between rounded-xl border p-3 cursor-pointer transition-colors"
-                  style={{ borderColor: typeBoard === 'HALF' ? '#4A8FA8' : 'transparent', background: typeBoard === 'HALF' ? '#DAEEF7' : '' }}>
-                  <span className="text-sm font-medium" style={{ color: '#1A3A5C' }}>Media pensión</span>
+                <label className={`flex cursor-pointer items-center justify-between rounded-xl border p-3 transition-colors ${
+                  typeBoard === 'HALF' ? 'border-accent bg-accent-light' : 'border-transparent bg-transparent'
+                }`}>
+                  <span className="text-sm font-medium text-accent-dark">Media pensión</span>
                   <div className="flex items-center gap-2">
                     {isOffer && discountPct > 0 && (
-                      <span className="text-xs line-through" style={{ color: '#9CA3AF' }}>
+                      <span className="text-xs line-through text-gray-400">
                         {Math.round(halfBoard / (1 - discountPct / 100))}€
                       </span>
                     )}
-                    <span className="font-bold" style={{ color: '#1A3A5C' }}>{halfBoard}€/persona</span>
+                    <span className="font-bold text-accent-dark">{halfBoard}€/persona</span>
                   </div>
                   <input type="radio" name="typeBoard" value="HALF"
                     checked={typeBoard === 'HALF'} onChange={() => setTypeBoard('HALF')} className="ml-2" />
                 </label>
-                <label className="flex items-center justify-between rounded-xl border p-3 cursor-pointer transition-colors"
-                  style={{ borderColor: typeBoard === 'FULL' ? '#4A8FA8' : 'transparent', background: typeBoard === 'FULL' ? '#DAEEF7' : '' }}>
-                  <span className="text-sm font-medium" style={{ color: '#1A3A5C' }}>Pensión completa</span>
+                <label className={`flex cursor-pointer items-center justify-between rounded-xl border p-3 transition-colors ${
+                  typeBoard === 'FULL' ? 'border-accent bg-accent-light' : 'border-transparent bg-transparent'
+                }`}>
+                  <span className="text-sm font-medium text-accent-dark">Pensión completa</span>
                   <div className="flex items-center gap-2">
                     {isOffer && discountPct > 0 && (
-                      <span className="text-xs line-through" style={{ color: '#9CA3AF' }}>
+                      <span className="text-xs line-through text-gray-400">
                         {Math.round(fullBoard / (1 - discountPct / 100))}€
                       </span>
                     )}
-                    <span className="font-bold" style={{ color: '#1A3A5C' }}>{fullBoard}€/persona</span>
+                    <span className="font-bold text-accent-dark">{fullBoard}€/persona</span>
                   </div>
                   <input type="radio" name="typeBoard" value="FULL"
                     checked={typeBoard === 'FULL'} onChange={() => setTypeBoard('FULL')} className="ml-2" />
@@ -191,12 +193,12 @@ const DestinationDetailPage = () => {
             )}
 
             {price && (
-              <div className="mt-4 rounded-xl p-4 text-center" style={{ background: '#DAEEF7' }}>
+              <div className="mt-4 rounded-xl bg-accent-light p-4 text-center">
                 <p className="text-xs text-ink-muted">Precio por persona · IVA incluido</p>
                 {originalPrice && (
-                  <p className="text-sm line-through" style={{ color: '#9CA3AF' }}>{originalPrice}€</p>
+                  <p className="text-sm line-through text-gray-400">{originalPrice}€</p>
                 )}
-                <p className="text-3xl font-bold" style={{ color: '#1A3A5C' }}>{price}€</p>
+                <p className="text-3xl font-bold text-accent-dark">{price}€</p>
                 {discountPct > 0 && (
                   <p className="mt-1 text-xs font-semibold text-red-500">-{discountPct}% de descuento aplicado</p>
                 )}
@@ -215,8 +217,7 @@ const DestinationDetailPage = () => {
             )}
 
             <button onClick={handleReservar} disabled={isPast || isFull}
-              className="mt-4 w-full rounded-xl py-3 font-semibold text-white transition-opacity disabled:opacity-40"
-              style={{ background: '#4A8FA8' }}>
+              className="mt-4 w-full rounded-xl bg-accent py-3 font-semibold text-white transition-opacity disabled:opacity-40">
               {isPast ? 'Viaje finalizado' : isFull ? 'Sin plazas' : 'Reservar ahora'}
             </button>
 

@@ -106,8 +106,7 @@ const ProfilePage = () => {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-ink-muted">Rol</span>
-                  <span className="rounded-full px-2 py-0.5 text-xs font-medium"
-                    style={{ background: '#DAEEF7', color: '#1A3A5C' }}>
+                  <span className="rounded-full bg-accent-light px-2 py-0.5 text-xs font-medium text-accent-dark">
                     {user?.rol ?? user?.role ?? 'USER'}
                   </span>
                 </div>
@@ -157,8 +156,7 @@ const ProfilePage = () => {
                   </p>
                 </div>
               </div>
-              <span className="w-fit rounded-full px-3 py-1 text-xs font-semibold"
-                style={{ background: '#DAEEF7', color: '#1A3A5C' }}>
+              <span className="w-fit rounded-full bg-accent-light px-3 py-1 text-xs font-semibold text-accent-dark">
                 {roleDashboard.role}
               </span>
             </div>

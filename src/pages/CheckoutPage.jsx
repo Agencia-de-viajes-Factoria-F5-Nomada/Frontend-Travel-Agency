@@ -247,11 +247,12 @@ const CheckoutPage = () => {
                     { value: 'HALF', label: 'Media pensión' },
                     { value: 'FULL', label: 'Pensión completa' },
                   ].map(o => (
-                    <label key={o.value} className="flex items-center gap-2 rounded-lg p-3 cursor-pointer border"
-                      style={{ borderColor: typeBoard === o.value ? '#4A8FA8' : 'transparent', background: typeBoard === o.value ? '#DAEEF7' : '' }}>
+                    <label key={o.value} className={`flex cursor-pointer items-center gap-2 rounded-lg border p-3 ${
+                      typeBoard === o.value ? 'border-accent bg-accent-light' : 'border-transparent bg-transparent'
+                    }`}>
                       <input type="radio" name="typeBoard" value={o.value}
                         checked={typeBoard === o.value} onChange={() => setTypeBoard(o.value)} />
-                      <span className="text-sm" style={{ color: '#1A3A5C' }}>{o.label}</span>
+                      <span className="text-sm text-accent-dark">{o.label}</span>
                     </label>
                   ))}
                 </div>
@@ -336,8 +337,8 @@ const CheckoutPage = () => {
 
           {step === 4 && (
             <div className="mt-8 flex flex-col items-center gap-4 py-6 text-center">
-              <span className="grid h-16 w-16 place-items-center rounded-full" style={{ background: '#DAEEF7' }}>
-                <Check className="h-8 w-8" style={{ color: '#1A3A5C' }} />
+              <span className="grid h-16 w-16 place-items-center rounded-full bg-accent-light">
+                <Check className="h-8 w-8 text-accent-dark" />
               </span>
               <h2 className="text-2xl font-semibold text-white">¡Reserva confirmada!</h2>
               <p className="max-w-md text-sm text-ink-muted">

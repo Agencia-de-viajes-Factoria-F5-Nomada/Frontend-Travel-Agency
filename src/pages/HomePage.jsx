@@ -71,11 +71,11 @@ const HomePage = () => {
   return (
     <>
       {/* ── HERO ── */}
-      <section style={{ background: '#1A3A5C' }} className="flex flex-col items-center justify-center px-6 py-16 text-center">
-        <h1 style={{ color: '#DAEEF7', letterSpacing: '-0.02em' }} className="text-4xl font-medium leading-tight mb-3">
+      <section className="flex flex-col items-center justify-center bg-accent-dark px-6 py-16 text-center">
+        <h1 className="mb-3 text-4xl font-medium leading-tight tracking-tight text-accent-light">
           {isLoggedIn ? `¡Bienvenido de nuevo, ${user?.name ?? ''}!` : 'Bienvenido a Nómada'}
         </h1>
-        <p style={{ color: '#7AAFC0' }} className="text-base mb-8 max-w-lg">
+        <p className="mb-8 max-w-lg text-base text-accent-muted">
           {isLoggedIn
             ? 'Descubre tus próximos destinos y encuentra el viaje perfecto.'
             : 'Inicia sesión o crea una cuenta para gestionar tus reservas.'}
@@ -93,7 +93,7 @@ const HomePage = () => {
             </div>
             <button
               onClick={() => { authService.logout(); window.location.reload() }}
-              style={{ fontSize: 12, color: '#7AAFC0', background: 'transparent', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}
+              className="cursor-pointer border-none bg-transparent text-xs text-accent-muted underline"
             >
               Cerrar sesión
             </button>
