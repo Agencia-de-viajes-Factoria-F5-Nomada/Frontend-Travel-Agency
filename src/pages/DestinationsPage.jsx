@@ -10,8 +10,8 @@ import { bookingService } from '../services/BookingService'
 import { authService } from '../services/authService'
 
 const TABS = [
-  { id: 'search', label: 'Buscar destino' },
-  { id: 'custom', label: 'Crear viaje personalizado' },
+  { id: 'search', label: 'Viaje' },
+  { id: 'custom', label: 'Destino flexible' },
 ]
 
 const sortOptions = [
@@ -179,10 +179,10 @@ const DestinationsPage = () => {
 
         <div className="flex flex-col lg:flex-row items-stretch divide-y lg:divide-y-0 lg:divide-x divide-surface-600">
           <div className="flex flex-col flex-[2] px-4 py-3">
-            <span style={{ fontSize: 10, color: '#4A8FA8', letterSpacing: '0.1em' }} className="uppercase mb-1">Destino</span>
+            <span style={{ fontSize: 10, color: '#4A8FA8', letterSpacing: '0.1em' }} className="uppercase mb-1">Viaje</span>
             <div className="flex items-center gap-2">
               <MapPin size={14} style={{ color: '#4A8FA8', flexShrink: 0 }} />
-              <input type="text" placeholder="¿A dónde?" value={search.destiny}
+              <input type="text" placeholder={tab === 'custom' ? 'Cualquier lugar' : 'Viaje'} value={search.destiny}
                 onChange={e => setSearch(s => ({ ...s, destiny: e.target.value }))}
                 style={{ background: 'transparent', border: 'none', outline: 'none', color: '#DAEEF7', fontSize: 14, width: '100%' }}
                 className="placeholder:text-white/25" />
@@ -256,6 +256,12 @@ const DestinationsPage = () => {
             </button>
           </div>
         </div>
+
+        {tab === 'custom' && (
+          <div className="border-t border-surface-600 px-4 py-3 text-sm text-ink-soft">
+            El viaje incluye avión, hotel y actividades.
+          </div>
+        )}
 
         {tab === 'custom' && sent && (
           <div className="flex flex-col items-center gap-2 py-6 text-center border-t border-surface-600">
