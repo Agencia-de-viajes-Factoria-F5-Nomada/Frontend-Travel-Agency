@@ -6,6 +6,7 @@ import Card from '../components/atoms/Card'
 import Input from '../components/atoms/Input'
 import { classNames } from '../utils/classNames'
 import { authService } from '../services/authService'
+import { apiClient } from '../services/api'
 
 const TABS = [
   { id: 'signin', label: 'Iniciar sesión', icon: LogIn },
@@ -46,16 +47,11 @@ const AuthPage = () => {
           setLoading(false)
           return
         }
-        const res = await fetch(`${import.meta.env.VITE_API_URL ?? 'http://localhost:8080'}/api/auth/register`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            name:     form.name,
-            email:    form.email,
-            password: form.password,
-          }),
+        await apiClient.post('/auth/register', {
+          name:     form.name,
+          email:    form.email,
+          password: form.password,
         })
-        if (!res.ok) throw new Error('Error al crear la cuenta')
         await authService.login(form.email, form.password)
       }
 
