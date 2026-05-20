@@ -13,7 +13,7 @@ import { formatDate } from '../utils/formatters'
 
 const STEPS = [
   { id: 1, label: 'Pasajeros' },
-  { id: 2, label: 'Cotización' },
+  { id: 2, label: 'Precio' },
   { id: 3, label: 'Confirmar' },
   { id: 4, label: 'Confirmado' },
 ]
@@ -108,7 +108,6 @@ const CheckoutPage = () => {
 
   const allFilled = passengers.every(p => p.name.trim() && p.surname.trim() && p.birthDate && p.email.trim())
 
-  // ── Cotización ────────────────────────────────────
   const handleQuote = async () => {
     if (minorError) { setError('Un menor necesita al menos un adulto en el grupo.'); return }
     setLoading(true)
@@ -191,8 +190,6 @@ const CheckoutPage = () => {
 
           {step === 1 && (
             <div className="mt-8 space-y-4">
-
-              {/* ── Selector número de personas ── */}
               <div className="rounded-xl border border-surface-600 p-4">
                 <p className="text-sm font-medium text-white mb-3">¿Cuántas personas viajan?</p>
                 <div className="flex items-center gap-4">
@@ -219,7 +216,6 @@ const CheckoutPage = () => {
                 </div>
               </div>
 
-              {/* ── Formularios de pasajeros ── */}
               <h2 className="font-semibold text-white">Datos de los pasajeros</h2>
 
               {passengers.map((p, i) => (
@@ -305,7 +301,7 @@ const CheckoutPage = () => {
 
               <div className="flex justify-end pt-2">
                 <Button onClick={handleQuote} disabled={loading || minorError || !allFilled}>
-                  {loading ? 'Calculando...' : 'Ver cotización'}
+                  {loading ? 'Calculando...' : 'Ver precio'}
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               </div>
@@ -314,7 +310,7 @@ const CheckoutPage = () => {
 
           {step === 2 && quote && (
             <div className="mt-8 space-y-4">
-              <h2 className="font-semibold text-white">Resumen de la cotización</h2>
+              <h2 className="font-semibold text-white">Resumen de precio</h2>
               <ul className="divide-y divide-surface-700 rounded-xl border border-surface-600 overflow-hidden">
                 {quote.passengerDetails?.map((p, i) => (
                   <li key={i} className="flex justify-between px-4 py-3 text-sm">
