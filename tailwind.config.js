@@ -5,34 +5,34 @@ export default {
     extend: {
       colors: {
         brand: {
-          50: '#f0f5fa',
-          100: '#dae7f1',
-          200: '#bbd2e5',
-          300: '#8db4d1',
-          400: '#588fb7',
-          500: '#3a729e',
-          600: '#2c5a83',
-          700: '#254a6b',
-          800: '#1c364e', 
-          900: '#041C32', 
+          50: '#f0f9ff',
+          100: '#e6f7ff',
+          200: '#bfeaff',
+          300: '#8fdcff',
+          400: '#5fcfff',
+          500: '#2da9ff',
+          600: '#1f8adf',
+          700: '#16619f',
+          800: '#0d3f6f',
+          900: '#05203f',
         },
         surface: {
-          950: '#020d17',
-          900: '#041C32', // Fondo oscuro principal
-          800: '#0E375A', // Contraste
-          700: '#164B78',
-          600: '#1F5F96',
+          950: '#021a2a',
+          900: '#042a3f',
+          800: '#0b4860',
+          700: '#135f7a',
+          600: '#1e7a95',
         },
         ink: {
-          DEFAULT: '#F4F8FA', 
-          muted: '#94A3B8',
-          soft: '#CBD5E1',
+          DEFAULT: '#FFFFFF',
+          muted: '#CBD5E1',
+          soft: '#E2E8F0',
         },
         status: {
           confirmed: '#22c55e',
           pending: '#ef4444',
           warning: '#f59e0b',
-          info: '#38bdf8',
+          info: '#06b6d4',
         },
       },
       fontFamily: {
@@ -42,8 +42,8 @@ export default {
         card: '1rem',
       },
       boxShadow: {
-        card: '0 10px 30px -12px rgba(4, 28, 50, 0.5)', 
-        focus: '0 0 0 3px rgba(58, 114, 158, 0.5)',
+        card: '0 10px 30px -12px rgba(0, 31, 63, 0.3)',
+        focus: '0 0 0 3px rgba(76, 145, 181, 0.5)',
       },
       maxWidth: {
         page: '1280px',

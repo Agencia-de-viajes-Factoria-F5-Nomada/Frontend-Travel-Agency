@@ -1,114 +1,175 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom' // Importante para saltar de página
-import { ArrowRight, Calendar, MapPin, Search, Users } from 'lucide-react'
-import Button from '../components/ui/Button'
-import Card from '../components/ui/Card'
-import DestinationCard from '../components/common/DestinationCard'
-import { FEATURED_DESTINATIONS } from '../constants/mockData'
-import { PUBLIC_PATHS } from '../constants/paths'
+import { useState, useEffect } from 'react'
+import { ArrowRight, LogIn, UserPlus } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import Button from '../components/atoms/Button'
+import Card from '../components/atoms/Card'
+import Input from '../components/atoms/Input'
+import DestinationCard from '../components/organisms/DestinationCard'
+import { travelService } from '../services/TravelsService'
+import { authService } from '../services/authService'
+import { apiClient } from '../services/api'
+import { classNames } from '../utils/classNames'
+
+const TABS = [
+  { id: 'signin', label: 'Iniciar sesión', icon: LogIn },
+  { id: 'signup', label: 'Crear cuenta',   icon: UserPlus },
+]
 
 const HomePage = () => {
+  const [travels, setTravels] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [active, setActive] = useState('signin')
+  const [authLoading, setAuthLoading] = useState(false)
+  const [error, setError] = useState(null)
+  const [form, setForm] = useState({ name: '', email: '', password: '' })
   const navigate = useNavigate()
-  const [searchData, setSearchData] = useState({ destination: '', dates: '', travelers: '' })
+  const isSignIn = active === 'signin'
+  const isLoggedIn = authService.isAuthenticated()
+  const user = authService.getUser()
 
-  const handleSearch = (e) => {
+  useEffect(() => {
+    if (isLoggedIn) {
+      travelService.getFeatured()
+        .then(data => setTravels(data.slice(0, 6)))
+        .catch(() => setTravels([]))
+        .finally(() => setLoading(false))
+    } else {
+      setLoading(false)
+    }
+  }, [isLoggedIn])
+
+  const change = (e) => {
+    setForm(f => ({ ...f, [e.target.name]: e.target.value }))
+    setError(null)
+  }
+
+  const handleAuth = async (e) => {
     e.preventDefault()
-    // Simulamos que la búsqueda activa el flujo administrativo
-    // Redirigimos al perfil donde está nuestra tabla de gestión
-    navigate('/profile') 
+    setAuthLoading(true)
+    setError(null)
+    try {
+      if (isSignIn) {
+        await authService.login(form.email, form.password)
+      } else {
+        if (form.password.length < 8) { setError('La contraseña debe tener al menos 8 caracteres'); setAuthLoading(false); return }
+        if (!/[A-Z]/.test(form.password) || !/[0-9]/.test(form.password)) { setError('La contraseña debe contener al menos una mayúscula y un número'); setAuthLoading(false); return }
+        await apiClient.post('/auth/register', {
+          name: form.name,
+          email: form.email,
+          password: form.password,
+        })
+        await authService.login(form.email, form.password)
+      }
+      window.location.reload()
+    } catch (e) {
+      setError(e.message)
+    } finally {
+      setAuthLoading(false)
+    }
   }
 
   return (
     <>
-      <section className="relative overflow-hidden">
-        <div
-          className="absolute inset-0 bg-brand-900" />
-        
-        <div className="container-page relative grid gap-12 py-20 lg:grid-cols-[1.1fr_0.9fr] lg:py-28">
-          <div className="flex flex-col justify-center gap-6">
-            <span className="inline-flex w-fit items-center gap-2 rounded-full border border-brand-500/30 bg-brand-500/10 px-4 py-1.5 text-xs font-medium uppercase tracking-[0.2em] text-brand-300">
-              Viajes seleccionados · 2026
-            </span>
-            <h1 className="text-4xl font-semibold leading-tight text-white md:text-6xl">
-              Siempre en el lugar exacto
-            </h1>
-            <div className="flex flex-wrap gap-3">
-              <Button to={PUBLIC_PATHS.SEARCH} size="lg">
-                Explorar destinos
-                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+      {/* ── HERO ── */}
+      <section style={{ background: '#1A3A5C' }} className="flex flex-col items-center justify-center px-6 py-16 text-center">
+        <h1 style={{ color: '#DAEEF7', letterSpacing: '-0.02em' }} className="text-4xl font-medium leading-tight mb-3">
+          {isLoggedIn ? `¡Bienvenido de nuevo, ${user?.name ?? ''}!` : 'Bienvenido a Nómada'}
+        </h1>
+        <p style={{ color: '#7AAFC0' }} className="text-base mb-8 max-w-lg">
+          {isLoggedIn
+            ? 'Descubre tus próximos destinos y encuentra el viaje perfecto.'
+            : 'Inicia sesión o crea una cuenta para gestionar tus reservas.'}
+        </p>
+
+        {isLoggedIn ? (
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-wrap gap-3 justify-center">
+              <Button to="/destinations" size="lg">
+                Ver todos los destinos <ArrowRight className="h-4 w-4" />
               </Button>
-              <Button to={PUBLIC_PATHS.OFFERS} size="lg">
-                Ver ofertas
+              <Button to="/checkout/custom" variant="secondary" size="lg">
+                Crear viaje personalizado
               </Button>
             </div>
+            <button
+              onClick={() => { authService.logout(); window.location.reload() }}
+              style={{ fontSize: 12, color: '#7AAFC0', background: 'transparent', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}
+            >
+              Cerrar sesión
+            </button>
           </div>
+        ) : (
+          <Card className="w-full max-w-md p-8">
+            <div role="tablist" className="grid grid-cols-2 gap-1 rounded-full bg-surface-900 p-1 mb-6">
+              {TABS.map((tab) => {
+                const isActive = tab.id === active
+                return (
+                  <button key={tab.id} type="button" role="tab" aria-selected={isActive}
+                    onClick={() => { setActive(tab.id); setError(null) }}
+                    className={classNames(
+                      'inline-flex items-center justify-center gap-2 rounded-full px-3 py-2 text-sm font-medium transition-colors',
+                      isActive ? 'bg-brand-500 text-surface-950' : 'text-ink-soft hover:text-white',
+                    )}>
+                    <tab.icon className="h-4 w-4" aria-hidden="true" />
+                    {tab.label}
+                  </button>
+                )
+              })}
+            </div>
 
-          <Card className="p-6 md:p-8">
-            <h2 className="text-lg font-semibold text-white">buscar nuevo viaje</h2>
-            <form className="mt-6 grid gap-4" onSubmit={handleSearch}>
-              <label className="flex flex-col gap-2 text-sm">
-                <span className="font-medium text-ink-soft">Destino</span>
-                <span className="flex items-center gap-2 rounded-xl border border-surface-600 bg-surface-900 px-4">
-                  <MapPin className="h-4 w-4 text-brand-400" aria-hidden="true" />
-                  <input
-                    type="text"
-                    placeholder="¿A dónde?"
-                    className="h-11 w-full bg-transparent text-ink placeholder:text-ink-muted focus:outline-none"
-                    onChange={(e) => setSearchData({...searchData, destination: e.target.value})}
-                  />
-                </span>
-              </label>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <label className="flex flex-col gap-2 text-sm">
-                  <span className="font-medium text-ink-soft">Fechas</span>
-                  <span className="flex items-center gap-2 rounded-xl border border-surface-600 bg-surface-900 px-4">
-                    <Calendar className="h-4 w-4 text-brand-400" aria-hidden="true" />
-                    <input
-                      type="text"
-                      placeholder="Añadir fechas"
-                      className="h-11 w-full bg-transparent text-ink placeholder:text-ink-muted focus:outline-none"
-                    />
-                  </span>
-                </label>
-                <label className="flex flex-col gap-2 text-sm">
-                  <span className="font-medium text-ink-soft">Viajeros</span>
-                  <span className="flex items-center gap-2 rounded-xl border border-surface-600 bg-surface-900 px-4">
-                    <Users className="h-4 w-4 text-brand-400" aria-hidden="true" />
-                    <input
-                      type="text"
-                      placeholder="2 adultos"
-                      className="h-11 w-full bg-transparent text-ink placeholder:text-ink-muted focus:outline-none"
-                    />
-                  </span>
-                </label>
-              </div>
-              <Button type="submit" size="lg" fullWidth>
-                <Search className="h-4 w-4" aria-hidden="true" />
-                Buscar y Gestionar
+            {error && <div className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</div>}
+
+            <form onSubmit={handleAuth} className="grid gap-4">
+              {!isSignIn && (
+                <Input label="Nombre completo" name="name" placeholder="Juan Pérez"
+                  value={form.name} onChange={change} required />
+              )}
+              <Input label="Correo electrónico" name="email" type="email"
+                placeholder="tu@ejemplo.com" value={form.email} onChange={change} required />
+              <Input label="Contraseña" name="password" type="password"
+                placeholder="••••••••" value={form.password} onChange={change} required />
+              <Button type="submit" fullWidth size="lg" disabled={authLoading}>
+                {authLoading ? 'Cargando...' : isSignIn ? 'Iniciar sesión' : 'Crear cuenta'}
               </Button>
             </form>
+
+            <p className="mt-6 text-center text-xs text-ink-muted">
+              Al continuar aceptas nuestros términos y la política de privacidad.
+            </p>
           </Card>
-        </div>
+        )}
       </section>
 
-      <section className="container-page py-16">
-        {/* ... resto de tu sección de destinos destacados ... */}
-        <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <h2 className="text-3xl font-semibold text-white">Destinos destacados</h2>
-            <p className="mt-2 text-ink-muted">Viajes seleccionados, los favoritos de nuestros viajeros.</p>
+      {/* ── DESTACADOS — solo si está logueado ── */}
+      {isLoggedIn && (
+        <section className="container-page py-12">
+          <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <h2 className="text-3xl font-semibold text-white">Destinos destacados</h2>
+              <p className="mt-2 text-ink-muted">Los favoritos de nuestros viajeros</p>
+            </div>
+            <Button to="/destinations" variant="ghost">
+              Ver todos <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </Button>
           </div>
-          <Button to={PUBLIC_PATHS.SEARCH} variant="ghost">
-            Ver todos
-            <ArrowRight className="h-4 w-4" aria-hidden="true" />
-          </Button>
-        </div>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {FEATURED_DESTINATIONS.slice(0, 6).map((destination) => (
-            <DestinationCard key={destination.id} destination={destination} />
-          ))}
-        </div>
-      </section>
+
+          {loading ? (
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="h-64 animate-pulse rounded-2xl bg-surface-800" />
+              ))}
+            </div>
+          ) : travels.length === 0 ? (
+            <p className="text-ink-muted text-center py-8">No hay destinos destacados en este momento.</p>
+          ) : (
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {travels.map(travel => (
+                <DestinationCard key={travel.id} destination={travel} featured />
+              ))}
+            </div>
+          )}
+        </section>
+      )}
     </>
   )
 }
