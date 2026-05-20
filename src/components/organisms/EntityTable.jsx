@@ -19,18 +19,9 @@ import { employeesService } from '../../services/employeesService'
 import { offersService } from '../../services/offersService'
 import { tripSegmentsService } from '../../services/tripSegmentsService'
 
-// Formularios
+// Formularios (solo los que mantienen layout custom)
 import BaseForm from './BaseForm'
-import TravelForm from './TravelForm'
-import HotelForm from './HotelForm'
-import BusForm from './BusForm'
-import DriverForm from './DriverForm'
 import BookingForm from './BookingForm'
-import UserForm from './UserForm'
-import EmployeeForm from './EmployeeForm'
-import OfferForm from './OfferForm'
-import TripSegmentForm from './TripSegmentForm'
-import { validatePasswordStrength } from '../../utils/passwordValidation'
 
 const GENDER_OPTIONS = [
   { value: 'Male', label: 'Masculino' },
@@ -69,7 +60,7 @@ const ENTITY_CONFIG = {
       { key: 'discountPercentage', label: 'Dto. %', render: (v) => v ? `${v}%` : '—' },
       { key: 'active', label: 'Activo', render: (v) => v !== false ? 'Si' : 'No' },
     ],
-    FormComponent: TravelForm,
+    FormComponent: null,
     emptyForm: { destiny: '', startDate: '', endDate: '', availablePlaces: 0, sale: false, hotelId: '', busId: '' },
     rowToForm: (row) => ({
       destiny: row.destiny ?? '',
@@ -115,7 +106,7 @@ const ENTITY_CONFIG = {
       { key: 'fullBoardPrice', label: 'P. completa', render: (v) => v ? `${v}€` : '—' },
       { key: 'active', label: 'Activo', render: (v) => v !== false ? 'Si' : 'No' },
     ],
-    FormComponent: HotelForm,
+    FormComponent: null,
     emptyForm: { name: '', address: '', city: '', country: '', stars: 3, capacity: 0, availablePlaces: 0, halfBoardPrice: 0, fullBoardPrice: 0, imageUrl: '', active: true },
     rowToForm: (row) => ({
       name: row.name ?? '',
@@ -163,7 +154,7 @@ const ENTITY_CONFIG = {
       { key: 'capacity', label: 'Capacidad' },
       { key: 'available', label: 'Disponible', render: (v) => v ? 'Si' : 'No' },
     ],
-    FormComponent: BusForm,
+    FormComponent: null,
     emptyForm: { licensePlate: '', capacity: 0, driverId: '', bath: false, wifi: false, ac: false, usb: false, available: true },
     rowToForm: (row) => ({
       licensePlate: row.licensePlate ?? row.busNumber ?? '',
@@ -210,7 +201,7 @@ const ENTITY_CONFIG = {
       { key: 'experience', label: 'Anos exp.' },
       { key: 'licenceActive', label: 'Licencia activa', render: (v, row) => (v ?? row.active) ? 'Si' : 'No' },
     ],
-    FormComponent: DriverForm,
+    FormComponent: null,
     emptyForm: { name: '', surname: '', enrollment: '', imageUrl: '', licenceActive: true },
     rowToForm: (row) => ({
       name: row.name ?? '',
@@ -280,7 +271,7 @@ const ENTITY_CONFIG = {
       { key: 'rol', label: 'Rol', render: (v, row) => v || row.role || '—' },
       { key: 'active', label: 'Activo', render: (v) => v !== false ? 'Si' : 'No' },
     ],
-    FormComponent: UserForm,
+    FormComponent: null,
     emptyForm: { name: '', surname: '', email: '', password: '', passport: '', birthDate: '', rol: 'USER', tutorId: '', active: true },
     rowToForm: (row) => ({
       name: row.name ?? '',
@@ -322,7 +313,7 @@ const ENTITY_CONFIG = {
       { key: 'work_hour', label: 'Horas trabajo', render: (v, row) => v ?? row.workHour ?? '—' },
       { key: 'hired', label: 'Contratado', render: (v) => v ? 'Si' : 'No' },
     ],
-    FormComponent: EmployeeForm,
+    FormComponent: null,
     emptyForm: { name: '', surname: '', gender: 'Male', work_hour: 0, hired: true },
     rowToForm: (row) => ({
       name: row.name ?? '',
@@ -350,7 +341,7 @@ const ENTITY_CONFIG = {
       { key: 'start_date', label: 'Inicio', render: (v, row) => formatDate(v || row.startDate || row.validUntil) },
       { key: 'end_date', label: 'Fin', render: (v, row) => formatDate(v || row.endDate || '') },
     ],
-    FormComponent: OfferForm,
+    FormComponent: null,
     emptyForm: { discount_percentage: 0, start_date: '', end_date: '' },
     rowToForm: (row) => ({
       discount_percentage: row.discount_percentage ?? row.discountPercentage ?? row.discount ?? 0,
@@ -378,7 +369,7 @@ const ENTITY_CONFIG = {
       { key: 'driver_id', label: 'ID Conductor', render: (v, row) => v ?? row.driverId ?? '—' },
       { key: 'travel_id', label: 'ID Viaje', render: (v, row) => v ?? row.travelId ?? '—' },
     ],
-    FormComponent: TripSegmentForm,
+    FormComponent: null,
     emptyForm: { origin: '', destination: '', start_time: '', end_time: '', bus_id: '', driver_id: '', travel_id: '' },
     rowToForm: (row) => ({
       origin: row.origin ?? '',
@@ -398,11 +389,11 @@ const ENTITY_CONFIG = {
     deleteLabel: (row) => `el tramo "${row.origin} → ${row.destination}"`,
     formFields: [
       { name: 'origin', label: 'Origen', type: 'text', required: true, placeholder: 'Ciudad de origen', fullWidth: false },
-      { name: 'destination', label: 'Destino', type: 'text', required: true, placeholder: 'Ciudad de destino', fullWidth: false },
+      { name: 'destination', label: 'Destino', type: 'text', required: true, placeholder: 'Ciudad de destino', fullWidth: false, breakRow: true },
       { name: 'start_time', label: 'Salida (Fecha y Hora)', type: 'datetime-local', required: true, fullWidth: false },
-      { name: 'end_time', label: 'Llegada (Fecha y Hora)', type: 'datetime-local', required: true, fullWidth: false },
+      { name: 'end_time', label: 'Llegada (Fecha y Hora)', type: 'datetime-local', required: true, fullWidth: false, breakRow: true },
       { name: 'bus_id', label: 'ID Autobús', type: 'number', required: true, fullWidth: false },
-      { name: 'driver_id', label: 'ID Conductor', type: 'number', required: true, fullWidth: false },
+      { name: 'driver_id', label: 'ID Conductor', type: 'number', required: true, fullWidth: false, breakRow: true },
       { name: 'travel_id', label: 'ID Viaje', type: 'number', required: true, fullWidth: false },
     ],
   },
@@ -612,14 +603,14 @@ const EntityTable = ({ entityType }) => {
             initialData={editing}
             relatedData={related}
           />
-        ) : (
+        ) : config.FormComponent ? (
           <FormComponent
             form={form}
             onChange={change}
             initialData={editing}
             {...extraFormProps}
           />
-        )}
+        ) : null}
       </Modal>
 
       <ConfirmDialog

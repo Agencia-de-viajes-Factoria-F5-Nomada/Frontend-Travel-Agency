@@ -16,8 +16,8 @@ const Modal = ({
   const modalRef = useRef(null)
 
   useEffect(() => {
-    if (isOpen) document.body.style.overflow = 'hidden'
-    return () => { document.body.style.overflow = '' }
+    // No body scroll lock - let each scrollable region manage its own scroll
+    // (modal: overflow-y-auto on content, admin layout: overflow-auto on main)
   }, [isOpen])
 
   useEffect(() => {
@@ -28,7 +28,7 @@ const Modal = ({
     }
   }, [isOpen, onClose])
 
-  // Focus trap
+  // Focus trap (Tab/Shift+Tab navigation only, no auto-focus on open)
   useEffect(() => {
     if (!isOpen || !modalRef.current) return
 
@@ -40,8 +40,6 @@ const Modal = ({
     const focusableElements = modalRef.current.querySelectorAll(focusableSelectors)
     const first = focusableElements[0]
     const last = focusableElements[focusableElements.length - 1]
-
-    first?.focus()
 
     const handleTab = (e) => {
       if (e.key !== 'Tab') return
@@ -77,14 +75,17 @@ const Modal = ({
       role="dialog"
       aria-modal="true"
       aria-labelledby="modal-title"
+      style={{ pointerEvents: closeOnBackdrop ? 'auto' : 'none' }}
     >
       <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
         onClick={closeOnBackdrop ? onClose : undefined}
+        style={{ pointerEvents: 'auto' }}
       />
       <div
         ref={modalRef}
-        className={classNames('relative w-full max-h-[90vh] flex flex-col rounded-2xl bg-white shadow-xl', sizes[size])}
+        className={classNames('relative w-full max-h-[90vh] flex flex-col rounded-2xl bg-surface-900 shadow-xl overflow-y-auto', sizes[size])}
+        style={{ maxHeight: '90vh' }}
       >
         <div className="flex items-center justify-between border-b border-surface-700/40 px-6 py-4">
           <h2 id="modal-title" className="text-lg font-semibold text-ink">{title}</h2>
@@ -94,7 +95,7 @@ const Modal = ({
             </Button>
           )}
         </div>
-        <div className="px-6 py-4 min-h-0 flex-1 overflow-y-auto">
+        <div className="px-6 py-4 min-h-0 flex-1">
           {children}
         </div>
         {footer && (

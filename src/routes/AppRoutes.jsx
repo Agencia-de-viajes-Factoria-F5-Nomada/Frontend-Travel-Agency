@@ -25,14 +25,6 @@ const EntityTable           = lazy(() => import('../components/organisms/EntityT
 
 // Páginas admin
 const DashboardPage        = lazy(() => import('../pages/DashboardPage'));
-const UsersPage            = lazy(() => import('../pages/UsersPage'));
-
-// CRUDs admin
-const HotelsCRUD           = lazy(() => import('../components/organisms/HotelsCRUD'));
-const BusesCRUD            = lazy(() => import('../components/organisms/BusesCRUD'));
-const DriversCRUD          = lazy(() => import('../components/organisms/DriversCRUD'));
-const TravelsCRUD          = lazy(() => import('../components/organisms/TravelsCRUD'));
-const BookingsCRUD         = lazy(() => import('../components/organisms/BookingsCRUD'));
 
 const Loader = () => (
   <div className="flex h-screen items-center justify-center text-brand-200">
