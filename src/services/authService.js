@@ -1,4 +1,4 @@
-import { API } from '../constants/api';
+import { API } from '../services/api';
 
 const headers = { 'Content-Type': 'application/json' };
 
