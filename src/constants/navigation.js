@@ -1,12 +1,10 @@
 import {
   Compass,
   LayoutDashboard,
-  LogIn,
   MapPinned,
   Search,
   Tag,
   Ticket,
-  UserCircle,
   Users,
   Bus,
   Building2,
@@ -16,11 +14,10 @@ import {
 import { ADMIN_PATHS, PUBLIC_PATHS } from './paths'
 
 export const PUBLIC_NAV = [
-  { label: 'Inicio',         to: PUBLIC_PATHS.HOME,      icon: Compass },
-  { label: 'Buscar',         to: PUBLIC_PATHS.SEARCH,    icon: Search },
-  { label: 'Ofertas',        to: PUBLIC_PATHS.OFFERS,    icon: Tag },
-  { label: 'Panel',          to: PUBLIC_PATHS.DASHBOARD, icon: LayoutDashboard },
-  { label: 'Iniciar sesión', to: PUBLIC_PATHS.AUTH,      icon: LogIn },
+  { label: 'Inicio',  to: PUBLIC_PATHS.HOME,      icon: Compass },
+  { label: 'Buscar',  to: PUBLIC_PATHS.SEARCH,    icon: Search },
+  { label: 'Ofertas', to: PUBLIC_PATHS.OFFERS,    icon: Tag },
+  { label: 'Panel',   to: PUBLIC_PATHS.DASHBOARD, icon: LayoutDashboard },
 ]
 
 export const ADMIN_NAV = [
