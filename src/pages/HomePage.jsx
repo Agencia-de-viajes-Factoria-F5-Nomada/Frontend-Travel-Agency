@@ -5,10 +5,9 @@ import Button from '../components/atoms/Button'
 import Card from '../components/atoms/Card'
 import Input from '../components/atoms/Input'
 import DestinationCard from '../components/organisms/DestinationCard'
-import { travelService } from '../services/travelsService'
-import { authService } from '../services/authService'
+import { travelService } from '../services/TravelsService'
 import { PUBLIC_PATHS } from '../constants/paths'
-import { apiClient } from '../services/api'
+import { authService } from '../services/authService'
 import { classNames } from '../utils/classNames'
 
 const POPULAR = ['Londres', 'París', 'Roma', 'Tokio']
@@ -25,21 +24,15 @@ const HomePage = () => {
   const [active, setActive] = useState('signin')
   const [authLoading, setAuthLoading] = useState(false)
   const [error, setError] = useState(null)
-  const [form, setForm] = useState({email: '', password: '' })
-
-  const [travelsLoading, setTravelsLoading] = useState(true)
+  const [form, setForm] = useState({ name: '', email: '', password: '' })
   const navigate = useNavigate()
   const isSignIn = active === 'signin'
 
   useEffect(() => {
     travelService.getFeatured()
-      .then(data => {
-        setTravels(data);
-      })
-      .catch(() => {
-        setTravels([]);
-      })
-      .finally(() => setTravelsLoading(false))
+      .then(data => setTravels(data))
+      .catch(() => setTravels([]))
+      .finally(() => setLoading(false))
   }, [])
 
   const change = (e) => {
@@ -47,9 +40,9 @@ const HomePage = () => {
     setError(null)
   }
 
-  const handleSubmit = async (e) => {
+  const handleAuth = async (e) => {
     e.preventDefault()
-    setLoading(true)
+    setAuthLoading(true)
     setError(null)
     try {
       if (isSignIn) {
@@ -57,11 +50,12 @@ const HomePage = () => {
       } else {
         if (form.password.length < 8) { setError('La contraseña debe tener al menos 8 caracteres'); setAuthLoading(false); return }
         if (!/[A-Z]/.test(form.password) || !/[0-9]/.test(form.password)) { setError('La contraseña debe contener al menos una mayúscula y un número'); setAuthLoading(false); return }
-        await apiClient.post('/auth/register', {
-          name: form.name,
-          email: form.email,
-          password: form.password,
+        const res = await fetch(`${import.meta.env.VITE_API_URL ?? 'http://localhost:8080'}/api/auth/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: form.name, email: form.email, password: form.password }),
         })
+        if (!res.ok) throw new Error('Error al crear la cuenta')
         await authService.login(form.email, form.password)
       }
       const user = authService.getUser()
@@ -69,73 +63,69 @@ const HomePage = () => {
     } catch (e) {
       setError(e.message)
     } finally {
-      setLoading(false)
+      setAuthLoading(false)
     }
+  }
+
+  const handleSearch = (e) => {
+    e.preventDefault()
+    const params = new URLSearchParams()
+    if (search.destiny) params.set('destiny', search.destiny)
+    if (search.startDate) params.set('startDate', search.startDate)
+    if (search.endDate) params.set('endDate', search.endDate)
+    if (search.passengers) params.set('passengers', search.passengers)
+    navigate(`${PUBLIC_PATHS.SEARCH}?${params.toString()}`)
   }
 
   return (
     <>
-      {/* ── HERO ── */}
-      <section
-        style={{ background: '#1A3A5C' }}
-        className="flex min-h-[calc(100svh-4rem)] flex-col items-center justify-center px-6 py-10 text-center"
-      >
-        {/* Title */}
-        <h1 style={{ color: '#DAEEF7', letterSpacing: '-0.02em' }} className="text-5xl font-medium leading-tight mb-3">
-          Siempre en el lugar exacto
+      {/* ── LOGIN ── */}
+      <section style={{ background: '#1A3A5C' }} className="flex flex-col items-center justify-center px-6 py-16 text-center">
+        <h1 style={{ color: '#DAEEF7', letterSpacing: '-0.02em' }} className="text-4xl font-medium leading-tight mb-3">
+          Bienvenido a Nómada
         </h1>
         <p style={{ color: '#7AAFC0' }} className="text-base mb-8 max-w-lg">
           Inicia sesión o crea una cuenta para gestionar tus reservas.
         </p>
 
-        <div
-          style={{
-            background: 'rgba(218,238,247,0.06)',
-            border: '1.5px solid #4A8FA8',
-            borderRadius: 16,
-            padding: '1.5rem',
-            width: '100%',
-            maxWidth: 440,
-          }}
-        >
-          <h2 className="text-xl font-semibold text-white text-center mb-1">
-            Iniciar sesión
-          </h2>
-          <p className="text-sm text-[#7AAFC0] text-center mb-4">
-            Accede a tu cuenta para gestionar tus reservas.
-          </p>
+        <Card className="w-full max-w-md p-8">
+          <div role="tablist" className="grid grid-cols-2 gap-1 rounded-full bg-surface-900 p-1 mb-6">
+            {TABS.map((tab) => {
+              const isActive = tab.id === active
+              return (
+                <button key={tab.id} type="button" role="tab" aria-selected={isActive}
+                  onClick={() => { setActive(tab.id); setError(null) }}
+                  className={classNames(
+                    'inline-flex items-center justify-center gap-2 rounded-full px-3 py-2 text-sm font-medium transition-colors',
+                    isActive ? 'bg-brand-500 text-surface-950' : 'text-ink-soft hover:text-white',
+                  )}>
+                  <tab.icon className="h-4 w-4" aria-hidden="true" />
+                  {tab.label}
+                </button>
+              )
+            })}
+          </div>
 
-          {error && (
-            <div className="mb-3 rounded-lg bg-red-50 p-3 text-sm text-red-700">
-              {error}
-            </div>
-          )}
+          {error && <div className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</div>}
 
-          <form onSubmit={handleSubmit} className="grid gap-3">
-            <Input
-              label="Correo electrónico"
-              name="email"
-              type="email"
-              placeholder="tu@ejemplo.com"
-              value={form.email}
-              onChange={change}
-              required
-            />
-            <Input
-              label="Contraseña"
-              name="password"
-              type="password"
-              placeholder="••••••••"
-              value={form.password}
-              onChange={change}
-              required
-            />
-
-            <Button type="submit" fullWidth size="lg" disabled={loading}>
-              {loading ? 'Cargando...' : 'Iniciar sesión'}
+          <form onSubmit={handleAuth} className="grid gap-4">
+            {!isSignIn && (
+              <Input label="Nombre completo" name="name" placeholder="Juan Pérez"
+                value={form.name} onChange={change} required />
+            )}
+            <Input label="Correo electrónico" name="email" type="email"
+              placeholder="tu@ejemplo.com" value={form.email} onChange={change} required />
+            <Input label="Contraseña" name="password" type="password"
+              placeholder="••••••••" value={form.password} onChange={change} required />
+            <Button type="submit" fullWidth size="lg" disabled={authLoading}>
+              {authLoading ? 'Cargando...' : isSignIn ? 'Iniciar sesión' : 'Crear cuenta'}
             </Button>
           </form>
-        </div>
+
+          <p className="mt-6 text-center text-xs text-ink-muted">
+            Al continuar aceptas nuestros términos y la política de privacidad.
+          </p>
+        </Card>
       </section>
 
       {/* ── DESTACADOS ── */}
@@ -150,7 +140,7 @@ const HomePage = () => {
           </Button>
         </div>
 
-        {travelsLoading ? (
+        {loading ? (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {[...Array(6)].map((_, i) => (
               <div key={i} className="h-64 animate-pulse rounded-2xl bg-surface-800" />
