@@ -19,7 +19,7 @@ import { ADMIN_PATHS, PUBLIC_PATHS } from './paths'
 export const PUBLIC_NAV = [
   { label: 'Inicio',    to: PUBLIC_PATHS.HOME,     icon: Compass },
   { label: 'Destinos',  to: '/destinations',        icon: MapPinned },
-  { label: 'Mi Perfil', to: PUBLIC_PATHS.PROFILE,   icon: UserCircle, authOnly: true },
+  { label: 'Registro', to: PUBLIC_PATHS.PROFILE,   icon: UserCircle, authOnly: true },
   { label: 'Panel',     to: ADMIN_PATHS.DASHBOARD,  icon: LayoutDashboard, adminOnly: true },
 ]
 

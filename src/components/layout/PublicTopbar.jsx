@@ -21,13 +21,6 @@ const buildLinkClass = ({ isActive }) =>
 
 const PublicTopbar = () => {
   const [open, setOpen] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20)
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
 
   const primaryNav = PUBLIC_NAV.filter(item => {
     if (item.to === PUBLIC_PATHS.AUTH) return false
@@ -38,10 +31,7 @@ const PublicTopbar = () => {
 
   return (
     <header className={classNames(
-      'sticky top-0 z-30 border-b transition-all duration-500',
-      scrolled
-        ? 'border-white/10 bg-[#122840]/80 backdrop-blur-xl shadow-[0_8px_32px_-8px_rgba(0,0,0,0.5)]'
-        : 'border-transparent bg-transparent',
+      'sticky top-0 z-30 border-b border-white/10 bg-[#122840]/95 shadow-[0_4px_16px_-4px_rgba(0,0,0,0.3)]',
     )}>
       <div className="container-page flex h-16 items-center justify-between gap-4">
         <BrandMark />
