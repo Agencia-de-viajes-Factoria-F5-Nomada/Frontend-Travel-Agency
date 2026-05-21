@@ -28,16 +28,17 @@ const Table = ({
 
   return (
     <div className="overflow-x-auto rounded-xl border border-surface-700/40">
-      <table className="w-full">
+      <table className="w-full min-w-max">
         <thead>
           <tr className="bg-brand-200/50">
             {columns.map((col) => (
               <th
                 key={col.key}
                 className={classNames(
-                  'px-4 py-3 text-left text-sm font-semibold text-white',
+                  'px-4 py-3 text-left text-sm font-semibold text-white whitespace-nowrap',
                   col.align === 'center' && 'text-center',
                   col.align === 'right' && 'text-right',
+                  col.sticky && 'sticky right-0 bg-surface-800 z-10',
                 )}
               >
                 {col.label}
@@ -60,9 +61,10 @@ const Table = ({
                 <td
                   key={col.key}
                   className={classNames(
-                    'px-4 py-3 text-sm text-ink-soft',
+                    'px-4 py-3 text-sm text-ink-soft whitespace-nowrap',
                     col.align === 'center' && 'text-center',
                     col.align === 'right' && 'text-right',
+                    col.sticky && 'sticky right-0 bg-surface-900 z-10',
                   )}
                 >
                   {col.render ? col.render(row[col.key], row) : row[col.key]}

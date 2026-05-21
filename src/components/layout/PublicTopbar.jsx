@@ -1,10 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
 import { Menu, X } from 'lucide-react'
 import BrandMark from './BrandMark'
 import Button from '../atoms/Button'
 import { PUBLIC_NAV } from '../../constants/navigation'
-import { PUBLIC_PATHS, ADMIN_PATHS } from '../../constants/paths'
+import { PUBLIC_PATHS } from '../../constants/paths'
 import { authService } from '../../services/authService'
 import { classNames } from '../../utils/classNames'
 
@@ -21,15 +21,28 @@ const buildLinkClass = ({ isActive }) =>
 
 const PublicTopbar = () => {
   const [open, setOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   const primaryNav = PUBLIC_NAV.filter(item => {
     if (item.to === PUBLIC_PATHS.AUTH) return false
     if (item.adminOnly) return authService.isAdmin()
+    if (item.authOnly) return authService.isAuthenticated()
     return true
   })
 
   return (
-    <header className="sticky top-0 z-30 border-b border-surface-700/40 bg-accent-dark shadow-[0_10px_30px_-22px_rgba(255,255,255,0.35)]">
+    <header className={classNames(
+      'sticky top-0 z-30 border-b transition-all duration-500',
+      scrolled
+        ? 'border-white/10 bg-[#122840]/80 backdrop-blur-xl shadow-[0_8px_32px_-8px_rgba(0,0,0,0.5)]'
+        : 'border-transparent bg-transparent',
+    )}>
       <div className="container-page flex h-16 items-center justify-between gap-4">
         <BrandMark />
 
@@ -67,7 +80,7 @@ const PublicTopbar = () => {
       {open ? (
         <div
           id="public-mobile-nav"
-          className="border-t border-surface-700/40 bg-accent-dark shadow-xl md:hidden"
+          className="border-t border-white/10 bg-[#122840]/90 backdrop-blur-xl shadow-xl md:hidden"
         >
           <nav aria-label="Principal movil" className="container-page grid gap-1 py-4">
             {primaryNav.map((item) => (

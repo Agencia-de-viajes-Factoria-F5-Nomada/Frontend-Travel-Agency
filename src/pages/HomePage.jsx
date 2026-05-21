@@ -1,29 +1,18 @@
 import { useState, useEffect } from 'react'
-import { ArrowRight, LogIn, UserPlus } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
+import { ArrowRight } from 'lucide-react'
 import Button from '../components/atoms/Button'
 import Card from '../components/atoms/Card'
 import Input from '../components/atoms/Input'
 import DestinationCard from '../components/organisms/DestinationCard'
 import { travelService } from '../services/TravelsService'
 import { authService } from '../services/authService'
-import { apiClient } from '../services/api'
-import { classNames } from '../utils/classNames'
-
-const TABS = [
-  { id: 'signin', label: 'Iniciar sesión', icon: LogIn },
-  { id: 'signup', label: 'Crear cuenta',   icon: UserPlus },
-]
 
 const HomePage = () => {
   const [travels, setTravels] = useState([])
   const [loading, setLoading] = useState(true)
-  const [active, setActive] = useState('signin')
   const [authLoading, setAuthLoading] = useState(false)
   const [error, setError] = useState(null)
-  const [form, setForm] = useState({ name: '', email: '', password: '' })
-  const navigate = useNavigate()
-  const isSignIn = active === 'signin'
+  const [form, setForm] = useState({ email: '', password: '' })
   const isLoggedIn = authService.isAuthenticated()
   const user = authService.getUser()
 
@@ -48,18 +37,7 @@ const HomePage = () => {
     setAuthLoading(true)
     setError(null)
     try {
-      if (isSignIn) {
-        await authService.login(form.email, form.password)
-      } else {
-        if (form.password.length < 8) { setError('La contraseña debe tener al menos 8 caracteres'); setAuthLoading(false); return }
-        if (!/[A-Z]/.test(form.password) || !/[0-9]/.test(form.password)) { setError('La contraseña debe contener al menos una mayúscula y un número'); setAuthLoading(false); return }
-        await apiClient.post('/auth/register', {
-          name: form.name,
-          email: form.email,
-          password: form.password,
-        })
-        await authService.login(form.email, form.password)
-      }
+      await authService.login(form.email, form.password)
       window.location.reload()
     } catch (e) {
       setError(e.message)
@@ -72,10 +50,10 @@ const HomePage = () => {
     <>
       {/* ── HERO ── */}
       <section className="flex flex-col items-center justify-center bg-accent-dark px-6 py-16 text-center">
-        <h1 className="mb-3 text-4xl font-medium leading-tight tracking-tight text-accent-light">
+        <h1 className="mb-3 text-4xl font-semibold leading-tight tracking-tight text-white">
           {isLoggedIn ? `¡Bienvenido de nuevo, ${user?.name ?? ''}!` : 'Bienvenido a Nómada'}
         </h1>
-        <p className="mb-8 max-w-lg text-base text-accent-muted">
+        <p className="mb-8 max-w-lg text-sm text-ink-muted">
           {isLoggedIn
             ? 'Descubre tus próximos destinos y encuentra el viaje perfecto.'
             : 'Inicia sesión o crea una cuenta para gestionar tus reservas.'}
@@ -99,37 +77,20 @@ const HomePage = () => {
             </button>
           </div>
         ) : (
-          <Card className="w-full max-w-md p-8">
-            <div role="tablist" className="grid grid-cols-2 gap-1 rounded-full bg-surface-900 p-1 mb-6">
-              {TABS.map((tab) => {
-                const isActive = tab.id === active
-                return (
-                  <button key={tab.id} type="button" role="tab" aria-selected={isActive}
-                    onClick={() => { setActive(tab.id); setError(null) }}
-                    className={classNames(
-                      'inline-flex items-center justify-center gap-2 rounded-full px-3 py-2 text-sm font-medium transition-colors',
-                      isActive ? 'bg-brand-500 text-surface-950' : 'text-ink-soft hover:text-white',
-                    )}>
-                    <tab.icon className="h-4 w-4" aria-hidden="true" />
-                    {tab.label}
-                  </button>
-                )
-              })}
-            </div>
+          <Card className="w-full max-w-sm p-8 text-left">
+            <h2 className="mb-6 text-xl font-semibold text-white">Iniciar sesión</h2>
 
-            {error && <div className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</div>}
+            {error && (
+              <div className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</div>
+            )}
 
             <form onSubmit={handleAuth} className="grid gap-4">
-              {!isSignIn && (
-                <Input label="Nombre completo" name="name" placeholder="Juan Pérez"
-                  value={form.name} onChange={change} required />
-              )}
               <Input label="Correo electrónico" name="email" type="email"
                 placeholder="tu@ejemplo.com" value={form.email} onChange={change} required />
               <Input label="Contraseña" name="password" type="password"
                 placeholder="••••••••" value={form.password} onChange={change} required />
               <Button type="submit" fullWidth size="lg" disabled={authLoading}>
-                {authLoading ? 'Cargando...' : isSignIn ? 'Iniciar sesión' : 'Crear cuenta'}
+                {authLoading ? 'Cargando...' : 'Iniciar sesión'}
               </Button>
             </form>
 
