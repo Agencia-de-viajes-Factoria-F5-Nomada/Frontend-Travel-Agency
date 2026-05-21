@@ -64,7 +64,7 @@ const EntitiesPage = () => {
         </div>
       </div>
 
-      <div className="mt-8 grid gap-6 lg:grid-cols-[220px_1fr]">
+      <div className="mt-8 grid gap-6 lg:grid-cols-[220px_1fr] min-w-0">
 
         <div className="hidden lg:block lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto">
           <Card className="p-4">
@@ -110,11 +110,10 @@ const EntitiesPage = () => {
           </Card>
         </div>
 
-        <Card className="p-4 sm:p-6">
-          <div className="-mx-4 sm:-mx-6">
-            <EntityTable entityType={selectedEntity} />
-          </div>
+        <Card className="p-0 overflow-x-auto">
+          <EntityTable entityType={selectedEntity} />
         </Card>
+
       </div>
     </div>
   )
