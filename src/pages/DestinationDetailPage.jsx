@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { ArrowLeft, Calendar, MapPin, Users, Building2 } from 'lucide-react'
+import { ArrowLeft, Calendar, MapPin, Users, Building2, Plane, Bus } from 'lucide-react'
 import Button from '../components/atoms/Button'
 import Card from '../components/atoms/Card'
 import { travelService } from '../services/travelsService'
@@ -9,11 +9,26 @@ import { authService } from '../services/authService'
 import { getDestinationFallbackImage, getDestinationImage } from '../utils/destinationImages'
 import { formatDate } from '../utils/formatters'
 
+const isInternationalDestination = (destiny) => {
+  if (!destiny) return false
+  const lower = destiny.toLowerCase()
+  const spanishKeywords = ['españa', 'spain', 'madrid', 'barcelona', 'sevilla', 'valencia',
+    'bilbao', 'malaga', 'granada', 'valencia', 'zagoza', 'murcia', 'cadiz', 'vitoria']
+  return !spanishKeywords.some(k => lower.includes(k))
+}
+
+const formatTime = (isoString) => {
+  if (!isoString) return ''
+  const date = new Date(isoString)
+  return date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })
+}
+
 const DestinationDetailPage = () => {
   const { id }                  = useParams()
   const navigate                = useNavigate()
   const [travel, setTravel]     = useState(null)
   const [hotel, setHotel]       = useState(null)
+  const [segments, setSegments] = useState([])
   const [loading, setLoading]   = useState(true)
   const [error, setError]       = useState(null)
   const [typeBoard, setTypeBoard] = useState('HALF')
@@ -28,6 +43,8 @@ const DestinationDetailPage = () => {
           const hotelData = await hotelService.getById(travelData.hotelId)
           setHotel(hotelData)
         }
+        const segs = await travelService.getSegmentsByTravelId(id)
+        setSegments(segs)
       } catch (e) {
         setError(e.message)
       } finally {
@@ -62,11 +79,15 @@ const DestinationDetailPage = () => {
 
   const halfBoard = hotel?.halfBoardPrice ?? travel?.halfBoardPrice
   const fullBoard = hotel?.fullBoardPrice ?? travel?.fullBoardPrice
-  const price = typeBoard === 'HALF' ? halfBoard : fullBoard
 
   const isOffer = travel.sale === true
   const discountPct = isOffer && travel.discountPercentage ? travel.discountPercentage : 0
-  const originalPrice = discountPct > 0 ? Math.round(price / (1 - discountPct / 100)) : null
+
+  const basePrice = typeBoard === 'HALF' ? halfBoard : fullBoard
+  const offerDiscount = discountPct > 0 ? Math.round(basePrice * (1 - discountPct / 100)) : basePrice
+  const displayPrice = isOffer ? offerDiscount : basePrice
+
+  const originalPrice = discountPct > 0 ? basePrice : null
 
   const isPast = travel.startDate && new Date(travel.startDate) < new Date()
   const isFull = travel.availablePlaces === 0
@@ -135,21 +156,73 @@ const DestinationDetailPage = () => {
             </Card>
           )}
 
-          {(hotel || travel.hotelName) && (
-            <Card className="p-5">
-              <div className="flex items-start gap-3">
-                <Building2 className="h-5 w-5 text-brand-400 mt-0.5" />
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-wide text-ink-muted">Hotel incluido</p>
-                  <h3 className="mt-1 font-semibold text-white">{hotel?.name ?? travel.hotelName}</h3>
-                  <p className="text-sm text-ink-muted">
-                    {hotel ? `${hotel.city}, ${hotel.country}` : `${travel.hotelCity}, ${travel.hotelCountry}`}
-                  </p>
-                  <p className="mt-1 text-sm text-ink-muted">{'⭐'.repeat(hotel?.stars ?? travel.hotelStars ?? 0)}</p>
+          <div className="grid gap-6 lg:grid-cols-2">
+            <div className="space-y-4">
+              <Card className="p-4 flex items-center gap-3">
+                <div className="rounded-full bg-accent/20 p-2">
+                  {isInternationalDestination(travel.destiny)
+                    ? <Plane className="h-5 w-5 text-accent" />
+                    : <Bus className="h-5 w-5 text-accent" />}
                 </div>
-              </div>
-            </Card>
-          )}
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-ink-muted">Transporte</p>
+                  <p className="text-sm font-medium text-white">
+                    {isInternationalDestination(travel.destiny)
+                      ? 'Vuelo internacional incluido'
+                      : 'Autobús incluido'}
+                  </p>
+                </div>
+              </Card>
+
+              {(hotel || travel.hotelName) && (
+                <Card className="p-5">
+                  <div className="flex items-start gap-3">
+                    <Building2 className="h-5 w-5 text-brand-400 mt-0.5" />
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-wide text-ink-muted">Hotel incluido</p>
+                      <h3 className="mt-1 font-semibold text-white">{hotel?.name ?? travel.hotelName}</h3>
+                      <p className="text-sm text-ink-muted">
+                        {hotel ? `${hotel.city}, ${hotel.country}` : `${travel.hotelCity}, ${travel.hotelCountry}`}
+                      </p>
+                      <p className="mt-1 text-sm text-ink-muted">{'⭐'.repeat(hotel?.stars ?? travel.hotelStars ?? 0)}</p>
+                    </div>
+                  </div>
+                </Card>
+              )}
+            </div>
+
+            <div className="space-y-3">
+              <h3 className="text-sm font-semibold uppercase tracking-wide text-ink-muted">Itinerario</h3>
+              {segments.length === 0 ? (
+                <Card className="p-4">
+                  <p className="text-sm text-ink-muted text-center py-4">Aún no hay tramos definidos para este viaje.</p>
+                </Card>
+              ) : (
+                [...segments]
+                  .sort((a, b) => new Date(a.startTime) - new Date(b.startTime))
+                  .map((seg) => (
+                    <Card key={seg.id} className="p-4">
+                      <div className="flex items-start gap-3">
+                        <div className="flex flex-col items-center min-w-[60px]">
+                          <span className="text-xs text-ink-muted">{formatTime(seg.startTime)}</span>
+                          <div className="h-5 w-px bg-surface-600 my-1" />
+                          <span className="text-xs text-ink-muted">{formatTime(seg.endTime)}</span>
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-sm font-medium text-white">{seg.origin} → {seg.destination}</p>
+                          {seg.activityName && (
+                            <p className="text-xs text-accent mt-0.5">{seg.activityName}</p>
+                          )}
+                          {seg.busLicensePlate && (
+                            <p className="text-xs text-ink-muted mt-1">Autobús: {seg.busLicensePlate}</p>
+                          )}
+                        </div>
+                      </div>
+                    </Card>
+                  ))
+              )}
+            </div>
+          </div>
         </div>
 
         <div className="space-y-4">
@@ -160,31 +233,31 @@ const DestinationDetailPage = () => {
               <div className="mt-4 space-y-2">
                 <p className="text-xs font-semibold uppercase tracking-wide text-ink-muted">Tipo de pensión</p>
                 <label className={`flex cursor-pointer items-center justify-between rounded-xl border p-3 transition-colors ${
-                  typeBoard === 'HALF' ? 'border-accent bg-accent-light' : 'border-transparent bg-transparent'
+                  typeBoard === 'HALF' ? 'border-accent bg-accent' : 'border-transparent bg-transparent'
                 }`}>
-                  <span className="text-sm font-medium text-accent-dark">Media pensión</span>
+                  <span className="text-sm font-medium text-white">Media pensión</span>
                   <div className="flex items-center gap-2">
                     {isOffer && discountPct > 0 && (
-                      <span className="text-xs line-through text-gray-400">
+                      <span className="text-xs line-through text-white/60">
                         {Math.round(halfBoard / (1 - discountPct / 100))}€
                       </span>
                     )}
-                    <span className="font-bold text-accent-dark">{halfBoard}€/persona</span>
+                    <span className="font-bold text-white">{halfBoard}€/persona</span>
                   </div>
                   <input type="radio" name="typeBoard" value="HALF"
                     checked={typeBoard === 'HALF'} onChange={() => setTypeBoard('HALF')} className="ml-2" />
                 </label>
                 <label className={`flex cursor-pointer items-center justify-between rounded-xl border p-3 transition-colors ${
-                  typeBoard === 'FULL' ? 'border-accent bg-accent-light' : 'border-transparent bg-transparent'
+                  typeBoard === 'FULL' ? 'border-accent bg-accent' : 'border-transparent bg-transparent'
                 }`}>
-                  <span className="text-sm font-medium text-accent-dark">Pensión completa</span>
+                  <span className="text-sm font-medium text-white">Pensión completa</span>
                   <div className="flex items-center gap-2">
                     {isOffer && discountPct > 0 && (
-                      <span className="text-xs line-through text-gray-400">
+                      <span className="text-xs line-through text-white/60">
                         {Math.round(fullBoard / (1 - discountPct / 100))}€
                       </span>
                     )}
-                    <span className="font-bold text-accent-dark">{fullBoard}€/persona</span>
+                    <span className="font-bold text-white">{fullBoard}€/persona</span>
                   </div>
                   <input type="radio" name="typeBoard" value="FULL"
                     checked={typeBoard === 'FULL'} onChange={() => setTypeBoard('FULL')} className="ml-2" />
@@ -192,15 +265,15 @@ const DestinationDetailPage = () => {
               </div>
             )}
 
-            {price && (
-              <div className="mt-4 rounded-xl bg-accent-light p-4 text-center">
-                <p className="text-xs text-ink-muted">Precio por persona · IVA incluido</p>
+            {displayPrice && (
+              <div className="mt-4 rounded-xl bg-accent p-4 text-center">
+                <p className="text-xs text-white/80">Precio por persona · IVA incluido</p>
                 {originalPrice && (
-                  <p className="text-sm line-through text-gray-400">{originalPrice}€</p>
+                  <p className="text-sm line-through text-white/60">{originalPrice}€</p>
                 )}
-                <p className="text-3xl font-bold text-accent-dark">{price}€</p>
+                <p className="text-3xl font-bold text-white">{displayPrice}€</p>
                 {discountPct > 0 && (
-                  <p className="mt-1 text-xs font-semibold text-red-500">-{discountPct}% de descuento aplicado</p>
+                  <p className="mt-1 text-xs font-semibold text-red-300">-{discountPct}% de descuento aplicado</p>
                 )}
               </div>
             )}
@@ -221,9 +294,13 @@ const DestinationDetailPage = () => {
               {isPast ? 'Viaje finalizado' : isFull ? 'Sin plazas' : 'Reservar ahora'}
             </button>
 
-            <p className="mt-3 text-center text-xs text-ink-muted">
-              {!authService.isAuthenticated() && 'Necesitas iniciar sesión para reservar'}
-            </p>
+            <p className="mt-2 text-center text-xs text-ink-muted">IVA incluido en el precio</p>
+
+            {!authService.isAuthenticated() && (
+              <p className="mt-1 text-center text-xs text-ink-muted">
+                Necesitas iniciar sesión para reservar
+              </p>
+            )}
           </Card>
         </div>
 

@@ -294,7 +294,7 @@ const DestinationsPage = () => {
         <Select options={sortOptions} value={sortBy} onChange={e => setSortBy(e.target.value)} className="w-48" />
       </div>
 
-      <div className="grid gap-8 lg:grid-cols-[280px_1fr]">
+      <div className="grid gap-8 lg:grid-cols-[280px_1fr] items-start">
         <FiltersCard
           priceRange={priceRange}
           setPriceRange={setPriceRange}

@@ -83,7 +83,7 @@ const SearchResultsPage = () => {
         <div className="mt-4 rounded-lg bg-red-50 p-4 text-red-700">{error}</div>
       )}
 
-      <div className="mt-6 grid gap-8 lg:grid-cols-[280px_1fr]">
+      <div className="mt-6 grid gap-8 lg:grid-cols-[280px_minmax(0_1fr)] lg:items-start">
 
         <Card as="aside" aria-label="Filtros" className="h-fit p-6">
           <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-muted">Filtros</h2>
