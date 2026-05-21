@@ -68,53 +68,27 @@ const EntitiesPage = () => {
 
         <div className="hidden lg:block lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto">
           <Card className="p-4">
-            <h2 className="text-xs font-semibold uppercase tracking-wide text-ink-muted mb-3">
-              Autenticación
-            </h2>
-            {isAuthenticated ? (
-              <div className="space-y-2 text-sm">
-                <p className="text-white font-medium">{user?.name}</p>
-                <p className="text-ink-muted text-xs">{user?.email}</p>
-                <Button fullWidth size="sm" variant="secondary" onClick={handleLogout}>
-                  <LogOut className="h-3.5 w-3.5" />
-                  Cerrar sesión
-                </Button>
-              </div>
-            ) : (
-              <Button fullWidth onClick={() => navigate('/auth')}>
-                <LogIn className="h-4 w-4" />
-                Iniciar sesión
-              </Button>
-            )}
-
-            <div className="mt-4 pt-4 border-t border-surface-700">
-              <h2 className="text-xs font-semibold uppercase tracking-wide text-ink-muted mb-3">
-                Secciones
-              </h2>
-              <div className="space-y-1">
-                {CRUD_OPTIONS.map(opt => (
-                  <button
-                    key={opt.key}
-                    onClick={() => setSelectedEntity(opt.key)}
-                    className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                      selectedEntity === opt.key
-                        ? 'bg-brand-500/20 text-brand-300'
-                        : 'text-ink-soft hover:bg-surface-800'
-                    }`}
-                  >
-                    {opt.label}
-                  </button>
-                ))}
-              </div>
+            <div className="space-y-1">
+              {CRUD_OPTIONS.map(opt => (
+                <button
+                  key={opt.key}
+                  onClick={() => setSelectedEntity(opt.key)}
+                  className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    selectedEntity === opt.key
+                      ? 'bg-brand-500/20 text-brand-300'
+                      : 'text-ink-soft hover:bg-surface-800'
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
             </div>
           </Card>
         </div>
 
         <Card className="p-4 sm:p-6">
-          <div className="-mx-4 sm:-mx-6">
             <EntityTable entityType={selectedEntity} />
-          </div>
-        </Card>
+          </Card>
       </div>
     </div>
   )

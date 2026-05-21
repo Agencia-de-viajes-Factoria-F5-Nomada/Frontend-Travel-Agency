@@ -632,7 +632,7 @@ const EntityTable = ({ entityType }) => {
   const extraFormProps = config.formProps ? config.formProps(related) : {}
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 px-2 py-2">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h2 className="text-xl font-semibold text-white">{config.title}</h2>
         <Button onClick={openCreate}>+ Nuevo</Button>
