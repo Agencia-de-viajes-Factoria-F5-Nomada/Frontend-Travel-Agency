@@ -9,4 +9,5 @@ export const bookingService = {
   delete:   async (id)                  => { await apiClient.delete(`/bookings/${id}`) },
   quote:    async (data)                => (await apiClient.post('/bookings/quote', data)).data,
   confirm:  async (data)                => (await apiClient.post('/bookings', data)).data,
+  createCustomTrip: async (data)        => (await apiClient.post('/custom-trip-requests', data)).data,
 };

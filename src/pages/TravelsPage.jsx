@@ -11,6 +11,7 @@ const TravelsPage = () => {
   const [error, setError] = useState(null)
 
   const [onlyOffers, setOnlyOffers] = useState(false)
+  const [onlyInserso, setOnlyInserso] = useState(false)
   const [priceRange, setPriceRange] = useState({ min: 0, max: 5000 })
   const [selectedRegions, setSelectedRegions] = useState([])
   const [selectedContinents, setSelectedContinents] = useState([])
@@ -37,6 +38,7 @@ const TravelsPage = () => {
 
   const handleClearFilters = () => {
     setOnlyOffers(false)
+    setOnlyInserso(false)
     setPriceRange({ min: 0, max: 5000 })
     setSelectedRegions([])
     setSelectedContinents([])
@@ -80,12 +82,15 @@ const TravelsPage = () => {
 
       const matchAvailability = !availabilityOnly || (t.availablePlaces && t.availablePlaces > 0)
 
+      const matchInserso = !onlyInserso || (t.offer?.offerType === 'INSERSO')
+
       return matchFuture && matchOffer && matchPrice &&
-             matchContinent && matchRegion && matchDuration && matchStars && matchAvailability
+             matchContinent && matchRegion && matchDuration && matchStars &&
+             matchAvailability && matchInserso
     })
 
     return result
-  }, [travels, onlyOffers, priceRange, selectedRegions, selectedContinents, durationRange, starFilter, availabilityOnly, boardType])
+  }, [travels, onlyOffers, priceRange, selectedRegions, selectedContinents, durationRange, starFilter, availabilityOnly, boardType, onlyInserso])
 
   return (
     <div className="container-page py-12">
@@ -113,6 +118,8 @@ const TravelsPage = () => {
           boardType={boardType}
           setBoardType={setBoardType}
           onClearFilters={handleClearFilters}
+          onlyInserso={onlyInserso}
+          setOnlyInserso={setOnlyInserso}
         />
 
         {loading ? (

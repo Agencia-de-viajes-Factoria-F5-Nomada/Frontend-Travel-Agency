@@ -17,6 +17,7 @@ const SearchResultsPage = () => {
   const [loading, setLoading]   = useState(true)
   const [error, setError]       = useState(null)
   const [onlyOffers, setOnlyOffers] = useState(searchParams.get('onlyOffers') === 'true')
+  const [onlyInserso, setOnlyInserso] = useState(false)
   const [search, setSearch]     = useState(searchParams.get('destiny') ?? '')
 
   const startDateParam = searchParams.get('startDate') ?? ''
@@ -38,9 +39,10 @@ const SearchResultsPage = () => {
       normalize(t.destiny).includes(normalize(search)) ||
       normalize(t.hotelCity).includes(normalize(search))
     const matchOffer = onlyOffers ? t.sale === true : true
+    const matchInserso = !onlyInserso || (t.offer?.offerType === 'INSERSO')
     const matchStartDate = !startDateParam || new Date(t.startDate) >= new Date(startDateParam)
     const matchEndDate = !endDateParam || new Date(t.endDate) <= new Date(endDateParam)
-    return matchFuture && matchDestiny && matchOffer && matchStartDate && matchEndDate
+    return matchFuture && matchDestiny && matchOffer && matchInserso && matchStartDate && matchEndDate
   }), [travels, search, onlyOffers, startDateParam, endDateParam])
 
   return (
