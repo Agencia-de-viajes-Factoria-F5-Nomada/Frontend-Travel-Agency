@@ -7,7 +7,7 @@ import AdminLayout    from '../components/layout/AdminLayout';
 import PrivateRoute   from '../components/layout/PrivateRoute';
 
 // Páginas públicas
-const HomePage              = lazy(() => import('../pages/HomePage'));
+const HomePage              = lazy(() => import('../pages/AuthPage'));
 const DestinationsPage      = lazy(() => import('../pages/DestinationsPage'));
 const DestinationDetailPage = lazy(() => import('../pages/DestinationDetailPage'));
 const OffersPage            = lazy(() => import('../pages/OffersPage'));
