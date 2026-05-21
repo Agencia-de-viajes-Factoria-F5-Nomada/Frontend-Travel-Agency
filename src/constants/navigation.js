@@ -10,6 +10,9 @@ import {
   UserCircle,
   LogIn,
   MapPinned,
+  Tag,
+  Route,
+  UserCheck,
 } from 'lucide-react'
 import { ADMIN_PATHS, PUBLIC_PATHS } from './paths'
 
@@ -21,11 +24,14 @@ export const PUBLIC_NAV = [
 ]
 
 export const ADMIN_NAV = [
-  { label: 'Panel',       to: ADMIN_PATHS.DASHBOARD,  icon: LayoutDashboard, end: true },
-  { label: 'Reservas',    to: ADMIN_PATHS.BOOKINGS,   icon: Ticket },
-  { label: 'Clientes',    to: ADMIN_PATHS.USERS,      icon: Users },
-  { label: 'Hoteles',     to: ADMIN_PATHS.HOTELS,     icon: Building2 },
-  { label: 'Autobuses',   to: ADMIN_PATHS.BUSES,      icon: Bus },
-  { label: 'Conductores', to: ADMIN_PATHS.DRIVERS,    icon: UserCog },
-  { label: 'Destinos',    to: ADMIN_PATHS.TRAVELS,    icon: Plane },
+  { label: 'Panel',       to: ADMIN_PATHS.DASHBOARD,   icon: LayoutDashboard, end: true },
+  { label: 'Reservas',    to: ADMIN_PATHS.BOOKINGS,    icon: Ticket },
+  { label: 'Clientes',    to: ADMIN_PATHS.USERS,       icon: Users },
+  { label: 'Hoteles',     to: ADMIN_PATHS.HOTELS,      icon: Building2 },
+  { label: 'Autobuses',   to: ADMIN_PATHS.BUSES,       icon: Bus },
+  { label: 'Conductores', to: ADMIN_PATHS.DRIVERS,     icon: UserCog },
+  { label: 'Destinos',    to: ADMIN_PATHS.TRAVELS,     icon: Plane },
+  { label: 'Empleados',   to: ADMIN_PATHS.EMPLOYEES,   icon: UserCheck },
+  { label: 'Ofertas',     to: ADMIN_PATHS.OFFERS,      icon: Tag },
+  { label: 'Segmentos',   to: ADMIN_PATHS.TRIP_SEGMENTS, icon: Route },
 ]

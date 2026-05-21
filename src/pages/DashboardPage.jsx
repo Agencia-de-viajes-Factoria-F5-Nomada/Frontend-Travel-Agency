@@ -113,7 +113,7 @@ const DashboardPage = () => {
               <MapPinned className="h-4 w-4" aria-hidden="true" />
               Añadir nuevo destino
             </Button>
-            <Button variant="secondary" fullWidth to={ADMIN_PATHS.USERS}>
+            <Button variant="secondary" fullWidth to={ADMIN_PATHS.EMPLOYEES}>
               <Users className="h-4 w-4" aria-hidden="true" />
               Registrar un empleado
             </Button>
