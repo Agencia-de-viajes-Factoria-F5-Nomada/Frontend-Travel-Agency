@@ -204,14 +204,14 @@ const CheckoutPage = () => {
                   <span className="text-sm font-medium text-white">Pasajero {i + 1}</span>
                   <div className="grid grid-cols-2 gap-3">
                     <Input label="Nombre" value={p.name} onChange={e => changePassenger(i, 'name', e.target.value)} required />
-                    <Input label="Apellido" value={p.surname} onChange={e => changePassenger(i, 'surname', e.target.value)} required />
+<Input label="Apellido" value={p.surname} onChange={e => changePassenger(i, 'surname', e.target.value)} required />
                   </div>
                   <div>
                     <label className="text-xs font-medium text-ink-muted">Fecha de nacimiento *</label>
                     <input type="date" value={p.birthDate}
                       max={new Date().toISOString().split('T')[0]}
                       onChange={e => changePassenger(i, 'birthDate', e.target.value)}
-                      className="mt-1 w-full rounded-lg border border-surface-600 bg-surface-900 px-3 py-2 text-sm text-ink focus:outline-none" />
+                      className="mt-1 w-full rounded-lg border border-surface-600 bg-surface-900 px-3 py-2 text-sm text-ink focus:outline-none [&::-webkit-calendar-picker-indicator]:invert-100" />
                     {p.birthDate && (
                       <p className="mt-1 text-xs text-ink-muted">
                         {calculateAge(p.birthDate)} años —{' '}

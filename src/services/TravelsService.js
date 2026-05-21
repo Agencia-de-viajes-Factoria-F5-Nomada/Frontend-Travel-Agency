@@ -68,6 +68,11 @@ export const travelService = {
     return enrichWithHotel(data, hotelMap)
   },
 
+  getSegmentsByTravelId: async (id) => {
+    const { data } = await apiClient.get(`/travels/${id}/segments`)
+    return Array.isArray(data) ? data : (data.content || [])
+  },
+
   getFeatured: async () => {
     try {
       const { data }  = await apiClient.get('/travels?size=100')
