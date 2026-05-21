@@ -557,7 +557,7 @@ const EntityTable = ({ entityType }) => {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-2">
         <h2 className="text-xl font-semibold text-white">{config.title}</h2>
         <Button onClick={openCreate}>+ Nuevo</Button>
       </div>

@@ -2,7 +2,7 @@ import { Menu, Search } from 'lucide-react'
 import Button from '../atoms/Button'
 
 const AdminTopbar = ({ onMenuClick }) => (
-  <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-accent/30 bg-accent-dark px-4 backdrop-blur-sm lg:px-8">
+  <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-accent/30 bg-accent-deepS px-4 backdrop-blur-sm lg:px-8">
     <Button
       variant="ghost"
       size="icon"

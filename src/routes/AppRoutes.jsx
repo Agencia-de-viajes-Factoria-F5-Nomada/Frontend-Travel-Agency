@@ -15,7 +15,6 @@ const SearchResultsPage     = lazy(() => import('../pages/SearchResultsPage'));
 const CheckoutPage          = lazy(() => import('../pages/CheckoutPage'));
 const CustomTripPage        = lazy(() => import('../pages/CustomTripPage'));
 const AuthPage              = lazy(() => import('../pages/AuthPage'));
-const ProfilePage           = lazy(() => import('../pages/ProfilePage'));
 const PersonalAreaPage      = lazy(() => import('../pages/PersonalAreaPage'));
 const LegalPage             = lazy(() => import('../pages/LegalPage'));
 const NotFoundPage          = lazy(() => import('../pages/NotFoundPage'));

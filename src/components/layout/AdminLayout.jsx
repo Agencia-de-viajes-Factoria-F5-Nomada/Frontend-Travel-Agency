@@ -10,14 +10,14 @@ const AdminLayout = () => {
   const handleClose = () => setOpen(false)
 
   return (
-    <div className="flex min-h-screen flex-col bg-surface-950">
+    <div className="flex min-h-screen flex-col bg-surface-80S0">
       <PublicTopbar />
-      <div className="bg-accent-dark">
+      <div className="bg-accent-deep">
         <div className="container-page">
           <AdminTopbar onMenuClick={() => setOpen(true)} />
         </div>
       </div>
-      <div className="bg-accent-dark flex flex-1">
+      <div className="bg-accent-deep flex flex-1">
         <div className="container-page flex flex-1">
           <AdminSidebar open={open} onNavigate={handleClose} />
 

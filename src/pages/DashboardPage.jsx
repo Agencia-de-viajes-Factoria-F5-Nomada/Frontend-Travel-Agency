@@ -81,7 +81,7 @@ const DashboardPage = () => {
           <div className="mt-5 overflow-x-auto">
             <table className="w-full min-w-[480px] border-separate border-spacing-0 text-left text-sm">
               <thead className="text-xs uppercase tracking-wide">
-                <tr className="bg-brand-400">
+                <tr className="bg-accent">
                   <th scope="col" className="rounded-l-full px-5 py-3 font-semibold text-white">#</th>
                   <th scope="col" className="px-5 py-3 font-semibold text-white">Destino</th>
                   <th scope="col" className="rounded-r-full px-5 py-3 font-semibold text-white">Facturación</th>
@@ -116,10 +116,6 @@ const DashboardPage = () => {
             <Button variant="secondary" fullWidth to={ADMIN_PATHS.USERS}>
               <Users className="h-4 w-4" aria-hidden="true" />
               Invitar a un usuario
-            </Button>
-            <Button variant="ghost" fullWidth to={ADMIN_PATHS.BOOKINGS}>
-              <Ticket className="h-4 w-4" aria-hidden="true" />
-              Revisar reservas pendientes
             </Button>
           </div>
         </Card>
