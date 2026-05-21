@@ -72,6 +72,7 @@ const CheckoutPage = () => {
   const [step, setStep]             = useState(1)
   const [typeBoard, setTypeBoard]   = useState(initialBoard ?? 'HALF')
   const [isGroup, setIsGroup]       = useState(false)
+  const [isImserso, setIsImserso]   = useState(false)
   const [numPassengers, setNumPassengers] = useState(1)
   const [passengers, setPassengers] = useState([{ ...EMPTY_PASSENGER }])
   const [quote, setQuote]           = useState(null)
@@ -118,7 +119,7 @@ const CheckoutPage = () => {
     try {
       const user   = authService.getUser()
       const result = await bookingService.quote({
-        travelId, typeBoard, isGroup, userId: user?.id,
+        travelId, typeBoard, isGroup, isImserso, userId: user?.id,
         passengers: passengers.map(p => ({ name: p.name, surname: p.surname, birthDate: p.birthDate })),
       })
       setQuote(result)
@@ -151,7 +152,7 @@ const CheckoutPage = () => {
         }
       }
       const result = await bookingService.confirm({
-        travelId, typeBoard, isGroup,
+        travelId, typeBoard, isGroup, isImserso,
         totalPrice: quote.totalPrice, customerIds,
         boughtDate: new Date().toISOString(),
         ...(user?.employeeId && { employeeId: user.employeeId }),
@@ -175,6 +176,7 @@ const CheckoutPage = () => {
 
           {error && <div className="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</div>}
 
+          {/* ── STEP 1: Pasajeros ── */}
           {step === 1 && (
             <div className="mt-8 space-y-4">
               <div className="rounded-xl border border-surface-600 p-4">
@@ -204,7 +206,7 @@ const CheckoutPage = () => {
                   <span className="text-sm font-medium text-white">Pasajero {i + 1}</span>
                   <div className="grid grid-cols-2 gap-3">
                     <Input label="Nombre" value={p.name} onChange={e => changePassenger(i, 'name', e.target.value)} required />
-<Input label="Apellido" value={p.surname} onChange={e => changePassenger(i, 'surname', e.target.value)} required />
+                    <Input label="Apellido" value={p.surname} onChange={e => changePassenger(i, 'surname', e.target.value)} required />
                   </div>
                   <div>
                     <label className="text-xs font-medium text-ink-muted">Fecha de nacimiento *</label>
@@ -240,6 +242,7 @@ const CheckoutPage = () => {
                 </p>
               )}
 
+              {/* Tipo de pensión */}
               <div className="rounded-xl border border-surface-600 p-4 space-y-2">
                 <p className="text-sm font-medium text-white">Tipo de pensión</p>
                 <div className="grid grid-cols-2 gap-2">
@@ -258,10 +261,28 @@ const CheckoutPage = () => {
                 </div>
               </div>
 
-              <label className="flex items-center gap-3 cursor-pointer">
-                <input type="checkbox" checked={isGroup} onChange={e => setIsGroup(e.target.checked)} className="h-4 w-4 rounded" />
-                <span className="text-sm text-ink-soft">Reserva de grupo (IMSERSO, colegio — aplica descuento)</span>
-              </label>
+              {/* Tipo de reserva */}
+              <div className="rounded-xl border border-surface-600 p-4 space-y-3">
+                <p className="text-sm font-medium text-white">Tipo de reserva</p>
+
+                <label className="flex items-center gap-3 cursor-pointer">
+                  <input type="checkbox" checked={isGroup} onChange={e => setIsGroup(e.target.checked)}
+                    className="h-4 w-4 rounded" />
+                  <div>
+                    <span className="text-sm text-ink-soft">Reserva de grupo</span>
+                    <p className="text-xs text-ink-muted">Aplica descuento para grupos de colegios, empresas, etc.</p>
+                  </div>
+                </label>
+
+                <label className="flex items-center gap-3 cursor-pointer">
+                  <input type="checkbox" checked={isImserso} onChange={e => setIsImserso(e.target.checked)}
+                    className="h-4 w-4 rounded" />
+                  <div>
+                    <span className="text-sm text-ink-soft">Programa Imserso</span>
+                    <p className="text-xs text-ink-muted">Para mayores de 65 años con tarjeta Imserso vigente.</p>
+                  </div>
+                </label>
+              </div>
 
               <div className="flex justify-end pt-2">
                 <Button onClick={handleQuote} disabled={loading || minorError || !allFilled}>
@@ -272,6 +293,7 @@ const CheckoutPage = () => {
             </div>
           )}
 
+          {/* ── STEP 2: Precio ── */}
           {step === 2 && quote && (
             <div className="mt-8 space-y-4">
               <h2 className="font-semibold text-white">Resumen de precio · IVA incluido</h2>
@@ -300,6 +322,7 @@ const CheckoutPage = () => {
             </div>
           )}
 
+          {/* ── STEP 3: Confirmar ── */}
           {step === 3 && (
             <div className="mt-8 space-y-4">
               <h2 className="font-semibold text-white">Confirmar reserva</h2>
@@ -320,6 +343,14 @@ const CheckoutPage = () => {
                   <span className="text-ink-soft">Pasajeros</span>
                   <span className="text-white">{passengers.length}</span>
                 </li>
+                <li className="flex justify-between px-4 py-3">
+                  <span className="text-ink-soft">Reserva de grupo</span>
+                  <span className="text-white">{isGroup ? 'Sí' : 'No'}</span>
+                </li>
+                <li className="flex justify-between px-4 py-3">
+                  <span className="text-ink-soft">Programa Imserso</span>
+                  <span className="text-white">{isImserso ? 'Sí' : 'No'}</span>
+                </li>
                 <li className="flex justify-between px-4 py-3 font-bold">
                   <span className="text-white">Total (IVA incl.)</span>
                   <span className="text-white">{quote?.totalPrice}€</span>
@@ -335,6 +366,7 @@ const CheckoutPage = () => {
             </div>
           )}
 
+          {/* ── STEP 4: Confirmado ── */}
           {step === 4 && (
             <div className="mt-8 flex flex-col items-center gap-4 py-6 text-center">
               <span className="grid h-16 w-16 place-items-center rounded-full bg-accent-light">
@@ -354,6 +386,7 @@ const CheckoutPage = () => {
           )}
         </Card>
 
+        {/* ── Sidebar resumen ── */}
         <Card as="aside" className="h-fit p-6">
           <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-muted">Resumen del viaje</h2>
           <ul className="mt-4 grid gap-3 text-sm">
@@ -377,6 +410,12 @@ const CheckoutPage = () => {
               <span>Pasajeros</span>
               <span className="text-white">{passengers.length}</span>
             </li>
+            {isImserso && (
+              <li className="flex justify-between text-ink-soft">
+                <span>Programa</span>
+                <span className="text-green-400 font-medium">Imserso ✓</span>
+              </li>
+            )}
           </ul>
           {quote?.totalPrice && (
             <>

@@ -9,7 +9,6 @@ import usePagination from '../../hooks/usePagination'
 import { formatDate } from '../../utils/formatters'
 import { validatePasswordStrength } from '../../utils/passwordValidation'
 
-// Servicios
 import { travelService } from '../../services/travelsService'
 import { hotelService } from '../../services/hotelService'
 import { busService } from '../../services/busService'
@@ -20,7 +19,6 @@ import { employeesService } from '../../services/employeesService'
 import { offersService } from '../../services/offersService'
 import { tripSegmentsService } from '../../services/tripSegmentsService'
 
-// Formularios (solo los que mantienen layout custom)
 import BaseForm from './BaseForm'
 import BookingForm from './BookingForm'
 
@@ -37,10 +35,6 @@ const STAR_OPTIONS = [
   { value: 4, label: '4 ⭐⭐⭐⭐' },
   { value: 5, label: '5 ⭐⭐⭐⭐⭐' },
 ]
-
-// ─────────────────────────────────────────────
-// Configuracion de las 9 entidades
-// ─────────────────────────────────────────────
 
 const ENTITY_CONFIG = {
   travels: {
@@ -475,10 +469,6 @@ const ENTITY_CONFIG = {
   },
 }
 
-// ─────────────────────────────────────────────
-// Funciones para cargar datos relacionados
-// ─────────────────────────────────────────────
-
 const RELATED_LOADERS = {
   hotels: async () => {
     const data = await hotelService.getAll()
@@ -498,10 +488,6 @@ const RELATED_LOADERS = {
   },
 }
 
-// ─────────────────────────────────────────────
-// Componente EntityTable
-// ─────────────────────────────────────────────
-
 const EntityTable = ({ entityType }) => {
   const config = ENTITY_CONFIG[entityType]
   if (!config) return <p className="text-ink-muted">Entidad no encontrada</p>
@@ -515,23 +501,15 @@ const EntityTable = ({ entityType }) => {
   const [error, setError] = useState(null)
   const [related, setRelated] = useState({})
 
-  const { data, page, totalPages, loading, load } = usePagination(
-    service.getPage,
-    0,
-    10
-  )
+  const { data, page, totalPages, loading, load } = usePagination(service.getPage, 0, 10)
 
-  // Cargar datos relacionados si la entidad los necesita
   const loadRelated = useCallback(async () => {
     if (!config.relatedKeys?.length) return
     const result = {}
     for (const key of config.relatedKeys) {
       if (RELATED_LOADERS[key]) {
-        try {
-          result[key] = await RELATED_LOADERS[key]()
-        } catch {
-          result[key] = []
-        }
+        try { result[key] = await RELATED_LOADERS[key]() }
+        catch { result[key] = [] }
       }
     }
     setRelated(result)
@@ -542,7 +520,6 @@ const EntityTable = ({ entityType }) => {
     loadRelated()
   }, [load, entityType, loadRelated])
 
-  // Reset estado cuando cambia la entidad
   useEffect(() => {
     setShowForm(false)
     setEditing(null)
@@ -604,21 +581,17 @@ const EntityTable = ({ entityType }) => {
     }
   }
 
-  // Construir columnas con la columna de acciones
   const columnsWithActions = [
     ...config.columns.map(col => {
-      // Si el render del config usa 3 args (val, row, related), envolver para inyectar related
       const originalRender = col.render
       if (!originalRender) return col
-      return {
-        ...col,
-        render: (val, row) => originalRender(val, row, related),
-      }
+      return { ...col, render: (val, row) => originalRender(val, row, related) }
     }),
     {
       key: 'actions',
       label: '',
       align: 'right',
+      sticky: true,
       render: (_, row) => (
         <div className="flex gap-2 justify-end">
           <Button size="sm" onClick={(e) => { e.stopPropagation(); openEdit(row) }}>Editar</Button>
@@ -628,19 +601,16 @@ const EntityTable = ({ entityType }) => {
     },
   ]
 
-  // Props extra para el formulario (datos relacionados)
   const extraFormProps = config.formProps ? config.formProps(related) : {}
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 p-4 sm:p-6">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h2 className="text-xl font-semibold text-white">{config.title}</h2>
         <Button onClick={openCreate}>+ Nuevo</Button>
       </div>
 
-      {error && (
-        <Alert type="error" message={error} onClose={() => setError(null)} />
-      )}
+      {error && <Alert type="error" message={error} onClose={() => setError(null)} />}
 
       <Table
         columns={columnsWithActions}
@@ -662,12 +632,8 @@ const EntityTable = ({ entityType }) => {
         size="lg"
         footer={
           <>
-            <Button variant="secondary" onClick={() => { setShowForm(false); setEditing(null) }}>
-              Cancelar
-            </Button>
-            <Button onClick={handleSubmit}>
-              {editing ? 'Guardar cambios' : 'Crear'}
-            </Button>
+            <Button variant="secondary" onClick={() => { setShowForm(false); setEditing(null) }}>Cancelar</Button>
+            <Button onClick={handleSubmit}>{editing ? 'Guardar cambios' : 'Crear'}</Button>
           </>
         }
       >

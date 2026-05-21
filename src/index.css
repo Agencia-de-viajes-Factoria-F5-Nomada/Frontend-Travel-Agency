@@ -16,7 +16,7 @@
 
   body {
     overflow-x: hidden;
-    @apply bg-gradient-to-b from-brand-100 via-brand-200 to-brand-500 text-ink font-sans antialiased;
+    @apply bg-gradient-to-b from-surface-900 via-surface-950 to-surface-950 text-ink font-sans antialiased;
   }
 
   :focus-visible {
@@ -30,11 +30,11 @@
   }
 
   .card {
-    @apply rounded-card border border-surface-700/40 bg-gradient-to-b from-brand-100/60 to-surface-950/40 p-4 shadow-card backdrop-blur;
+    @apply rounded-card border border-surface-700/40 bg-gradient-to-b from-surface-800/60 to-surface-950/40 p-4 shadow-card backdrop-blur;
   }
 
   .hero-card {
-    @apply rounded-card border border-surface-700/40 bg-gradient-to-b from-brand-100/60 to-surface-950/40 p-6 shadow-2xl backdrop-blur;
+    @apply rounded-card border border-surface-700/40 bg-gradient-to-b from-surface-800/60 to-surface-950/40 p-6 shadow-2xl backdrop-blur;
     transition: transform 240ms ease, box-shadow 240ms ease;
   }
 

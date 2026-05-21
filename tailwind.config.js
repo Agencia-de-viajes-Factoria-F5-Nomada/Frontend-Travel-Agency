@@ -53,7 +53,7 @@ export default {
         focus: '0 0 0 3px rgba(76, 145, 181, 0.5)',
       },
       maxWidth: {
-        page: '1280px',
+        page: '85%',
       },
     },
   },
