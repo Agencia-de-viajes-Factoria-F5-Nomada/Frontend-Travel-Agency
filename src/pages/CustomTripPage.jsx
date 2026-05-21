@@ -51,6 +51,7 @@ const initialForm = {
   includesFlight: true,
   includesHotel: true,
   includesActivities: true,
+  typeBoard: 'FULL',
   styles: ['playa'],
   mustHave: '',
   avoid: '',
@@ -124,7 +125,7 @@ const CustomTripPage = () => {
     ].filter(Boolean).join(' | ')
 
     try {
-      await bookingService.create({
+      await bookingService.createCustomTrip({
         customDestiny: preferenceSummary,
         customStartDate: form.startDate || null,
         customEndDate: form.endDate || null,
@@ -133,7 +134,8 @@ const CustomTripPage = () => {
         includesHotel: form.includesHotel,
         includesActivities: form.includesActivities,
         boughtDate: new Date().toISOString(),
-        isGroup: Number(form.passengers) >= 10,
+        typeBoard: form.typeBoard,
+        basePricePerPassenger: form.budget ? Number(form.budget) : null,
       })
       setSent(true)
     } catch (e) {
@@ -354,6 +356,26 @@ const CustomTripPage = () => {
                   <span>{form[key] ? 'Incluido' : 'Opcional'}</span>
                 </button>
               ))}
+            </div>
+            <div className="mt-4">
+              <p className="mb-2 text-sm font-medium text-ink-soft">Régimen de comidas</p>
+              <div className="grid grid-cols-2 gap-2">
+                {['FULL', 'HALF'].map(option => (
+                  <button
+                    key={option}
+                    type="button"
+                    onClick={() => change('typeBoard', option)}
+                    className={classNames(
+                      'rounded-xl border px-3 py-2 text-sm transition-colors',
+                      form.typeBoard === option
+                        ? 'border-brand-500 bg-brand-500/20 text-white'
+                        : 'border-surface-600 text-ink-soft hover:border-brand-500 hover:text-white',
+                    )}
+                  >
+                    {option === 'FULL' ? 'Pensión completa' : 'Media pensión'}
+                  </button>
+                ))}
+              </div>
             </div>
           </Card>
 
