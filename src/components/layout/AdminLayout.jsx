@@ -30,7 +30,7 @@ const AdminLayout = () => {
             />
           ) : null}
 
-          <main id="main" className="flex-1 px-4 py-8 lg:px-8">
+          <main id="main" className="flex-1 overflow-x-auto px-4 py-8 lg:px-8">
             <Outlet />
           </main>
         </div>
