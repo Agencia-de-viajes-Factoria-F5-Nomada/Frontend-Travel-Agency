@@ -46,7 +46,6 @@ const EntitiesPage = () => {
         }
       />
 
-      {/* Mobile: selector horizontal scrolleable (fuera de la tarjeta) */}
       <div className="lg:hidden">
         <div className="flex gap-2 overflow-x-auto pb-3" style={{ WebkitOverflowScrolling: 'touch' }}>
           {CRUD_OPTIONS.map(opt => (
@@ -67,7 +66,6 @@ const EntitiesPage = () => {
 
       <div className="mt-8 grid gap-6 lg:grid-cols-[220px_1fr]">
 
-        {/* TARJETA 1: Auth + Menú CRUD (solo desktop) */}
         <div className="hidden lg:block lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto">
           <Card className="p-4">
             <h2 className="text-xs font-semibold uppercase tracking-wide text-ink-muted mb-3">
@@ -112,7 +110,6 @@ const EntitiesPage = () => {
           </Card>
         </div>
 
-        {/* TARJETA 2: Tabla CRUD */}
         <Card className="p-4 sm:p-6">
           <div className="-mx-4 sm:-mx-6">
             <EntityTable entityType={selectedEntity} />

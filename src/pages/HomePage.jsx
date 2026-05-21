@@ -6,17 +6,13 @@ import Input from '../components/atoms/Input'
 import DestinationCard from '../components/organisms/DestinationCard'
 import { travelService } from '../services/TravelsService'
 import { authService } from '../services/authService'
-import { apiClient } from '../services/api'
-import { classNames } from '../utils/classNames'
 
 const HomePage = () => {
   const [travels, setTravels] = useState([])
   const [loading, setLoading] = useState(true)
-  const [active, setActive] = useState('signin')
   const [authLoading, setAuthLoading] = useState(false)
   const [error, setError] = useState(null)
-  const [form, setForm] = useState({ name: '', email: '', password: '' })
-  const isSignIn = active === 'signin'
+  const [form, setForm] = useState({ email: '', password: '' })
   const isLoggedIn = authService.isAuthenticated()
   const user = authService.getUser()
 
@@ -41,18 +37,7 @@ const HomePage = () => {
     setAuthLoading(true)
     setError(null)
     try {
-      if (isSignIn) {
-        await authService.login(form.email, form.password)
-      } else {
-        if (form.password.length < 8) { setError('La contraseña debe tener al menos 8 caracteres'); setAuthLoading(false); return }
-        if (!/[A-Z]/.test(form.password) || !/[0-9]/.test(form.password)) { setError('La contraseña debe contener al menos una mayúscula y un número'); setAuthLoading(false); return }
-        await apiClient.post('/auth/register', {
-          name: form.name,
-          email: form.email,
-          password: form.password,
-        })
-        await authService.login(form.email, form.password)
-      }
+      await authService.login(form.email, form.password)
       window.location.reload()
     } catch (e) {
       setError(e.message)
@@ -93,41 +78,24 @@ const HomePage = () => {
           </div>
         ) : (
           <Card className="w-full max-w-sm p-8 text-left">
-            <h2 className="mb-6 text-xl font-semibold text-white">
-              {isSignIn ? 'Iniciar sesión' : 'Crear cuenta'}
-            </h2>
+            <h2 className="mb-6 text-xl font-semibold text-white">Iniciar sesión</h2>
 
             {error && (
               <div className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</div>
             )}
 
             <form onSubmit={handleAuth} className="grid gap-4">
-              {!isSignIn && (
-                <Input label="Nombre completo" name="name" placeholder="Juan Pérez"
-                  value={form.name} onChange={change} required />
-              )}
               <Input label="Correo electrónico" name="email" type="email"
                 placeholder="tu@ejemplo.com" value={form.email} onChange={change} required />
               <Input label="Contraseña" name="password" type="password"
                 placeholder="••••••••" value={form.password} onChange={change} required />
               <Button type="submit" fullWidth size="lg" disabled={authLoading}>
-                {authLoading ? 'Cargando...' : isSignIn ? 'Iniciar sesión' : 'Crear cuenta'}
+                {authLoading ? 'Cargando...' : 'Iniciar sesión'}
               </Button>
             </form>
 
             <p className="mt-6 text-center text-xs text-ink-muted">
               Al continuar aceptas nuestros términos y la política de privacidad.
-            </p>
-
-            <p className="mt-3 text-center text-xs text-ink-muted">
-              {isSignIn ? '¿No tienes cuenta?' : '¿Ya tienes cuenta?'}{' '}
-              <button
-                type="button"
-                onClick={() => { setActive(isSignIn ? 'signup' : 'signin'); setError(null) }}
-                className="text-brand-400 underline cursor-pointer bg-transparent border-none"
-              >
-                {isSignIn ? 'Crear cuenta' : 'Iniciar sesión'}
-              </button>
             </p>
           </Card>
         )}
