@@ -7,7 +7,7 @@ import AdminLayout    from '../components/layout/AdminLayout';
 import PrivateRoute   from '../components/layout/PrivateRoute';
 
 // Páginas públicas
-const HomePage              = lazy(() => import('../pages/AuthPage'));
+const HomePage              = lazy(() => import('../pages/HomePage'));
 const DestinationsPage      = lazy(() => import('../pages/DestinationsPage'));
 const DestinationDetailPage = lazy(() => import('../pages/DestinationDetailPage'));
 const OffersPage            = lazy(() => import('../pages/OffersPage'));
@@ -36,7 +36,6 @@ export default function AppRoutes() {
     <Suspense fallback={<Loader />}>
       <Routes>
 
-      {/* ── Rutas públicas ── */}
       <Route element={<PublicLayout />}>
         <Route path="/"                    element={<HomePage />} />
         <Route path="/home"               element={<HomePage />} />
@@ -57,7 +56,6 @@ export default function AppRoutes() {
         } />
       </Route>
 
-      {/* ── Rutas admin (protegidas) ── */}
       <Route path="/admin" element={
         <PrivateRoute adminOnly>
           <AdminLayout />
@@ -75,7 +73,6 @@ export default function AppRoutes() {
         <Route path="trip-segments"        element={<EntityTable entityType="trip-segments" />} />
       </Route>
 
-        {/* ── 404 ── */}
         <Route path="*" element={<NotFoundPage />} />
 
       </Routes>

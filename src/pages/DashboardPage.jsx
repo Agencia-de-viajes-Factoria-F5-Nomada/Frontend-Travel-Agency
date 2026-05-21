@@ -115,7 +115,7 @@ const DashboardPage = () => {
             </Button>
             <Button variant="secondary" fullWidth to={ADMIN_PATHS.USERS}>
               <Users className="h-4 w-4" aria-hidden="true" />
-              Invitar a un usuario
+              Registrar un empleado
             </Button>
           </div>
         </Card>
