@@ -251,11 +251,11 @@ const CheckoutPage = () => {
                     { value: 'FULL', label: 'Pensión completa' },
                   ].map(o => (
                     <label key={o.value} className={`flex cursor-pointer items-center gap-2 rounded-lg border p-3 ${
-                      typeBoard === o.value ? 'border-accent bg-accent-light' : 'border-transparent bg-transparent'
+                      typeBoard === o.value ? 'border-accent bg-accent-muted' : 'border-transparent bg-transparent'
                     }`}>
                       <input type="radio" name="typeBoard" value={o.value}
                         checked={typeBoard === o.value} onChange={() => setTypeBoard(o.value)} />
-                      <span className="text-sm text-accent-dark">{o.label}</span>
+                      <span className={`text-sm ${typeBoard === o.value ? 'text-black font-semibold' : 'text-accent-light'}`}>{o.label}</span>
                     </label>
                   ))}
                 </div>
