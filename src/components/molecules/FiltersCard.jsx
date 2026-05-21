@@ -23,6 +23,7 @@ const FiltersCard = ({
   minDiscount, setMinDiscount,
   boardType, setBoardType,
   onClearFilters,
+  onlyInserso, setOnlyInserso,
 }) => {
 
   const continentCountries = getCountriesForContinents(selectedContinents)
@@ -249,6 +250,19 @@ const FiltersCard = ({
               onChange={e => setOnlyOffers(e.target.checked)}
               className="h-4 w-4 rounded" />
             <span className="text-sm text-ink-soft">Solo viajes en oferta</span>
+          </label>
+        </div>
+      )}
+
+      {/* ── Solo INSERSO ── */}
+      {setOnlyInserso && (
+        <div className="mb-6 border-t border-surface-700 pt-6">
+          <label className="flex items-center gap-3 cursor-pointer">
+            <input type="checkbox"
+              checked={onlyInserso}
+              onChange={e => setOnlyInserso(e.target.checked)}
+              className="h-4 w-4 rounded accent-brand-500" />
+            <span className="text-sm text-ink-soft">Solo ofertas INSERSO</span>
           </label>
         </div>
       )}

@@ -45,6 +45,7 @@ const DestinationsPage = () => {
   const [availabilityOnly, setAvailabilityOnly] = useState(false)
   const [minDiscount, setMinDiscount]         = useState(null)
   const [boardType, setBoardType]             = useState('half')
+  const [onlyInserso, setOnlyInserso]         = useState(false)
 
   useEffect(() => {
     travelService.getAvailable()
@@ -71,6 +72,7 @@ const DestinationsPage = () => {
     setAvailabilityOnly(false)
     setMinDiscount(null)
     setBoardType('half')
+    setOnlyInserso(false)
     setSortBy('recommended')
   }
 
@@ -102,8 +104,9 @@ const DestinationsPage = () => {
       const matchStars = starFilter.length === 0 || (stars && starFilter.includes(stars))
       const matchAvailability = !availabilityOnly || (t.availablePlaces && t.availablePlaces > 0)
       const matchDiscount = !minDiscount || (t.discountPercentage && t.discountPercentage >= minDiscount)
+      const matchInserso = !onlyInserso || (t.offer?.offerType === 'INSERSO')
       return matchesSearch && isFuture && matchPrice && matchContinent && matchRegion &&
-             matchDuration && matchStars && matchAvailability && matchDiscount
+             matchDuration && matchStars && matchAvailability && matchDiscount && matchInserso
     })
 
     const getPrice = (t) => boardType === 'full'
@@ -118,7 +121,7 @@ const DestinationsPage = () => {
 
     return result
   }, [travels, search.destiny, priceRange, selectedRegions, selectedContinents, durationRange,
-      starFilter, availabilityOnly, minDiscount, boardType, sortBy])
+      starFilter, availabilityOnly, minDiscount, boardType, sortBy, onlyInserso])
 
   const handleSearch = (e) => {
     e.preventDefault()
@@ -314,6 +317,8 @@ const DestinationsPage = () => {
           boardType={boardType}
           setBoardType={setBoardType}
           onClearFilters={handleClearFilters}
+          onlyInserso={onlyInserso}
+          setOnlyInserso={setOnlyInserso}
         />
 
         {loading ? (

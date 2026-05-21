@@ -22,6 +22,7 @@ const OffersPage = () => {
 
   // Filtros existentes
   const [onlyOffers, setOnlyOffers] = useState(false)
+  const [onlyInserso, setOnlyInserso] = useState(false)
   const [sortBy, setSortBy] = useState('recommended')
   const [priceRange, setPriceRange] = useState({ min: 0, max: 5000 })
 
@@ -53,6 +54,7 @@ const OffersPage = () => {
 
   const handleClearFilters = () => {
     setOnlyOffers(false)
+    setOnlyInserso(false)
     setSortBy('recommended')
     setPriceRange({ min: 0, max: 5000 })
     setSelectedRegions([])
@@ -95,8 +97,10 @@ const OffersPage = () => {
       const matchDiscount = !minDiscount ||
         (t.discountPercentage && t.discountPercentage >= minDiscount)
 
+      const matchInserso = !onlyInserso || (t.offer?.offerType === 'INSERSO')
+
       return matchPrice && matchContinent && matchRegion && matchDuration &&
-             matchStars && matchAvailability && matchDiscount
+             matchStars && matchAvailability && matchDiscount && matchInserso
     })
 
     const getPrice = (t) => boardType === 'full'
@@ -116,7 +120,7 @@ const OffersPage = () => {
 
     return result
   }, [offers, onlyOffers, sortBy, priceRange, selectedRegions, selectedContinents, durationRange,
-      starFilter, availabilityOnly, minDiscount, boardType])
+      starFilter, availabilityOnly, minDiscount, boardType, onlyInserso])
 
   return (
     <div className="container-page py-12">
@@ -165,6 +169,8 @@ const OffersPage = () => {
           boardType={boardType}
           setBoardType={setBoardType}
           onClearFilters={handleClearFilters}
+          onlyInserso={onlyInserso}
+          setOnlyInserso={setOnlyInserso}
         />
 
         {loading ? (
