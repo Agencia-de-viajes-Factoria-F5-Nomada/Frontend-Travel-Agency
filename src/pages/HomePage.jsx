@@ -56,7 +56,7 @@ const HomePage = () => {
         <p className="mb-8 max-w-lg text-sm text-ink-muted">
           {isLoggedIn
             ? 'Descubre tus próximos destinos y encuentra el viaje perfecto.'
-            : 'Inicia sesión o crea una cuenta para gestionar tus reservas.'}
+            : 'Siempre en el lugar correcto'}
         </p>
 
         {isLoggedIn ? (
